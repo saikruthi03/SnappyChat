@@ -29,4 +29,5 @@
     <string name="title_activity_chat">ChatActivity</string>
     <string name="title_activity_contacts">ContactsActivity</string>
     <string name="title_activity_no_data">NoDataActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
 </resources>

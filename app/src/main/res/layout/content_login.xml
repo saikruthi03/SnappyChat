@@ -12,8 +12,4 @@
     tools:context="com.example.vsaik.snapchat.LoginActivity"
     tools:showIn="@layout/activity_login">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
 </RelativeLayout>
