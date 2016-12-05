@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="#0099cc"
     tools:context="com.example.vsaik.snapchat.MainScreen"
-    android:id="@+id/mainscreen_content">
+    >
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -18,7 +18,8 @@
         android:text="@string/dummy_content"
         android:textColor="#33b5e5"
         android:textSize="50sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:id="@+id/mainscreen_content"/>
     <ImageView
         android:layout_width="70dp"
         android:layout_height="70dp"
