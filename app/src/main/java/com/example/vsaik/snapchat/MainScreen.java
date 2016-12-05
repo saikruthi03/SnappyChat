@@ -12,6 +12,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
@@ -49,6 +50,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.R.attr.width;
 import static android.app.Activity.RESULT_OK;
@@ -65,7 +68,11 @@ public class MainScreen extends AppCompatActivity {
     private ImageView capture;
     private Context context ;
     private Bitmap currentBitMap;
-
+    private Bitmap mutable;
+    private View contentView = null;
+    private int index = 0;
+    private List<BitmapCollection> overlays =  null;
+    private FrameLayout main_layout = null;
     private GestureDetector gestureDetector;
     View.OnTouchListener gestureListener;
     ImageButton flora, fauna;
@@ -74,7 +81,6 @@ public class MainScreen extends AppCompatActivity {
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data,Camera camera) {
-            String content = Base64.encodeToString(data,0);
             mCamera.stopPreview();
             postProcess(data);
         }
@@ -83,9 +89,14 @@ public class MainScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        init();
+        }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         setContentView(R.layout.activity_main_screen);
-        View contentView = (View)findViewById(R.id.mainscreen_content);
-        onStart();
+        contentView = (View)findViewById(R.id.mainscreen_content);
         contentView.setOnTouchListener(new OnSwipeTouchListener(context) {
             @Override
             public void onSwipeLeft() {
@@ -99,11 +110,6 @@ public class MainScreen extends AppCompatActivity {
 
             }
         });
-        }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
         currentBitMap = null;
         context = this;
         capture = (ImageView) findViewById(R.id.click);
@@ -114,6 +120,7 @@ public class MainScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mCamera.takePicture(null,null,mPicture);
+                capture.setOnClickListener(null);
             }
         });
         try {
@@ -134,43 +141,98 @@ public class MainScreen extends AppCompatActivity {
     }
 
     public void postProcess(byte[] picture){
-        Bitmap bm = BitmapFactory.decodeByteArray(picture, 0, picture.length);
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        Matrix matrix =new Matrix();
-        matrix.postRotate(90);
-        currentBitMap = Bitmap.createBitmap(bm, 0, 0,
-                width, height, matrix, true);
-        FrameLayout main_layout = (FrameLayout) findViewById(R.id.mainscreen_content);
-        main_layout.removeAllViews();
-        capture.setBackgroundResource(0);
-        main_layout.setBackground(new BitmapDrawable(getResources(),currentBitMap));
-        TextView discard = (TextView) findViewById(R.id.discard);
-        discard.setX(10);
-        discard.setY(1450);
-        discard.setTextColor(Color.WHITE);
-        discard.setTextSize(20);
-        discard.setText("DISCARD");
-        discard.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                onStart();
-            }
-        });
 
-        TextView accept = (TextView) findViewById(R.id.accept);
-        accept.setX(850);
-        accept.setY(1450);
-        accept.setTextColor(Color.WHITE);
-        accept.setTextSize(20);
-        accept.setText("ACCEPT");
-        accept.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context,"Accept",Toast.LENGTH_SHORT).show();
-                askForCaption();
-            }
-        });
+        contentView.setOnTouchListener(null);
+        try {
+            Bitmap bm = BitmapFactory.decodeByteArray(picture, 0, picture.length);
+
+            //bm = ImageUtils.compress(bm);
+            int width = bm.getWidth();
+            int height = bm.getHeight();
+            Matrix matrix = new Matrix();
+            matrix.postRotate(90);
+            currentBitMap = Bitmap.createBitmap(bm, 0, 0,
+                    width, height, matrix, true);
+            bm = null;
+            mutable = currentBitMap.copy(Bitmap.Config.ARGB_8888, true);
+            main_layout = (FrameLayout) findViewById(R.id.mainscreen_content);
+            main_layout.removeAllViews();
+
+            capture.setBackgroundResource(0);
+
+
+            main_layout.setBackground(new BitmapDrawable(getResources(), currentBitMap));
+            final TextView discard = (TextView) findViewById(R.id.discard);
+            final TextView accept = (TextView) findViewById(R.id.accept);
+            discard.setX(10);
+            discard.setY(1450);
+            discard.setTextColor(Color.WHITE);
+            discard.setTextSize(20);
+            discard.setText("DISCARD");
+            discard.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    currentBitMap = null;
+                    discard.setText("");
+                    accept.setText("");
+                    onStart();
+                }
+            });
+
+            accept.setX(850);
+            accept.setY(1450);
+            accept.setTextColor(Color.WHITE);
+            accept.setTextSize(20);
+            accept.setText("ACCEPT");
+            accept.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    discard.setText("");
+                    accept.setText("");
+                    Toast.makeText(context, "Accept", Toast.LENGTH_SHORT).show();
+                    askForCaption();
+                }
+            });
+
+            main_layout.setOnTouchListener(new OnSwipeTouchListener(context) {
+                @Override
+                public void onSwipeLeft() {
+                    Toast.makeText(getApplicationContext(),index+"",Toast.LENGTH_SHORT).show();
+                    if(index <= 0)
+                        index = overlays.size();
+                    floatImage(--index);
+                }
+                @Override
+                public void onSwipeRight() {
+                    Toast.makeText(getApplicationContext(),index+"",Toast.LENGTH_SHORT).show();
+
+                    if(index == overlays.size()-1)
+                        index = -1;
+                    floatImage(++index);
+                }
+            });
+        }
+        catch(OutOfMemoryError e){
+            Toast.makeText(getApplicationContext(),"Got out of memory error, please try again",Toast.LENGTH_SHORT).show();
+            onStart();
+        }
+    }
+
+    private void floatImage(int imagePointer){
+        try {
+            main_layout.setBackgroundResource(0);
+            BitmapCollection currentFilter = overlays.get(imagePointer);
+            mutable = Bitmap.createBitmap(currentBitMap.getWidth(), currentBitMap.getHeight(), Bitmap.Config.RGB_565);
+            Canvas canvas = new Canvas(mutable);
+            canvas.drawBitmap(currentBitMap, new Matrix(), null);
+            canvas.drawBitmap(currentFilter.getBitmap(), currentFilter.getX(), currentFilter.getY(), null);
+            main_layout.setBackground(new BitmapDrawable(getResources(), mutable));
+            canvas = null;
+            currentFilter = null;
+        }
+        catch(OutOfMemoryError error) {
+            Toast.makeText(getApplicationContext(),"Out Of Memory Error",Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void askForCaption(){
@@ -193,4 +255,33 @@ public class MainScreen extends AppCompatActivity {
         startActivity(mainActivity);
         finish();
     }
+
+    private void init(){
+        overlays = new ArrayList<BitmapCollection>();
+        BitmapCollection bitmap1 = new BitmapCollection();
+        bitmap1.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.spartan));
+        bitmap1.setX(1900);
+        bitmap1.setY(3600);
+
+        BitmapCollection bitmap2 = new BitmapCollection();
+        bitmap2.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.sjsu));
+        bitmap2.setX(200);
+        bitmap2.setY(100);
+
+        BitmapCollection bitmap3 = new BitmapCollection();
+        bitmap3.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.photos));
+        bitmap3.setX(1000);
+        bitmap3.setY(100);
+
+        BitmapCollection bitmap4 = new BitmapCollection();
+        bitmap4.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.mobile_geek));
+        bitmap4.setX(1900);
+        bitmap4.setY(1000);
+
+        overlays.add(bitmap1);
+        overlays.add(bitmap2);
+        overlays.add(bitmap3);
+        overlays.add(bitmap4);
+    }
 }
+

@@ -54,7 +54,6 @@ Button signOut ;
         setContentView(R.layout.activity_main);
 
         View contentView = (View)findViewById(R.id.timeLine);
-        onStart();
         contentView.setOnTouchListener(new OnSwipeTouchListener(context) {
             @Override
             public void onSwipeLeft() {
@@ -97,6 +96,7 @@ Button signOut ;
            // if(!usenames.isEmpty())
            //  nickName.setText(FirebaseDatabase.getInstance().getReference().child("users").child(mAuth.getCurrentUser()));
         //}
+        onStart();
 
 
     }
