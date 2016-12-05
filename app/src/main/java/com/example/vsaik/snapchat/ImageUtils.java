@@ -2,6 +2,8 @@ package com.example.vsaik.snapchat;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Base64;
+import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,5 +21,21 @@ public class ImageUtils {
         original = null;
         out = null;
         return compressed;
+    }
+
+    public static Bitmap getBitmapFromBase64(String base64Encoded){
+        byte[] decodedString = Base64.decode(base64Encoded, Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        if(bitmap == null) {
+            Log.d("Base64", "Might be using a json response as string");
+            return getBitmapFromJSON(base64Encoded);
+        }
+        return bitmap;
+    }
+
+    public static Bitmap getBitmapFromJSON(String urlSafeBitmap) {
+        byte[] decodedString = Base64.decode(urlSafeBitmap, Base64.URL_SAFE);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        return bitmap;
     }
 }
