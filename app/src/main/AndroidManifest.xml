@@ -61,16 +61,17 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-        <activity android:name=".AllFriendsChatActivity" />
-        <activity android:name=".StartChatActivity" />
-        <activity android:name=".TimeLineActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+        </activity>
+        <activity android:name=".AllFriendsChatActivity" />
+        <activity android:name=".StartChatActivity" />
+        <activity android:name=".TimeLineActivity">
+
         </activity>
     </application>
 

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1068650836049-e92q8babbr0olsiqn42uvuu903j8a542.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.vsaik.snapchat",
+            "certificate_hash": "E8D7A0AB358026D0AA03665977CFA9D512437510"
+          }
+        },
+        {
           "client_id": "1068650836049-24a2earmd9g63o1irkrsv1rpg16b4vau.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1068650836049-24a2earmd9g63o1irkrsv1rpg16b4vau.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
