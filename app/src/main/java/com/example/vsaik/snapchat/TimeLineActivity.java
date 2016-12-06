@@ -1,5 +1,7 @@
 package com.example.vsaik.snapchat;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,12 +17,23 @@ import java.util.List;
 public class TimeLineActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private ListView listTimeLine = null;
+    private Context context= null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time_line);
 
         listTimeLine = (ListView) findViewById(R.id.list_time_line);
+        context = this;
+        View contentView = (View)findViewById(R.id.activity_time_line);
+        onStart();
+        contentView.setOnTouchListener(new OnSwipeTouchListener(context) {
+            @Override
+            public void onSwipeRight() {
+                Intent main = new Intent(TimeLineActivity.this,MainScreen.class);
+                startActivity(main);
+            }
+        });
         onStart();
     }
 
@@ -75,3 +88,4 @@ public class TimeLineActivity extends AppCompatActivity implements AdapterView.O
         Log.d("PAUSE","Pausing");
     }
 }
+
