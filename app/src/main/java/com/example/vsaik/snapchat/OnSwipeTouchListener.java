@@ -24,6 +24,13 @@ public class OnSwipeTouchListener implements View.OnTouchListener
 
     }
 
+    public void onSwipeBottom(){
+
+    }
+    public void onSwipeTop(){
+
+    }
+
     public boolean onTouch(View v, MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
     }
@@ -40,16 +47,33 @@ public class OnSwipeTouchListener implements View.OnTouchListener
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            float distanceX = e2.getX() - e1.getX();
-            float distanceY = e2.getY() - e1.getY();
-            if (Math.abs(distanceX) > Math.abs(distanceY) && Math.abs(distanceX) > SWIPE_DISTANCE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                if (distanceX > 0)
-                    onSwipeRight();
-                else
-                    onSwipeLeft();
-                return true;
+            boolean result = false;
+            try {
+                float diffY = e2.getY() - e1.getY();
+                float diffX = e2.getX() - e1.getX();
+                if (Math.abs(diffX) > Math.abs(diffY)) {
+                    if (Math.abs(diffX) > SWIPE_DISTANCE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                        if (diffX > 0) {
+                            onSwipeRight();
+                        } else {
+                            onSwipeLeft();
+                        }
+                    }
+                    result = true;
+                }
+                else if (Math.abs(diffY) > SWIPE_DISTANCE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                    if (diffY > 0) {
+                        onSwipeBottom();
+                    } else {
+                        onSwipeTop();
+                    }
+                }
+                result = true;
+
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
-            return false;
+            return result;
         }
     }
 
