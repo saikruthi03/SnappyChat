@@ -71,6 +71,7 @@ public class MainScreen extends AppCompatActivity {
     private Bitmap mutable;
     private View contentView = null;
     private int index = 0;
+    String userId= null;
     private List<BitmapCollection> overlays =  null;
     private FrameLayout main_layout = null;
     private GestureDetector gestureDetector;
@@ -90,6 +91,8 @@ public class MainScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init();
+        userId= getIntent().getStringExtra("UserId");;
+
         }
 
     @Override
@@ -100,13 +103,22 @@ public class MainScreen extends AppCompatActivity {
         contentView.setOnTouchListener(new OnSwipeTouchListener(context) {
             @Override
             public void onSwipeLeft() {
-                Intent main = new Intent(MainScreen.this,ChatActivity.class);
+                Intent main = new Intent(MainScreen.this,TimeLineActivity.class);
                 startActivity(main);
             }
             @Override
             public void onSwipeRight() {
-                Intent main = new Intent(MainScreen.this,MainActivity.class);
+                Intent main = new Intent(MainScreen.this,ChatActivity.class);
                 startActivity(main);
+
+
+            }
+            @Override
+            public void onSwipeBottom() {
+                Intent main = new Intent(MainScreen.this,MainActivity.class);
+                getIntent().putExtra("userId",userId);
+                startActivity(main);
+
 
             }
         });
@@ -284,4 +296,6 @@ public class MainScreen extends AppCompatActivity {
         overlays.add(bitmap4);
     }
 }
+
+
 
