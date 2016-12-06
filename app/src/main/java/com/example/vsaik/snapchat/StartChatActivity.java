@@ -1,5 +1,6 @@
 package com.example.vsaik.snapchat;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -10,12 +11,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.InputStream;
@@ -29,18 +33,33 @@ public class StartChatActivity extends AppCompatActivity {
     private Bitmap capturedImage = null;
     private Context context= null;
     List<ChatMessage> chatMessages = null;
+    TextView friendText;
+    ImageButton imageButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_chat_click);
+
+       imageButton = (ImageButton)findViewById(R.id.backButton);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               Intent back = new Intent(StartChatActivity.this,ChatActivity.class);
+                startActivity(back);
+            }
+        });
+        friendText = (TextView)findViewById(R.id.Friend);
         if(getIntent() != null){
             String friend = getIntent().getStringExtra("friend");
+            friendText.setText(friend);
             Log.d("TAG",friend);
             getInfo(friend);
             //update the name on toolbar
         }
+
         context = this;
         onStart();
     }
@@ -163,3 +182,4 @@ public class StartChatActivity extends AppCompatActivity {
         listActiveFriends.setAdapter(adapter);
     }
 }
+
