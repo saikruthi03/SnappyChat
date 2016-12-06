@@ -33,8 +33,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -54,72 +56,53 @@ import java.util.HashMap;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements
-        GoogleApiClient.OnConnectionFailedListener, View.OnClickListener , AdapterView.OnItemSelectedListener  {
+        GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     ProgressDialog pd;
     private static final String TAG = "EmailPassword";
     static HashMap<String,UserDetails> userArrayList = new HashMap<>();
-
+    public List<String> userId = new ArrayList<>();
+    public boolean redirect= false;
     private TextView mStatusTextView;
     private TextView mDetailTextView;
     private EditText mEmailField;
     private EditText mPasswordField;
     public static String curUser = "NA";
     LoginButton fbLogin;
+    ProgressDialog progressDialog;
 
-    // [START declare_auth]
-    private FirebaseAuth mAuth;
-    // [END declare_auth]
-
-    // [START declare_auth_listener]
+    public static FirebaseAuth mAuth = null;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private CallbackManager mCallbackManager;
     private GoogleApiClient mGoogleApiClient;
     FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     DatabaseReference myRef = mDatabase.getReference("users");
 
-    // [END declare_auth_listener]
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("Current User", "Current User Id:" + curUser);
+
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_login);
-
         mEmailField = (EditText) findViewById(R.id.editText);
         mPasswordField = (EditText) findViewById(R.id.editText2);
-
-
-
         findViewById(R.id.loginbutton).setOnClickListener(this);
         findViewById(R.id.signupbutton).setOnClickListener(this);
-       // findViewById(R.id.signoutbutton).setOnClickListener(this);
-
         mAuth = FirebaseAuth.getInstance();
-
-        //if(mAuth.getCurrentUser().getUid() != null){
-         //   Intent mainActivity = new Intent(LoginActivity.this,MainScreen.class);
-        //    startActivity(mainActivity);
-        //    finish();
-       // }
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                    updateUI(user);
+                   // updateUI(user);
                     curUser = user.getUid();
                 } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                    updateUI(user);
+                    //updateUI(user);
                 }
-
-                updateUI(user);
 
             }
         };
@@ -147,14 +130,13 @@ public class LoginActivity extends AppCompatActivity implements
 
             }
         });
+        SignInButton googlesignInButton = (SignInButton)findViewById(R.id.google_signin_button);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
+
         mGoogleApiClient= new GoogleApiClient.Builder(this).enableAutoManage(this,this).addApi(Auth.GOOGLE_SIGN_IN_API,gso).build();
-
-        SignInButton googlesignInButton = (SignInButton)findViewById(R.id.google_signin_button);
-
         googlesignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -163,22 +145,21 @@ public class LoginActivity extends AppCompatActivity implements
             }
         });
 
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-
-        //mAuth.addAuthStateListener(mAuthListener);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 userArrayList.clear();
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     userArrayList.put(postSnapshot.getKey(),postSnapshot.getValue(UserDetails.class));
+                    userId.add(postSnapshot.getKey());
                 }
-
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -199,9 +180,6 @@ public class LoginActivity extends AppCompatActivity implements
         if (!validateForm()) {
             return;
         }
-
-
-
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -215,10 +193,7 @@ public class LoginActivity extends AppCompatActivity implements
 
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this,"Login Success",Toast.LENGTH_SHORT).show();
-                            //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            //startActivityForResult(intent,101);
-                            // startActivity(intent);
-                            startCameraActivity();
+                            startCameraActivity(mAuth.getCurrentUser().getUid());
                         }
                     }
                 });
@@ -254,7 +229,6 @@ public class LoginActivity extends AppCompatActivity implements
         if (user != null) {
             curUser = user.getUid();
             mEmailField.setText(user.getEmail());
-
         } else {
 
         }
@@ -276,6 +250,7 @@ public class LoginActivity extends AppCompatActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        showProgressDialog();
         if (requestCode == 101) {
             if (resultCode == RESULT_CANCELED) {
 
@@ -297,7 +272,6 @@ public class LoginActivity extends AppCompatActivity implements
 
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        showProgressDialog();
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -307,19 +281,37 @@ public class LoginActivity extends AppCompatActivity implements
                             Toast.makeText(getApplicationContext(),"Google Login Failed",Toast.LENGTH_SHORT).show();
                         }else {
                             final FirebaseUser mUser = mAuth.getCurrentUser();
+                            for(String user:userId){
+                                if(user.equals(mUser.getUid())){
+                                    redirect = true;
+                                    break;
+                                }
+                            }
                             myRef.child("users").child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (!dataSnapshot.hasChild("email")) {
-                                        DatabaseReference myRef1 = myRef.child("users").child(mUser.getUid());
-                                        UserDetails user = new UserDetails(mUser.getDisplayName(),mUser.getEmail(),mUser.getPhotoUrl().toString()," ",""," "," ",mUser.getUid()," "," ");
-                                        myRef.child(mUser.getUid()).setValue(user);
-//                                       //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                        //startActivity(intent);
-                                        startCameraActivity();
-                                    }else {
-//                                        Intent intent = new Intent(EmailPasswordActivity.this, MainActivity.class);
-//                                        startActivity(intent);
+                                        if(redirect){
+                                            progressDialog.dismiss();
+                                            startCameraActivity(mUser.getUid());
+                                        }else{
+                                            DatabaseReference myRef1 = myRef.child("users").child(mUser.getUid());
+                                            UserDetails user = new UserDetails(" ",mUser.getEmail()," "," ",""," "," ",mUser.getUid()," "," ");
+                                            myRef.child(mUser.getUid()).setValue(user);
+                                            userId.add(mUser.getUid());
+                                            progressDialog.dismiss();
+                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                        }
+
+                                       }else {
+                                        if(redirect){
+                                            startCameraActivity(mUser.getUid());
+                                        }else{
+                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                        }
+
                                     }
                                 }
 
@@ -335,11 +327,11 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     private void showProgressDialog() {
+        progressDialog = ProgressDialog.show(this, "","Please Wait...", true);
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
-
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -353,17 +345,26 @@ public class LoginActivity extends AppCompatActivity implements
                                     Toast.LENGTH_SHORT).show();
                         }else{
                             final FirebaseUser fbUser = mAuth.getCurrentUser();
+                            for(String user:userId){
+                                if(user.equals(fbUser.getUid())){
+                                    redirect = true;
+                                }
+                            }
                             myRef.child("USERS").child(fbUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (!dataSnapshot.hasChild("emailid")) {
-                                        DatabaseReference myref1 = myRef.child("users").child(fbUser.getUid());
-                                        UserDetails user = new UserDetails(fbUser.getDisplayName(),fbUser.getEmail(),fbUser.getPhotoUrl().toString()," ",""," "," ",fbUser.getUid()," "," ");
-                                        myRef.child(fbUser.getUid()).setValue(user);
                                         Toast.makeText(LoginActivity.this, " Successfully Signed In ", Toast.LENGTH_SHORT).show();
-                                        //Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                        // startActivity(intent);
-                                        startCameraActivity();
+                                       if(redirect) {
+                                           startCameraActivity(fbUser.getUid());
+                                       }else{
+                                           DatabaseReference myref1 = myRef.child("users").child(fbUser.getUid());
+                                           UserDetails user = new UserDetails(fbUser.getDisplayName(),fbUser.getEmail(),fbUser.getPhotoUrl().toString()," ",""," "," ",fbUser.getUid()," "," ");
+                                           myRef.child(fbUser.getUid()).setValue(user);
+                                           progressDialog.dismiss();
+                                           Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                           startActivity(intent);
+                                       }
                                     }else {
 //                                        Intent intent = new Intent(EmailPasswordActivity.this, MainActivity.class);
 //                                        startActivity(intent);
@@ -384,34 +385,14 @@ public class LoginActivity extends AppCompatActivity implements
                 });
     }
 
-    private void startCameraActivity() {
+    private void startCameraActivity(String userId) {
         Intent passer = new Intent(this,MainScreen.class);
+        passer.putExtra("UserId",userId);
         startActivity(passer);
     }
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-    }
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String item = parent.getItemAtPosition(position).toString();
-        if(item.equals("Settings")){
-            Intent settings = new Intent(LoginActivity.this,NoDataActivity.class);
-            startActivity(settings);
-        }
-        if(item.equals("SignOut")){
-            mAuth.signOut();
-            Intent logout = new Intent(LoginActivity.this,NoDataActivity.class);
-            startActivity(logout);
-        }
-        if(item.equals("Notifications")){
-            mAuth.signOut();
-            Intent logout = new Intent(LoginActivity.this,NoDataActivity.class);
-            startActivity(logout);
-        }
-    }
-    public void onNothingSelected(AdapterView<?> arg0) {
-        // TODO Auto-generated method stub
     }
 
 }
