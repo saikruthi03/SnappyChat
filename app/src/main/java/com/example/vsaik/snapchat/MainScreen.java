@@ -72,6 +72,7 @@ public class MainScreen extends AppCompatActivity {
     private View contentView = null;
     private int index = 0;
     String userId= null;
+    private String caption;
     private List<BitmapCollection> overlays =  null;
     private FrameLayout main_layout = null;
     private GestureDetector gestureDetector;
@@ -91,7 +92,9 @@ public class MainScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         init();
-        userId= getIntent().getStringExtra("UserId");;
+        Intent i = getIntent();
+        if(i != null)
+            userId= getIntent().getStringExtra("UserId");;
 
         }
 
@@ -255,11 +258,23 @@ public class MainScreen extends AppCompatActivity {
         alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 Editable YouEditTextValue = edittext.getText();
+                caption = YouEditTextValue.toString();
                 Toast.makeText(context,edittext.getText().toString(),Toast.LENGTH_SHORT).show();
                 // send it to cloud
+                pushImageToTimeLine();
             }
         });
         alert.show();
+    }
+
+    private void pushImageToTimeLine() {
+        //currentBitMap
+        //  caption
+        //userId
+        Toast.makeText(context,"Added to timeline",Toast.LENGTH_SHORT).show();
+
+        onStart();
+
     }
 
     public void onBackPressed() {
