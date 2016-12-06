@@ -42,11 +42,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -61,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String imgDecodableString = " ";
     private Context context ;
     DatabaseReference myRef = mDatabase.getReference("users");
-   // TextView nickName;
+    // TextView nickName;
     EditText nickName;
     EditText email;
     EditText password;
@@ -77,9 +74,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button selectImage;
     ImageView imageView ;
     String userId= " ";
-   // DatabaseReference myRef = mDatabase.getReference("users");
+    // DatabaseReference myRef = mDatabase.getReference("users");
 
-ImageButton signOut ;
+    ImageButton signOut ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +130,7 @@ ImageButton signOut ;
             public void onClick(View v) {
                 //Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                 //        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-               // startActivityForResult(galleryIntent, 1);
+                // startActivityForResult(galleryIntent, 1);
                 Intent gallery = new Intent(Intent.ACTION_GET_CONTENT);
                 gallery.setType("image/*");
                 startActivityForResult(gallery, 1);
@@ -160,42 +157,42 @@ ImageButton signOut ;
                 int selectedId = privacy.getCheckedRadioButtonId();
                 String visibilty = " ";
                 selectedButton = (RadioButton) findViewById(selectedId);
-                 if(friendsButton.isChecked())
-                     visibilty="FriendsOnly";
+                if(friendsButton.isChecked())
+                    visibilty="FriendsOnly";
                 else if(publicButton.isChecked())
-                     visibilty="Public";
-                 else
-                     visibilty="Private";
+                    visibilty="Public";
+                else
+                    visibilty="Private";
                 Log.d("imgDecodableString",imgDecodableString);
                 DatabaseReference myRef1 = myRef.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 UserDetails user = new UserDetails(nickName.getText().toString(),email.getText().toString(),imgDecodableString,location.getText().toString(),profession.getText().toString(),aboutMe.getText().toString()," ",FirebaseAuth.getInstance().getCurrentUser().getUid(),visibilty,password.getText().toString());
                 myRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
-               // DatabaseReference dataV =  myRef.child(mAuth.getCurrentUser().getUid());
-               // if(friendsButton.isChecked())
-               //     updateV.put("visibilty","FriendsOnly");
+                // DatabaseReference dataV =  myRef.child(mAuth.getCurrentUser().getUid());
+                // if(friendsButton.isChecked())
+                //     updateV.put("visibilty","FriendsOnly");
                 //else if(publicButton.isChecked())
                 //    updateV.put("visibilty","Public");
-              //  else
+                //  else
                 //    updateV.put("visibilty","Private");
-               // dataV.updateChildren(updateV);
-               // DatabaseReference dataN =  myRef.child(mAuth.getCurrentUser().getUid());
-               // updateV.clear();
-              //  updateV = new HashMap<String, Object>();
-               // updateV.put("nickname",nickName.getText().toString());
-               // dataN.updateChildren(updateV);
-               // DatabaseReference dataE =  myRef.child(mAuth.getCurrentUser().getUid());
-               // updateV.clear();
-              //  updateV = new HashMap<String, Object>();
-              //  updateV.put("email",email.getText().toString());
-               // dataE.updateChildren(updateV);
+                // dataV.updateChildren(updateV);
+                // DatabaseReference dataN =  myRef.child(mAuth.getCurrentUser().getUid());
+                // updateV.clear();
+                //  updateV = new HashMap<String, Object>();
+                // updateV.put("nickname",nickName.getText().toString());
+                // dataN.updateChildren(updateV);
+                // DatabaseReference dataE =  myRef.child(mAuth.getCurrentUser().getUid());
+                // updateV.clear();
+                //  updateV = new HashMap<String, Object>();
+                //  updateV.put("email",email.getText().toString());
+                // dataE.updateChildren(updateV);
                 //DatabaseReference dataP =  myRef.child(mAuth.getCurrentUser().getUid());
                 //updateV.clear();
                 //updateV = new HashMap<String, Object>();
-              //  updateV.put("phoneNumber",password.getText().toString());
-               // dataP.updateChildren(updateV);
+                //  updateV.put("phoneNumber",password.getText().toString());
+                // dataP.updateChildren(updateV);
 
                 //DatabaseReference dataPF =  myRef.child(mAuth.getCurrentUser().getUid());
-               // updateV.clear();
+                // updateV.clear();
                 //updateV = new HashMap<String, Object>();
                 //updateV.put("profession",profession.getText().toString());
                 //dataPF.updateChildren(updateV);
@@ -206,8 +203,8 @@ ImageButton signOut ;
                 //updateV.put("location",location.getText().toString());
                 //dataL.updateChildren(updateV);
 
-               // DatabaseReference dataA =  myRef.child(mAuth.getCurrentUser().getUid());
-               // updateV.clear();
+                // DatabaseReference dataA =  myRef.child(mAuth.getCurrentUser().getUid());
+                // updateV.clear();
                 //updateV = new HashMap<String, Object>();
                 //updateV.put("aboutMe",aboutMe.getText().toString());
                 //dataA.updateChildren(updateV);
@@ -260,7 +257,7 @@ ImageButton signOut ;
                             }
                             if(!user.getProfilePicUrl().equals("")){
                                 imgDecodableString = user.getProfilePicUrl();
-                               // imageView.setImageBitmap(BitmapFactory
+                                // imageView.setImageBitmap(BitmapFactory
                                 //        .decodeFile(imgDecodableString));
                             }
                             if(!user.getPhoneNumber().equals("")){
