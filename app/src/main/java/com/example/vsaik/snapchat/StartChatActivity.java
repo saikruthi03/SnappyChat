@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,6 +33,9 @@ public class StartChatActivity extends AppCompatActivity {
     private static final int SELECT_PHOTO = 1017;
     private Bitmap capturedImage = null;
     private Context context= null;
+    private EditText chatText = null;
+    String friend = "";
+
     List<ChatMessage> chatMessages = null;
     TextView friendText;
     ImageButton imageButton;
@@ -67,7 +71,18 @@ public class StartChatActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        getInfo(friend);
 
+
+        chatText = (EditText) findViewById(R.id.chatText);
+        final Button sendChat = (Button) findViewById(R.id.sendChat);
+        sendChat.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                sendChat();
+            }
+        });
         final Button capturePicture = (Button) findViewById(R.id.clickPicture);
         if(capturedImage != null ) {
             capturePicture.setBackgroundResource(R.drawable.click3);
@@ -124,6 +139,12 @@ public class StartChatActivity extends AppCompatActivity {
 
     }
 
+    private void sendChat() {
+        //image - capturedImage
+        //chat text - chatText
+        //name
+        //friend name - friend
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST_INTENT && resultCode == Activity.RESULT_OK) {
@@ -142,7 +163,20 @@ public class StartChatActivity extends AppCompatActivity {
     }
 
     private void getInfo(String friend) {
-        chatMessages = new ArrayList<ChatMessage>();
+        chatMessages = getChatMessages(friend);
+
+
+        ListView listActiveFriends = (ListView) findViewById(R.id.chat_listView);
+        final RelativeLayout chatClick = (RelativeLayout) findViewById(R.id.chat_click);
+        final ImageView expandedImageView = (ImageView) findViewById(
+                R.id.expanded_image);
+
+        CustomChatMessageAdapter adapter = new CustomChatMessageAdapter(this, R.layout.chat_message, chatMessages,chatClick,expandedImageView);
+        listActiveFriends.setAdapter(adapter);
+    }
+
+    private List<ChatMessage> getChatMessages(String friend){
+
         ChatMessage itemhim = new ChatMessage(R.drawable.click,0,"this is chat message from him","HIM");
         ChatMessage item = new ChatMessage(R.drawable.click,0,"this is chat message from me","ME");
         //   ChatMessage imagehim = new ChatMessage(R.drawable.click,R.drawable.common_plus_signin_btn_icon_dark,null,"HIM");
@@ -172,14 +206,6 @@ public class StartChatActivity extends AppCompatActivity {
         //  chatMessages.add(imageme);
         chatMessages.add(itemhim);
         chatMessages.add(itemhim);
-
-        ListView listActiveFriends = (ListView) findViewById(R.id.chat_listView);
-        final RelativeLayout chatClick = (RelativeLayout) findViewById(R.id.chat_click);
-        final ImageView expandedImageView = (ImageView) findViewById(
-                R.id.expanded_image);
-
-        CustomChatMessageAdapter adapter = new CustomChatMessageAdapter(this, R.layout.chat_message, chatMessages,chatClick,expandedImageView);
-        listActiveFriends.setAdapter(adapter);
+        return chatMessages;
     }
 }
-

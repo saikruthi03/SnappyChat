@@ -40,14 +40,7 @@ public class AllFriendsChatActivity extends AppCompatActivity implements Adapter
         super.onResume();
         Log.d("TAg","On resume method");
 
-        activeFriends = new ArrayList<ChatItem>();
-        ChatItem item = new ChatItem(R.drawable.click, "Active Friend 1", R.drawable.greendot);
-        ChatItem item2 = new ChatItem(R.drawable.click, "Active Friend 2", R.drawable.greendot);
-
-        activeFriends.add(item);
-        activeFriends.add(item2);
-        activeFriends.add(item2);
-        activeFriends.add(item2);
+        activeFriends = getActiveFriends();
 
         CustomChatVewAdapter adapter = new CustomChatVewAdapter(this, R.layout.chat_list_item, activeFriends);
         listAllFriends.setAdapter(adapter);
@@ -61,6 +54,17 @@ public class AllFriendsChatActivity extends AppCompatActivity implements Adapter
         Intent i = new Intent(this,StartChatActivity.class);
         i.putExtra("friend",chatSession);
         startActivity(i);
+    }
+
+    private List<ChatItem> getActiveFriends(){
+        ChatItem item = new ChatItem(R.drawable.click, "Active Friend 1", R.drawable.greendot);
+        ChatItem item2 = new ChatItem(R.drawable.click, "Active Friend 2", R.drawable.greendot);
+
+        activeFriends.add(item);
+        activeFriends.add(item2);
+        activeFriends.add(item2);
+        activeFriends.add(item2);
+        return activeFriends;
     }
 
 }
