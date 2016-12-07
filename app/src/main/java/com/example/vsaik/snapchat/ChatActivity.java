@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatActivity extends AppCompatActivity implements
-        AdapterView.OnItemClickListener, OnMessagesReceived, OnInMessagesReceived{
+        AdapterView.OnItemClickListener{
 
     ListView listActiveFriends;
     public List<ChatItem> activeFriends ;
@@ -59,7 +59,7 @@ public class ChatActivity extends AppCompatActivity implements
         listActiveFriends = (ListView) findViewById(R.id.listView);
         context = this;
         activeFriends = new ArrayList<ChatItem>();
-        new DownloadAllMessages(this).execute();
+        //new DownloadAllMessages(this).execute();
         View contentView = (View)findViewById(R.id.activity_chat);
         onStart();
         contentView.setOnTouchListener(new OnSwipeTouchListener(context) {
@@ -171,7 +171,7 @@ public class ChatActivity extends AppCompatActivity implements
             });
         }
         chatMessages = new ArrayList<ChatMessage>();
-        new DownloadIndividualMessages(this).execute();
+        //new DownloadIndividualMessages(this).execute();
        // ChatMessage itemhim = new ChatMessage(R.drawable.click,0,"this is chat message from him","HIM");
        // ChatMessage item = new ChatMessage(R.drawable.click,0,"this is chat message from me","ME");
         //   ChatMessage imagehim = new ChatMessage(R.drawable.click,R.drawable.common_plus_signin_btn_icon_dark,null,"HIM");
@@ -226,23 +226,4 @@ public class ChatActivity extends AppCompatActivity implements
             }
         }
     }
-
-
-   @Override
-   public void OnMessagesReceived(List<ChatItem> activeFriends){
-       setAllMessages(activeFriends);
-   }
-
-@Override
-    public void OnInMessagesReceived(List<ChatMessage> allMessages){
-    chatMessages = allMessages;
-    listView = (ListView) findViewById(R.id.chat_listView);
-    final RelativeLayout chatClick = (RelativeLayout) findViewById(R.id.chat_click);
-    final ImageView expandedImageView = (ImageView) findViewById(
-            R.id.expanded_image);
-
-    CustomChatMessageAdapter adapter = new CustomChatMessageAdapter(this, R.layout.chat_message, chatMessages,chatClick,expandedImageView);
-    listView.setAdapter(adapter);
-}
-
 }
