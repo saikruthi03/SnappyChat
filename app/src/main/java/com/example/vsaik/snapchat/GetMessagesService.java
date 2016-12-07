@@ -42,7 +42,7 @@ Context context= null;
             Log.d("In background service","Inside if");
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(context)
-                            .setSmallIcon(R.drawable.notify)
+                            .setSmallIcon(R.drawable.com_facebook_button_icon)
                             .setContentTitle("My notification")
                             .setContentText("Hello World!");
 // Creates an explicit intent for an Activity in your app

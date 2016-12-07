@@ -3,6 +3,8 @@ package com.example.vsaik.snapchat;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -37,11 +39,18 @@ public class PostData {
         String response = "";
         try {
             url = new URL(hashMap.get("URL"));
-            hashMap.remove(url);
+            hashMap.remove("URL");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(15000);
-            conn.setConnectTimeout(15000);
-            conn.setRequestMethod(hashMap.get("Method"));
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+
+            if("POST".equalsIgnoreCase(hashMap.get("Method"))) {
+                conn.setRequestMethod("POST");
+
+            }
+            else{
+                conn.setRequestMethod("GET");
+            }
             hashMap.remove("Method");
             conn.setDoInput(true);
             conn.setDoOutput(true);
@@ -50,7 +59,7 @@ public class PostData {
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(
                     new OutputStreamWriter(os, "UTF-8"));
-            writer.write(getPostDataString(hashMap));
+            writer.write(getPostDataString(hashMap).toString());
 
             writer.flush();
             writer.close();
@@ -78,23 +87,11 @@ public class PostData {
 
     }
 
-    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
-        StringBuilder result = new StringBuilder();
+    private JSONObject getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
+        JSONObject result = new JSONObject(params);
         boolean first = true;
-        for(Map.Entry<String, String> entry : params.entrySet()){
-            if (first)
-                first = false;
-            else
-                result.append("&");
-
-            if(entry.getValue() != null ) {
-                result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
-                result.append("=");
-                result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
-            }
-        }
-
-        return result.toString();
+        Log.d("REQUEST",result.toString());
+        return result;
     }
 
 }

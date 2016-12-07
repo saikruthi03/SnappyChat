@@ -37,6 +37,7 @@ public class StartChatActivity extends AppCompatActivity {
     private Bitmap capturedImage = null;
     Bitmap friendDP = null;
     Bitmap myDP = null;
+    String myName = "";
     private Context context= null;
     private EditText chatText = null;
     String friend = "";
@@ -49,7 +50,8 @@ public class StartChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
+        myName = "jay";
+        friend = "vivek";
         setContentView(R.layout.activity_chat_click);
 
        imageButton = (ImageButton)findViewById(R.id.backButton);
@@ -62,8 +64,7 @@ public class StartChatActivity extends AppCompatActivity {
         });
         friendText = (TextView)findViewById(R.id.Friend);
         if(getIntent() != null){
-            String friend = getIntent().getStringExtra("friend");
-            friend = "jay";
+            friend = getIntent().getStringExtra("friend");
             friendText.setText(friend);
             Log.d("TAG",friend);
             getInfo(friend);
@@ -137,9 +138,7 @@ public class StartChatActivity extends AppCompatActivity {
                     layout.addView(camera);
                     layout.addView(gallery);
                     alert.setView(layout);
-
                     alert.show();
-
                 }
             });
         }
@@ -148,15 +147,13 @@ public class StartChatActivity extends AppCompatActivity {
 
     private void sendChat() {
 
-        String myName = "jay";
-        String f = "friend";
-        RetrieveChatData chatpush = new RetrieveChatData(myName, f, "POST");
+        RetrieveChatData chatpush = new RetrieveChatData(myName, friend, "POST");
 
-        String[] params = new String[5];
+        String[] params = new String[2];
         params[0] = (chatText.getText().length() > 0 ) ? "Text" : "Image";
         params[1] = chatText.getText().toString()+"";
         if(capturedImage != null)
-        params[2] = capturedImage.toString()+"";
+            params[1] = capturedImage.toString()+"";
 
         chatpush.execute(params);
         //image - capturedImage
@@ -183,7 +180,7 @@ public class StartChatActivity extends AppCompatActivity {
 
     private void getInfo(String friend) {
 
-        String myName = "jay";
+
         RetrieveChatData chatFetch = new RetrieveChatData(myName, friend, "GET");
         chatFetch.execute();
     }
@@ -216,7 +213,9 @@ public class StartChatActivity extends AppCompatActivity {
 
             Log.d("background tasks -- ", Arrays.toString(string)+" : "+op+" : "+myName+ " : "+friend);
             if(myName.length() > 0 && friend.length() > 0) {
+
                 if("GET".equalsIgnoreCase(op)){
+
                     friendDP = BitmapFactory.decodeResource(getResources(), R.drawable.com_facebook_button_icon_blue);
                     myDP = BitmapFactory.decodeResource(getResources(), R.drawable.com_facebook_button_send_icon_white);
 
@@ -247,23 +246,16 @@ public class StartChatActivity extends AppCompatActivity {
                     Log.d("background tasks -- ", Arrays.toString(string));
 
                     HashMap<String,String> hashMap =  new HashMap<String,String>();
-                    hashMap.put("myName",myName);
-                    hashMap.put("friend",friend);
+                    hashMap.put("sender",myName);
+                    hashMap.put("receiver",friend);
                     hashMap.put("URL",Constants.URL+"/insert_notification");
                     hashMap.put("type",string[0]);
-                    hashMap.put("msg",string[1]);
-                    hashMap.put("image",string[2]);
-                    hashMap.put("method","POST");
+                    hashMap.put("data",string[1]);
+                    hashMap.put("Method","POST");
                     PostData post = new PostData(hashMap);
                     String response = post.doInBackground();
-
-                    Toast.makeText(getApplicationContext(),response,Toast.LENGTH_SHORT).show();
-
-
-
-
+                    Log.d("RESPONSE",response);
                 }
-
             }
             /*returner.put("chatMessages",chatMessages);
             returner.put("myDP",myDP);

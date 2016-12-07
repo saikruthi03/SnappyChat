@@ -38,4 +38,22 @@ public class ImageUtils {
         Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         return bitmap;
     }
+
+    public static int getStatus(String online) {
+        if("ONLINE".equalsIgnoreCase(online))
+            return R.drawable.greendot;
+        return 0;
+    }
+
+    public static String getStringImage(Bitmap bitmap) {
+        if (bitmap != null) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            byte[] b = baos.toByteArray();
+            String temp = Base64.encodeToString(b, Base64.DEFAULT);
+            return temp;
+        }
+        return "";
+    }
+
 }

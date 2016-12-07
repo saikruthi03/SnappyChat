@@ -1,24 +1,26 @@
 package com.example.vsaik.snapchat;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by jay on 12/3/16.
  */
 
 public class ChatItem {
-    private int imageId;
+    private Bitmap image;
     private String title;
     private int status;
 
-    public ChatItem(int imageId, String title, int status) {
-        this.imageId = imageId;
+    public ChatItem(Bitmap image, String title, int status) {
+        this.image = image;
         this.title = title;
         this.status = status;
     }
-    public int getImageId() {
-        return imageId;
+    public Bitmap getImage() {
+        return image;
     }
-    public void setImageId(int imageId) {
-        this.imageId = imageId;
+    public void setImage(Bitmap image) {
+        this.image = image;
     }
     public String getTitle() {
         return title;

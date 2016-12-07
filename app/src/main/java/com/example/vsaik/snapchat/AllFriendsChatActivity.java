@@ -2,6 +2,8 @@ package com.example.vsaik.snapchat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +23,7 @@ public class AllFriendsChatActivity extends AppCompatActivity implements Adapter
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activeFriends = new ArrayList<ChatItem>();
         setContentView(R.layout.activity_all_friends_chat);
         listAllFriends = (ListView) findViewById(R.id.listViewAll);
         context = this;
@@ -40,11 +43,11 @@ public class AllFriendsChatActivity extends AppCompatActivity implements Adapter
         super.onResume();
         Log.d("TAg","On resume method");
 
-        activeFriends = getActiveFriends();
+       // activeFriends = getAllFriends();
+        RetrieveFriends retrieveFriends = new RetrieveFriends();
+        retrieveFriends.execute();
 
-        CustomChatVewAdapter adapter = new CustomChatVewAdapter(this, R.layout.chat_list_item, activeFriends);
-        listAllFriends.setAdapter(adapter);
-        listAllFriends.setOnItemClickListener(this);
+
     }
 
     @Override
@@ -56,15 +59,40 @@ public class AllFriendsChatActivity extends AppCompatActivity implements Adapter
         startActivity(i);
     }
 
-    private List<ChatItem> getActiveFriends(){
-        ChatItem item = new ChatItem(R.drawable.click, "Active Friend 1", R.drawable.greendot);
-        ChatItem item2 = new ChatItem(R.drawable.click, "Active Friend 2", R.drawable.greendot);
+    private void showFriends(){
 
-        activeFriends.add(item);
-        activeFriends.add(item2);
-        activeFriends.add(item2);
-        activeFriends.add(item2);
-        return activeFriends;
+        CustomChatVewAdapter adapter = new CustomChatVewAdapter(this, R.layout.chat_list_item, activeFriends);
+        listAllFriends.setAdapter(adapter);
+        listAllFriends.setOnItemClickListener(this);
+    }
+
+
+    class RetrieveFriends extends
+            AsyncTask<Void,Void,Void>{
+
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            //you get a json object
+            //iterate over the json data and add data like this
+            //convert string to bitmap
+            String base64Image = "";
+            Bitmap friend = ImageUtils.getBitmapFromBase64(base64Image);
+            String name = "";
+             //1 and 0 based on online, offline
+            int status = ImageUtils.getStatus("Online");
+            ChatItem item1 = new ChatItem(friend,name,status);
+            activeFriends.add(item1);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            showFriends();
+        }
     }
 
 }

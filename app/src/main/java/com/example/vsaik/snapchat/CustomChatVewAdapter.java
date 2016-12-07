@@ -50,7 +50,7 @@ public class CustomChatVewAdapter extends ArrayAdapter<ChatItem> {
 
         holder.status.setImageResource(rowItem.getStatus());
         holder.txtTitle.setText(rowItem.getTitle());
-        holder.imageView.setImageResource(rowItem.getImageId());
+        holder.imageView.setImageBitmap(rowItem.getImage());
 
         return convertView;
     }
