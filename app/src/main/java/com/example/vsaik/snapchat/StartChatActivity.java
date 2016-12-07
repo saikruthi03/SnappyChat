@@ -245,9 +245,11 @@ public class StartChatActivity extends AppCompatActivity {
                     hashMap.put("receiver",friend);
                     hashMap.put("URL",Constants.URL+"/get_chat");
                     hashMap.put("Method","GET");
-                    PostData fecth = new PostData(hashMap);
+                    GetData fecth = new GetData(hashMap);
                     try {
-                        responseFetch = new JSONArray(fecth.doInBackground());
+                        String res = fecth.doInBackground();
+                        res = res.substring(res.indexOf("["));
+                        responseFetch = new JSONArray(res);
                         Log.e("RESPONSE",responseFetch.toString());
 
                     }

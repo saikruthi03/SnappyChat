@@ -6,5 +6,5 @@ package com.example.vsaik.snapchat;
 
 public class Constants {
 
-    public final static String URL = "http://ec2-35-161-161-249.us-west-2.compute.amazonaws.com:8080";
+    public final static String URL = "http://ec2-35-164-97-85.us-west-2.compute.amazonaws.com:8080";
 }

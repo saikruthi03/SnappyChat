@@ -48,6 +48,8 @@ public class PostData {
 
                 URL ur = new URL(url);
                 conn = (HttpURLConnection) ur.openConnection();
+                conn.setRequestMethod("POST");
+
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setRequestProperty("Accept", "application/json");
 
@@ -55,11 +57,10 @@ public class PostData {
                 BufferedWriter writer = new BufferedWriter(
                         new OutputStreamWriter(os, "UTF-8"));
 
-                conn.setRequestMethod("POST");
                 writer.write(getPostDataString(hashMap).toString());
 
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
+               /* conn.setDoInput(true);
+                conn.setDoOutput(true);*/
 
                 writer.flush();
                 writer.close();
@@ -67,6 +68,7 @@ public class PostData {
 
             }
             else{
+                Log.d("ERROR","use get data class instead of this, unsupported operations");
                 url += "?"+getGetDataString(hashMap);
                 Log.d("REQUEST",url);
                 URL ur = new URL(url);
@@ -101,6 +103,12 @@ public class PostData {
         return response;
 
     }
+    private JSONObject getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
+        JSONObject result = new JSONObject(params);
+        boolean first = true;
+        Log.d("REQUEST",result.toString());
+        return result;
+    }
 
     private String getGetDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
 
@@ -118,13 +126,6 @@ public class PostData {
         }
 
         return result.toString();
-    }
-
-    private JSONObject getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
-        JSONObject result = new JSONObject(params);
-        boolean first = true;
-        Log.d("REQUEST",result.toString());
-        return result;
     }
 
 }
