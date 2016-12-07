@@ -6,6 +6,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.Gravity;
@@ -19,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -27,15 +29,20 @@ import java.util.List;
 
 public class CustomChatMessageAdapter extends ArrayAdapter<ChatMessage> {
 
+    Bitmap friendDP = null;
+    Bitmap myDP = null;
     final RelativeLayout chatClick;
     final ImageView expandedImageView;
+    private HashMap<String,Bitmap> imageCache = new HashMap<String,Bitmap>();
     Context context;
     private Animator mCurrentAnimator;
     private int mShortAnimationDuration;
 
-    public CustomChatMessageAdapter(Context context, int resourceId,
+    public CustomChatMessageAdapter(Bitmap friendDP,Bitmap myDP, Context context, int resourceId,
                                     List<ChatMessage> items,View chatClick,ImageView expandedImageView) {
         super(context, resourceId, items);
+        this.friendDP = friendDP;
+        this.myDP = myDP;
         this.context = context;
         this.chatClick = (RelativeLayout) chatClick;
         this.expandedImageView = expandedImageView;
@@ -67,14 +74,14 @@ public class CustomChatMessageAdapter extends ArrayAdapter<ChatMessage> {
             convertView.setTag(holder);
         } else
             holder = (CustomChatMessageAdapter.ViewHolder) convertView.getTag();
-        final int chatPicturersid = rowItem.getChatImage();
+        final Bitmap chatPicturersid = rowItem.getChatImage();
 
         if(rowItem.getUser().equalsIgnoreCase("ME")) {
             RelativeLayout.LayoutParams paramsImage = (RelativeLayout.LayoutParams) holder.displayPicture.getLayoutParams();
             paramsImage.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
             holder.displayPicture.setLayoutParams(paramsImage);
-            holder.displayPicture.setImageResource(rowItem.getDisplayImage());
-            holder.chatPictureLeft.setImageResource(rowItem.getChatImage());
+            holder.displayPicture.setImageBitmap(myDP);
+            holder.chatPictureLeft.setImageBitmap(rowItem.getChatImage());
             holder.chatTextLeft.setText(rowItem.getChatText());
             holder.chatPictureLeft.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -84,9 +91,9 @@ public class CustomChatMessageAdapter extends ArrayAdapter<ChatMessage> {
             });
         }
         else{
-            holder.chatPicture.setImageResource(rowItem.getChatImage());
+            holder.chatPicture.setImageBitmap(rowItem.getChatImage());
             holder.chatText.setText(rowItem.getChatText());
-            holder.displayPicture.setImageResource(rowItem.getDisplayImage());
+            holder.displayPicture.setImageBitmap(friendDP);
             holder.chatPicture.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -107,7 +114,7 @@ public class CustomChatMessageAdapter extends ArrayAdapter<ChatMessage> {
         return position;
     }
 
-    private void zoomImageFromThumb(final View thumbView, int imageResId,final ImageView expandedImageView,final RelativeLayout chatClick) {
+    private void zoomImageFromThumb(final View thumbView, Bitmap imageResId,final ImageView expandedImageView,final RelativeLayout chatClick) {
         // If there's an animation in progress, cancel it
         // immediately and proceed with this one.
         if (mCurrentAnimator != null) {
@@ -116,7 +123,7 @@ public class CustomChatMessageAdapter extends ArrayAdapter<ChatMessage> {
 
         // Load the high-resolution "zoomed-in" image.
 
-        expandedImageView.setImageResource(imageResId);
+        expandedImageView.setImageBitmap(imageResId);
 
         // Calculate the starting and ending bounds for the zoomed-in image.
         // This step involves lots of math. Yay, math.

@@ -1,27 +1,19 @@
 package com.example.vsaik.snapchat;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by vsaik on 12/4/2016.
  */
 public class ChatMessage {
-    private int displayImage;
     private String chatText;
-    private int chatImage;
+    private Bitmap chatImage;
     private String user;
 
-    public ChatMessage(int displayImage, int chatImage,String chatText,String user){
-        this.displayImage = displayImage;
+    public ChatMessage(Bitmap chatImage,String chatText,String user){
         this.chatImage = chatImage;
         this.chatText = chatText;
         this.user = user;
-    }
-
-    public int getDisplayImage() {
-        return displayImage;
-    }
-
-    public void setDisplayImage(int displayImage) {
-        this.displayImage = displayImage;
     }
 
     public String getChatText() {
@@ -32,11 +24,11 @@ public class ChatMessage {
         this.chatText = chatText;
     }
 
-    public int getChatImage() {
+    public Bitmap getChatImage() {
         return chatImage;
     }
 
-    public void setChatImage(int chatImage) {
+    public void setChatImage(Bitmap chatImage) {
         this.chatImage = chatImage;
     }
 

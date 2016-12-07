@@ -15,6 +15,7 @@ import java.util.List;
 public class SearchActivity extends AppCompatActivity {
 
     private List<Friend> friends;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

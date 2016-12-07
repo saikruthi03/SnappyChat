@@ -1,6 +1,7 @@
 package com.example.vsaik.snapchat;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -21,7 +22,7 @@ import javax.net.ssl.HttpsURLConnection;
  * Created by jay on 12/5/16.
  */
 
-public class PostData extends AsyncTask<Void,Void,String> {
+public class PostData {
 
     private HashMap<String,String> hashMap;
 
@@ -29,8 +30,8 @@ public class PostData extends AsyncTask<Void,Void,String> {
         this.hashMap = hashMap;
     }
 
-    @Override
-    protected String doInBackground(Void... voids) {
+
+    protected String doInBackground() {
 
         URL url;
         String response = "";
@@ -40,7 +41,8 @@ public class PostData extends AsyncTask<Void,Void,String> {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(15000);
             conn.setConnectTimeout(15000);
-            conn.setRequestMethod("POST");
+            conn.setRequestMethod(hashMap.get("Method"));
+            hashMap.remove("Method");
             conn.setDoInput(true);
             conn.setDoOutput(true);
 
@@ -55,6 +57,7 @@ public class PostData extends AsyncTask<Void,Void,String> {
             os.close();
             int responseCode=conn.getResponseCode();
 
+            Log.d("RESP",response);
             if (responseCode == HttpsURLConnection.HTTP_OK) {
                 String line;
                 BufferedReader br=new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -69,6 +72,7 @@ public class PostData extends AsyncTask<Void,Void,String> {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Log.d("RESP",response);
 
         return response;
 
@@ -83,9 +87,11 @@ public class PostData extends AsyncTask<Void,Void,String> {
             else
                 result.append("&");
 
-            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
-            result.append("=");
-            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+            if(entry.getValue() != null ) {
+                result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+                result.append("=");
+                result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+            }
         }
 
         return result.toString();
