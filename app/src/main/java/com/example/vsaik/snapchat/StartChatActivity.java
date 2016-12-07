@@ -256,8 +256,8 @@ public class StartChatActivity extends AppCompatActivity {
                     hashMap.put("method","POST");
                     PostData post = new PostData(hashMap);
                     String response = post.doInBackground();
-                    Log.d("TAG",response);
-                   // Toast.makeText(getApplicationContext(),response,Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(getApplicationContext(),response,Toast.LENGTH_SHORT).show();
 
 
 
