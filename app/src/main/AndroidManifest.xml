@@ -10,7 +10,23 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+
+
+
+<service android:name="com.example.vsaik.snapchat.GetMessagesService"
+    android:enabled="true"></service>
+
+    <receiver
+        android:name="com.example.vsaik.snapchat.BootReceiver"
+        android:enabled="true"
+        android:exported="true"
+        android:label="RestartServiceWhenStopped">
+        <intent-filter>
+            <action android:name="RestartService"/>
+        </intent-filter>
+    </receiver>
 
     <application
         android:allowBackup="true"
@@ -38,7 +54,9 @@
             android:name=".MainScreen"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_main_screen"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
@@ -64,11 +82,13 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity android:name=".AllFriendsChatActivity" />
         <activity android:name=".StartChatActivity" />
-        <activity android:name=".TimeLineActivity"></activity>
-        <activity android:name=".SearchActivity"></activity>
+        <activity android:name=".TimeLineActivity">
+
+        </activity>
     </application>
 
 </manifest>
