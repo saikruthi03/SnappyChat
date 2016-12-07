@@ -1,8 +1,8 @@
 package com.example.vsaik.snapchat;
 
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,47 +18,54 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+public class FriendActivity extends AppCompatActivity {
 
-public class SearchActivity extends AppCompatActivity {
-
-    private List<Friend> friends;
-    private String myName = "jay";
-
+    String myName = "jay";
+    List<Friend> friends;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.activity_friend);
+        onStart();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        onResume();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initButtons();
-    }
 
+        initButtons();
+
+
+    }
     private void initButtons() {
 
-        final EditText text = (EditText) findViewById(R.id.search_text);
-        final RadioButton friend = (RadioButton) findViewById(R.id.search_friend);
-        final RadioButton interest = (RadioButton) findViewById(R.id.search_interest);
-        Button search = (Button) findViewById(R.id.search_init);
-        search.setOnClickListener(new View.OnClickListener() {
+
+        final RadioButton friendVanilla = (RadioButton) findViewById(R.id.friendVanilla);
+        final RadioButton friendRequests = (RadioButton) findViewById(R.id.friendRequests);
+        final RadioButton friendWaiting = (RadioButton) findViewById(R.id.friendWaiting);
+
+        friendVanilla.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                friends = new ArrayList<Friend>();
-                Toast.makeText(getApplicationContext(),"friend : "+friend.isChecked()+" interest : " +
-                        interest.isChecked(),Toast.LENGTH_SHORT).show();
-                if(friend.isChecked()){
-                    new SearchFriends("friend",text.getText().toString()).execute();
-                }
-                else if(interest.isChecked()){
-                    new SearchFriends("interest",text.getText().toString()).execute();
-                }
-                else{
-                    new SearchFriends("email",text.getText().toString()).execute();
-                }
-
+                new SearchFriends("friend").execute();
+            }
+        });
+        friendRequests.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new SearchFriends("requests").execute();
+            }
+        });
+        friendWaiting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new SearchFriends("waiting").execute();
             }
         });
 
@@ -71,42 +78,40 @@ public class SearchActivity extends AppCompatActivity {
         friends.add(myfriend);
         friends.add(notmyfriend);*/
         CustomFriendViewAdapter adapter = new CustomFriendViewAdapter(this, R.layout.friend_individual, friends);
-        ListView listView = (ListView) findViewById(R.id.list_friends);
+        ListView listView = (ListView) findViewById(R.id.friendsView);
         listView.setAdapter(adapter);
         //setOnItemClickListener(this);
     }
 
-    class SearchFriends extends AsyncTask<Void,Void,Void>{
+    class SearchFriends extends AsyncTask<Void,Void,Void> {
 
         private String method = "";
-        private String search = "";
 
         private JSONArray friendsJSON = null;
 
-        public SearchFriends(String method,String search){
+        public SearchFriends(String method){
             this.method = method;
-            this.search = search;
         }
         @Override
         protected Void doInBackground(Void... voids) {
             HashMap<String,String> hashMap = new HashMap<String,String>();
-            hashMap.put("search",search);
+            hashMap.put("username",myName);
             hashMap.put("Method","GET");
             try{
                 if("friend".equalsIgnoreCase(method)) {
-                    hashMap.put("URL",Constants.URL+"/search_user_username");
+                    hashMap.put("URL",Constants.URL+"/get_added_friends");
                     PostData post = new PostData(hashMap);
                     friendsJSON = new JSONArray(post.doInBackground());
                 }
-                else if("interest".equalsIgnoreCase(method)) {
-                    hashMap.put("URL", Constants.URL + "/search_user_interests");
+                else if("request".equalsIgnoreCase(method)) {
+                    hashMap.put("URL", Constants.URL + "/get_unadded_friends");
                     PostData post = new PostData(hashMap);
                     friendsJSON = new JSONArray(post.doInBackground());
                 }
-                else{
-                    hashMap.put("URL", Constants.URL + "/search_user_email");
+                else{//waiting requests api --- Tooo DOO
+                    /*hashMap.put("URL", Constants.URL + "/search_user_email");
                     PostData post = new PostData(hashMap);
-                    friendsJSON = new JSONArray(post.doInBackground());
+                    friendsJSON = new JSONArray(post.doInBackground());*/
                 }
             }
             catch (Exception e){
@@ -136,3 +141,4 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 }
+

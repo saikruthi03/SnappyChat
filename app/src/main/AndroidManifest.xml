@@ -38,7 +38,7 @@
             android:name=".MainScreen"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_main_screen"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
@@ -58,20 +58,18 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".AllFriendsChatActivity" />
-        <activity android:name=".StartChatActivity" >
+        <activity android:name=".StartChatActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-        <activity android:name=".TimeLineActivity"></activity>
-        <activity android:name=".SearchActivity"></activity>
+        <activity android:name=".TimeLineActivity" />
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".FriendActivity"></activity>
     </application>
 
 </manifest>
