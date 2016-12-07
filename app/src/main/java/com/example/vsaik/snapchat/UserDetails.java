@@ -1,47 +1,116 @@
 package com.example.vsaik.snapchat;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by vsaik on 12/3/2016.
  */
 public class UserDetails {
 
-        String nickname;
-        String email;
-        String profilePicUrl;
-        String location;
-        String profession;
-        String aboutMe;
-        String interests;
+    public static String nickname;
+    public static String email;
+    public static String profilePicUrl;
+    public static String location;
+    public static String profession;
+    public static String aboutMe;
+    public static String interests;
+    public static String userId;
+    public static String visibilty;
+    public static String phoneNumber;
+    public static Bitmap image;
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public static Bitmap getImage() {
+        return image;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public static void setImage(Bitmap image) {
+        UserDetails.image = image;
     }
 
-    String phoneNumber;
-
-    public String getVisibilty() {
-        return visibilty;
+    public static String getLocation() {
+        return location;
     }
 
-    public void setVisibilty(String visibilty) {
-        this.visibilty = visibilty;
+    public static void setLocation(String location) {
+        UserDetails.location = location;
     }
 
-    String visibilty;
+    public static String getNickname() {
+        return nickname;
+    }
 
-    public String getUserId() {
+    public static void setNickname(String nickname) {
+        UserDetails.nickname = nickname;
+    }
+
+    public static String getEmail() {
+        return email;
+    }
+
+    public static void setEmail(String email) {
+        UserDetails.email = email;
+    }
+
+    public static String getProfilePicUrl() {
+        return profilePicUrl;
+    }
+
+    public static void setProfilePicUrl(String profilePicUrl) {
+        UserDetails.profilePicUrl = profilePicUrl;
+    }
+
+    public static String getProfession() {
+        return profession;
+    }
+
+    public static void setProfession(String profession) {
+        UserDetails.profession = profession;
+    }
+
+    public static String getInterests() {
+        return interests;
+    }
+
+    public static void setInterests(String interests) {
+        UserDetails.interests = interests;
+    }
+
+    public static String getAboutMe() {
+        return aboutMe;
+    }
+
+    public static void setAboutMe(String aboutMe) {
+        UserDetails.aboutMe = aboutMe;
+    }
+
+    public static String getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public static void setUserId(String userId) {
+        UserDetails.userId = userId;
     }
 
-    String userId;
+    public static String getVisibilty() {
+        return visibilty;
+    }
+
+    public static void setVisibilty(String visibilty) {
+        UserDetails.visibilty = visibilty;
+    }
+
+    public static String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public static void setPhoneNumber(String phoneNumber) {
+        UserDetails.phoneNumber = phoneNumber;
+    }
+
+
+
+
+
 
     public UserDetails(){
 
@@ -60,65 +129,9 @@ public class UserDetails {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getNickname() {
-        return nickname;
-    }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getProfilePicUrl() {
-        return profilePicUrl;
-    }
-
-    public void setProfilePicUrl(String profilePicUrl) {
-        this.profilePicUrl = profilePicUrl;
-    }
-
-
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getProfession() {
-        return profession;
-    }
-
-    public void setProfession(String profession) {
-        this.profession = profession;
-    }
-
-    public String getAboutMe() {
-        return aboutMe;
-    }
-
-    public void setAboutMe(String aboutMe) {
-        this.aboutMe = aboutMe;
-    }
-
-
-
-    public String getInterests() {
-        return interests;
-    }
-
-    public void setInterests(String interests) {
-        this.interests = interests;
-    }
 }
+
+
 
 
