@@ -42,45 +42,14 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="com.example.vsaik.snapchat.LoginActivity"
-        tools:showIn="@layout/activity_login"
-        android:background="@drawable/background">
-
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            android:ems="10"
-            android:id="@+id/editText"
-            android:layout_marginTop="96dp"
-            android:layout_alignParentTop="true"
+        tools:showIn="@layout/activity_login">
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/appicon"
+            android:layout_marginBottom="45dp"
+            android:layout_above="@+id/fb_login_button"
             android:layout_centerHorizontal="true" />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:ems="10"
-            android:id="@+id/editText2"
-            android:layout_below="@+id/editText"
-            android:layout_alignStart="@+id/editText" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Login"
-            android:id="@+id/loginbutton"
-            android:layout_marginTop="43dp"
-            android:layout_below="@+id/editText2"
-            android:layout_alignStart="@+id/editText2" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Register"
-            android:id="@+id/signupbutton"
-            android:layout_alignTop="@+id/loginbutton"
-            android:layout_alignEnd="@+id/editText2" />
 
 
         <com.google.android.gms.common.SignInButton
@@ -90,9 +59,10 @@
             android:padding="5sp"
             android:layout_marginLeft="5sp"
             android:layout_marginRight="5sp"
-            android:layout_alignStart="@+id/fb_login_button"
-            android:layout_below="@+id/fb_login_button"
-            android:layout_alignEnd="@+id/fb_login_button" />
+            android:layout_alignParentBottom="true"
+            android:layout_alignEnd="@+id/fb_login_button"
+            android:layout_marginBottom="195dp"
+            android:layout_alignStart="@+id/fb_login_button" />
 
 
         <com.facebook.login.widget.LoginButton
@@ -100,8 +70,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="46dp"
-            android:layout_below="@+id/loginbutton"
+            android:layout_centerVertical="true"
             android:layout_centerHorizontal="true" />
 
 
