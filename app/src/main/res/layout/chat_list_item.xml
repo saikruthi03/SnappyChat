@@ -19,6 +19,14 @@
         android:paddingBottom="10dp"
         android:textColor="#CC0033"
         android:textSize="16dp" />
+    <ImageView
+        android:layout_gravity="center_vertical"
+        android:id="@+id/unread"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:paddingRight="10dp"
+        android:layout_alignParentTop="true" />
 
     <ImageView
         android:layout_gravity="center_vertical"
@@ -26,5 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:paddingRight="10dp" />
+        android:paddingRight="10dp"
+        android:layout_below="@+id/name"
+        android:layout_alignStart="@+id/unread" />
 </RelativeLayout>
