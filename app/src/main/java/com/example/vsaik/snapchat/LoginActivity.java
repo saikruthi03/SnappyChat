@@ -1,6 +1,8 @@
 package com.example.vsaik.snapchat;
 
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -56,20 +58,24 @@ import java.util.HashMap;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements
-        GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+        GoogleApiClient.OnConnectionFailedListener {
 
     ProgressDialog pd;
     private static final String TAG = "EmailPassword";
+    public static UserDetails user;
     static HashMap<String,UserDetails> userArrayList = new HashMap<>();
     public List<String> userId = new ArrayList<>();
     public boolean redirect= false;
     private TextView mStatusTextView;
     private TextView mDetailTextView;
-    private EditText mEmailField;
-    private EditText mPasswordField;
     public static String curUser = "NA";
     LoginButton fbLogin;
     ProgressDialog progressDialog;
+    Intent mServiceIntent;
+    private GetMessagesService mSensorService;
+
+    Context ctx=null;
+
 
     public static FirebaseAuth mAuth = null;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -87,10 +93,12 @@ public class LoginActivity extends AppCompatActivity implements
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_login);
-        mEmailField = (EditText) findViewById(R.id.editText);
-        mPasswordField = (EditText) findViewById(R.id.editText2);
-        findViewById(R.id.loginbutton).setOnClickListener(this);
-        findViewById(R.id.signupbutton).setOnClickListener(this);
+        ctx = this;
+
+      //  mEmailField = (EditText) findViewById(R.id.editText);
+       // mPasswordField = (EditText) findViewById(R.id.editText2);
+       // findViewById(R.id.loginbutton).setOnClickListener(this);
+        //findViewById(R.id.signupbutton).setOnClickListener(this);
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -98,7 +106,7 @@ public class LoginActivity extends AppCompatActivity implements
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                   // updateUI(user);
+                    // updateUI(user);
                     curUser = user.getUid();
                 } else {
                     //updateUI(user);
@@ -146,6 +154,18 @@ public class LoginActivity extends AppCompatActivity implements
         });
 
 
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.i ("isMyServiceRunning?", true+"");
+                return true;
+            }
+        }
+        Log.i ("isMyServiceRunning?", false+"");
+        return false;
     }
 
     @Override
@@ -205,47 +225,47 @@ public class LoginActivity extends AppCompatActivity implements
     private boolean validateForm() {
         boolean valid = true;
 
-        String email = mEmailField.getText().toString();
-        if (TextUtils.isEmpty(email)) {
-            mEmailField.setError("Required.");
-            valid = false;
-        } else {
-            mEmailField.setError(null);
-        }
+       // String email = mEmailField.getText().toString();
+        //if (TextUtils.isEmpty(email)) {
+          //  mEmailField.setError("Required.");
+            //valid = false;
+        //} else {
+          //  mEmailField.setError(null);
+        //}
 
-        String password = mPasswordField.getText().toString();
-        if (TextUtils.isEmpty(password)) {
-            mPasswordField.setError("Required.");
-            valid = false;
-        } else {
-            mPasswordField.setError(null);
-        }
+        //String password = mPasswordField.getText().toString();
+        //if (TextUtils.isEmpty(password)) {
+          //  mPasswordField.setError("Required.");
+            //valid = false;
+        //} else {
+          //  mPasswordField.setError(null);
+       // }
 
         return valid;
     }
 
-    private void updateUI(FirebaseUser user) {
+    //private void updateUI(FirebaseUser user) {
 
-        if (user != null) {
-            curUser = user.getUid();
-            mEmailField.setText(user.getEmail());
-        } else {
+      //  if (user != null) {
+        //    curUser = user.getUid();
+          //  mEmailField.setText(user.getEmail());
+        //} else {
 
-        }
-    }
+//        }
+  //  }
 
-    @Override
-    public void onClick(View v) {
+    //@Override
+    //public void onClick(View v) {
 
-        int i = v.getId();
-        if (i == R.id.signupbutton) {
-            Intent create = new Intent(LoginActivity.this, SignUpActivity.class);
-            startActivityForResult(create, 200);
-        } else if (i == R.id.loginbutton) {
-            signIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
+      //  int i = v.getId();
+       // if (i == R.id.signupbutton) {
+         //   Intent create = new Intent(LoginActivity.this, SignUpActivity.class);
+           // startActivityForResult(create, 200);
+        //} else if (i == R.id.loginbutton) {
+          //  signIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
 
-        }
-    }
+        //}
+    //}
 
 
     @Override
@@ -263,7 +283,7 @@ public class LoginActivity extends AppCompatActivity implements
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
             } else {
-                updateUI(null);
+               // updateUI(null);
             }
         }
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
@@ -291,10 +311,24 @@ public class LoginActivity extends AppCompatActivity implements
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (!dataSnapshot.hasChild("email")) {
+                                        user= new UserDetails();
+                                        user.setEmail(mUser.getEmail());
+                                        user.setNickname(mUser.getDisplayName());
+                                        user.setUserId(mUser.getUid());
                                         if(redirect){
+                                            mSensorService = new GetMessagesService(getApplicationContext());
+                                            mServiceIntent = new Intent(getApplicationContext(), mSensorService.getClass());
+                                            if (!isMyServiceRunning(mSensorService.getClass())) {
+                                                startService(mServiceIntent);
+                                            }
                                             progressDialog.dismiss();
                                             startCameraActivity(mUser.getUid());
                                         }else{
+                                            mSensorService = new GetMessagesService(getApplicationContext());
+                                            mServiceIntent = new Intent(getApplicationContext(), mSensorService.getClass());
+                                            if (!isMyServiceRunning(mSensorService.getClass())) {
+                                                startService(mServiceIntent);
+                                            }
                                             DatabaseReference myRef1 = myRef.child("users").child(mUser.getUid());
                                             UserDetails user = new UserDetails(" ",mUser.getEmail()," "," ",""," "," ",mUser.getUid()," "," ");
                                             myRef.child(mUser.getUid()).setValue(user);
@@ -304,7 +338,7 @@ public class LoginActivity extends AppCompatActivity implements
                                             startActivity(intent);
                                         }
 
-                                       }else {
+                                    }else {
                                         if(redirect){
                                             startCameraActivity(mUser.getUid());
                                         }else{
@@ -354,17 +388,21 @@ public class LoginActivity extends AppCompatActivity implements
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (!dataSnapshot.hasChild("emailid")) {
+                                        user= new UserDetails();
+                                        user.setEmail(fbUser.getEmail());
+                                        user.setNickname(fbUser.getDisplayName());
+                                        user.setUserId(fbUser.getUid());
                                         Toast.makeText(LoginActivity.this, " Successfully Signed In ", Toast.LENGTH_SHORT).show();
-                                       if(redirect) {
-                                           startCameraActivity(fbUser.getUid());
-                                       }else{
-                                           DatabaseReference myref1 = myRef.child("users").child(fbUser.getUid());
-                                           UserDetails user = new UserDetails(fbUser.getDisplayName(),fbUser.getEmail(),fbUser.getPhotoUrl().toString()," ",""," "," ",fbUser.getUid()," "," ");
-                                           myRef.child(fbUser.getUid()).setValue(user);
-                                           progressDialog.dismiss();
-                                           Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                           startActivity(intent);
-                                       }
+                                        if(redirect) {
+                                            startCameraActivity(fbUser.getUid());
+                                        }else{
+                                            DatabaseReference myref1 = myRef.child("users").child(fbUser.getUid());
+                                            UserDetails user = new UserDetails(fbUser.getDisplayName(),fbUser.getEmail(),fbUser.getPhotoUrl().toString()," ",""," "," ",fbUser.getUid()," "," ");
+                                            myRef.child(fbUser.getUid()).setValue(user);
+                                            progressDialog.dismiss();
+                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                        }
                                     }else {
 //                                        Intent intent = new Intent(EmailPasswordActivity.this, MainActivity.class);
 //                                        startActivity(intent);
@@ -395,6 +433,14 @@ public class LoginActivity extends AppCompatActivity implements
 
     }
 
-}
+    @Override
+    protected void onDestroy() {
+        if(mServiceIntent != null) {
+            stopService(mServiceIntent);
+        }
+        super.onDestroy();
 
+    }
+
+}
 
