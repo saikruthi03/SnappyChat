@@ -12,7 +12,11 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class AllFriendsChatActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
@@ -20,6 +24,8 @@ public class AllFriendsChatActivity extends AppCompatActivity implements Adapter
     ListView listAllFriends = null;
     private Context context;
     List<ChatItem> activeFriends = null;
+    String myName = "jay";
+    JSONArray responseFetch = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,13 +84,47 @@ public class AllFriendsChatActivity extends AppCompatActivity implements Adapter
             //you get a json object
             //iterate over the json data and add data like this
             //convert string to bitmap
-            String base64Image = "";
+
+
+            HashMap<String,String> hashMap = new HashMap<String, String>();
+            hashMap.put("username",myName);
+            hashMap.put("URL",Constants.URL+"/get_added_friends");
+            hashMap.put("Method","GET");
+            PostData fecth = new PostData(hashMap);
+            try {
+                responseFetch = new JSONArray(fecth.doInBackground());
+                Log.e("RESPONSE",responseFetch.toString());
+
+            }
+            catch(Exception e){
+                Log.e("RESPONSE- ERROR",e.toString());
+            }
+
+
+          /*  String base64Image = "";
             Bitmap friend = ImageUtils.getBitmapFromBase64(base64Image);
             String name = "";
              //1 and 0 based on online, offline
             int status = ImageUtils.getStatus("Online");
-            ChatItem item1 = new ChatItem(friend,name,status);
-            activeFriends.add(item1);
+            ChatItem item1 = new ChatItem(friend,name,status);*/
+            int size = responseFetch.length();
+            for(int i = 0 ; i < size ; i++){
+                ChatItem item = null;
+                try {
+                    JSONObject object = responseFetch.getJSONObject(i);
+                    if (myName.equalsIgnoreCase(object.getString("sender"))) {
+
+                        ///// TO DO - FETCH IMAGE
+                        item = new ChatItem(null, object.getString("friend"),ImageUtils.getStatus("Online"));
+                    } else {
+                        item = new ChatItem(null, object.getString("friend"),ImageUtils.getStatus("Online"));
+                    }
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+                activeFriends.add(item);
+            }
             return null;
         }
 

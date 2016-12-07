@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.menu.ExpandedMenuView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -41,7 +45,7 @@ public class StartChatActivity extends AppCompatActivity {
     private Context context= null;
     private EditText chatText = null;
     String friend = "";
-
+    JSONArray responseFetch = null;
     List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
     TextView friendText;
     ImageButton imageButton;
@@ -51,7 +55,7 @@ public class StartChatActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         myName = "jay";
-        friend = "vivek";
+        friend = "friend";
         setContentView(R.layout.activity_chat_click);
 
        imageButton = (ImageButton)findViewById(R.id.backButton);
@@ -63,13 +67,13 @@ public class StartChatActivity extends AppCompatActivity {
             }
         });
         friendText = (TextView)findViewById(R.id.Friend);
-        if(getIntent() != null){
+       /* if(getIntent() != null){
             friend = getIntent().getStringExtra("friend");
             friendText.setText(friend);
             Log.d("TAG",friend);
             getInfo(friend);
             //update the name on toolbar
-        }
+        }*/
 
         context = this;
         onStart();
@@ -153,7 +157,7 @@ public class StartChatActivity extends AppCompatActivity {
         params[0] = (chatText.getText().length() > 0 ) ? "Text" : "Image";
         params[1] = chatText.getText().toString()+"";
         if(capturedImage != null)
-            params[1] = capturedImage.toString()+"";
+            params[1] = ImageUtils.getStringImage(capturedImage);
 
         chatpush.execute(params);
         //image - capturedImage
@@ -185,6 +189,23 @@ public class StartChatActivity extends AppCompatActivity {
         chatFetch.execute();
     }
     private void updateChat(){
+
+        int size = responseFetch.length();
+        for(int i = 0 ; i < size ; i++){
+            ChatMessage item = null;
+            try {
+                JSONObject object = responseFetch.getJSONObject(i);
+                if (myName.equalsIgnoreCase(object.getString("sender"))) {
+                    item = new ChatMessage(null, object.getString("data"), "ME");
+                } else {
+                    item = new ChatMessage(null, object.getString("data"), "HIM");
+                }
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+            chatMessages.add(item);
+        }
 
         ListView listActiveFriends = (ListView) findViewById(R.id.chat_listView);
         final RelativeLayout chatClick = (RelativeLayout) findViewById(R.id.chat_click);
@@ -219,28 +240,45 @@ public class StartChatActivity extends AppCompatActivity {
                     friendDP = BitmapFactory.decodeResource(getResources(), R.drawable.com_facebook_button_icon_blue);
                     myDP = BitmapFactory.decodeResource(getResources(), R.drawable.com_facebook_button_send_icon_white);
 
-                    ChatMessage itemhim = new ChatMessage(null,"this is chat message from him","HIM");
+                    HashMap<String,String> hashMap = new HashMap<String, String>();
+                    hashMap.put("username",myName);
+                    hashMap.put("receiver",friend);
+                    hashMap.put("URL",Constants.URL+"/get_chat");
+                    hashMap.put("Method","GET");
+                    PostData fecth = new PostData(hashMap);
+                    try {
+                        responseFetch = new JSONArray(fecth.doInBackground());
+                        Log.e("RESPONSE",responseFetch.toString());
+
+                    }
+                    catch(Exception e){
+                        Log.e("RESPONSE- ERROR",e.toString());
+                    }
+
+
+                   /* ChatMessage itemhim = new ChatMessage(null,"this is chat message from him","HIM");
                     ChatMessage item = new ChatMessage(null,"this is chat message from me","ME");
                     Bitmap chatImage = BitmapFactory.decodeResource(getResources(),R.drawable.common_google_signin_btn_icon_dark_pressed);
                     ChatMessage imagehim = new ChatMessage(chatImage,"","HIM");
+                    chatMessages.add(item);
+                    chatMessages.add(itemhim);
+                    chatMessages.add(item);
+                    chatMessages.add(itemhim);
+                    chatMessages.add(itemhim);
+                    chatMessages.add(item);
+                    chatMessages.add(imagehim);
+                    chatMessages.add(item);
+                    chatMessages.add(itemhim);
+                    chatMessages.add(itemhim);
+                    chatMessages.add(itemhim);
+                    chatMessages.add(imagehim);
+                    chatMessages.add(itemhim);
+                    chatMessages.add(item);
+                    chatMessages.add(itemhim);
+                    chatMessages.add(itemhim);
+                    chatMessages.add(itemhim);*/
 
-                    chatMessages.add(item);
-                    chatMessages.add(itemhim);
-                    chatMessages.add(item);
-                    chatMessages.add(itemhim);
-                    chatMessages.add(itemhim);
-                    chatMessages.add(item);
-                    chatMessages.add(imagehim);
-                    chatMessages.add(item);
-                    chatMessages.add(itemhim);
-                    chatMessages.add(itemhim);
-                    chatMessages.add(itemhim);
-                    chatMessages.add(imagehim);
-                    chatMessages.add(itemhim);
-                    chatMessages.add(item);
-                    chatMessages.add(itemhim);
-                    chatMessages.add(itemhim);
-                    chatMessages.add(itemhim);
+
                 }
                 else if("POST".equalsIgnoreCase(op)){
                     Log.d("background tasks -- ", Arrays.toString(string));

@@ -18,6 +18,7 @@ import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.media.Image;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -45,12 +46,16 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static android.R.attr.width;
@@ -75,6 +80,7 @@ public class MainScreen extends AppCompatActivity {
     private String caption;
     private List<BitmapCollection> overlays =  null;
     private FrameLayout main_layout = null;
+    String myName = "jay";
     private GestureDetector gestureDetector;
     View.OnTouchListener gestureListener;
     ImageButton flora, fauna;
@@ -260,7 +266,6 @@ public class MainScreen extends AppCompatActivity {
                 Editable YouEditTextValue = edittext.getText();
                 caption = YouEditTextValue.toString();
                 Toast.makeText(context,edittext.getText().toString(),Toast.LENGTH_SHORT).show();
-                // send it to cloud
                 pushImageToTimeLine();
             }
         });
@@ -268,9 +273,14 @@ public class MainScreen extends AppCompatActivity {
     }
 
     private void pushImageToTimeLine() {
-        //currentBitMap
-        //  caption
-        //userId
+
+        HashMap<String,String> hashMap = new HashMap<String,String>();
+        hashMap.put("username",myName);
+        hashMap.put("pictures",ImageUtils.getStringImage(currentBitMap));
+        hashMap.put("caption",caption);
+        PushContent pushContent = new PushContent(hashMap);
+        pushContent.execute();
+
         Toast.makeText(context,"Added to timeline",Toast.LENGTH_SHORT).show();
 
         onStart();
@@ -309,6 +319,46 @@ public class MainScreen extends AppCompatActivity {
         overlays.add(bitmap2);
         overlays.add(bitmap3);
         overlays.add(bitmap4);
+    }
+
+    class PushContent extends
+            AsyncTask<Void, Void, Void> {
+
+        boolean err = false;
+        HashMap<String,String> hashMap = null;
+
+        public PushContent(HashMap hashMap){
+            this.hashMap = hashMap;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            hashMap.put("URL", Constants.URL + "/insert_picture_stories");
+            hashMap.put("Method", "POST");
+            PostData fecth = new PostData(hashMap);
+            try {
+                fecth.doInBackground();
+            } catch (Exception e) {
+                Log.e("RESPONSE- ERROR", e.toString());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if(err)
+                reportError();
+            else{
+                onStart();
+            }
+
+        }
+    }
+
+    private void reportError(){
+        Toast.makeText(getApplicationContext(),"Error occured, please try again",Toast.LENGTH_SHORT).show();
     }
 }
 

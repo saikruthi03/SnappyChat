@@ -35,42 +35,57 @@ public class PostData {
 
     protected String doInBackground() {
 
-        URL url;
+        String url = hashMap.get("URL");
         String response = "";
-        try {
-            url = new URL(hashMap.get("URL"));
-            hashMap.remove("URL");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("Accept", "application/json");
+        String method = hashMap.get("Method");
+        hashMap.remove("Method");
+        hashMap.remove("URL");
+        HttpURLConnection conn = null;
 
-            if("POST".equalsIgnoreCase(hashMap.get("Method"))) {
+        try {
+
+            if("POST".equalsIgnoreCase(method)) {
+
+                URL ur = new URL(url);
+                conn = (HttpURLConnection) ur.openConnection();
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+
+                OutputStream os = conn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(os, "UTF-8"));
+
                 conn.setRequestMethod("POST");
+                writer.write(getPostDataString(hashMap).toString());
+
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                writer.flush();
+                writer.close();
+                os.close();
 
             }
             else{
+                url += "?"+getGetDataString(hashMap);
+                Log.d("REQUEST",url);
+                URL ur = new URL(url);
+                conn = (HttpURLConnection) ur.openConnection();
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
                 conn.setRequestMethod("GET");
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
             }
-            hashMap.remove("Method");
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
 
-
-            OutputStream os = conn.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(
-                    new OutputStreamWriter(os, "UTF-8"));
-            writer.write(getPostDataString(hashMap).toString());
-
-            writer.flush();
-            writer.close();
-            os.close();
             int responseCode=conn.getResponseCode();
-
             Log.d("RESP",response);
             if (responseCode == HttpsURLConnection.HTTP_OK) {
                 String line;
                 BufferedReader br=new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 while ((line=br.readLine()) != null) {
+                    Log.d("RESP",line);
                     response+=line;
                 }
             }
@@ -85,6 +100,24 @@ public class PostData {
 
         return response;
 
+    }
+
+    private String getGetDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
+
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+        for(Map.Entry<String, String> entry : params.entrySet()){
+            if (first)
+                first = false;
+            else
+                result.append("&");
+
+            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+        }
+
+        return result.toString();
     }
 
     private JSONObject getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
