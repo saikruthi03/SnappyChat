@@ -38,20 +38,20 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        CustomFriendViewAdapter.ViewHolder holder = null;
+        ViewHolder holder = null;
         Friend rowItem = getItem(position);
 
         LayoutInflater mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.friend_individual, null);
-            holder = new CustomFriendViewAdapter.ViewHolder();
+            holder = new ViewHolder();
             holder.image = (ImageView) convertView.findViewById(R.id.friend_dp);
             holder.name = (TextView) convertView.findViewById(R.id.friend_name);
             holder.level = (TextView) convertView.findViewById(R.id.friend_level);
             convertView.setTag(holder);
         } else
-            holder = (CustomFriendViewAdapter.ViewHolder) convertView.getTag();
+            holder = (ViewHolder) convertView.getTag();
 
         //holder.image.setImageResource(rowItem.imag);
         holder.name.setText(rowItem.name);

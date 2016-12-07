@@ -58,7 +58,7 @@ public class CustomChatMessageAdapter extends ArrayAdapter<ChatMessage> {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        CustomChatMessageAdapter.ViewHolder holder = null;
+        ViewHolder holder = null;
         ChatMessage rowItem = getItem(position);
 
         LayoutInflater mInflater = (LayoutInflater) context
@@ -73,7 +73,7 @@ public class CustomChatMessageAdapter extends ArrayAdapter<ChatMessage> {
             holder.chatPicture = (ImageView) convertView.findViewById(R.id.chat_image);
             convertView.setTag(holder);
         } else
-            holder = (CustomChatMessageAdapter.ViewHolder) convertView.getTag();
+            holder = (ViewHolder) convertView.getTag();
         final Bitmap chatPicturersid = rowItem.getChatImage();
 
         if(rowItem.getUser().equalsIgnoreCase("ME")) {

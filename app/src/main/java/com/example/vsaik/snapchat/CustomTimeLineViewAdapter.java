@@ -49,14 +49,14 @@ public class CustomTimeLineViewAdapter extends ArrayAdapter<TimeLineObject> {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        CustomTimeLineViewAdapter.ViewHolder holder = null;
+        ViewHolder holder = null;
         TimeLineObject rowItem = getItem(position);
 
         LayoutInflater mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.time_line_object, null);
-            holder = new CustomTimeLineViewAdapter.ViewHolder();
+            holder = new ViewHolder();
             holder.status = (TextView) convertView.findViewById(R.id.status);
             holder.profileName = (TextView) convertView.findViewById(R.id.profileName);
             holder.profilePic = (ImageView) convertView.findViewById(R.id.profilePic);
@@ -66,7 +66,7 @@ public class CustomTimeLineViewAdapter extends ArrayAdapter<TimeLineObject> {
             holder.time_line_image = (ImageView) convertView.findViewById(R.id.time_line_image);
             convertView.setTag(holder);
         } else
-            holder = (CustomTimeLineViewAdapter.ViewHolder) convertView.getTag();
+            holder = (ViewHolder) convertView.getTag();
         if(rowItem.hasStatus()) {
             holder.status.setText(rowItem.statusInfo.status);
 
