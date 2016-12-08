@@ -18,6 +18,17 @@ public class UserDetails {
     public static String visibilty;
     public static String phoneNumber;
     public static Bitmap image;
+    public static String provider;
+
+    public static String getProvider() {
+        return provider;
+    }
+
+    public static void setProvider(String provider) {
+        UserDetails.provider = provider;
+    }
+
+
 
     public static Bitmap getImage() {
         return image;
@@ -131,6 +142,9 @@ public class UserDetails {
 
 
 }
+
+
+
 
 
 
