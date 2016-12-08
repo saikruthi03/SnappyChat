@@ -42,16 +42,14 @@ public class TimeLineActivity extends AppCompatActivity implements AdapterView.O
         });
         onStart();
 
-       /* Spinner spinner = (Spinner) findViewById(R.id.planets_spinner);
+        Spinner spinner = (Spinner) findViewById(R.id.planets_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.options_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setSelection(0);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
-        TextView txtView = (TextView) findViewById(R.id.txtLink);
-        txtView.setText(Html.fromHtml("<a href='#'>"+UserDetails.getNickname().toUpperCase()+"</a>"));
-*/
+
     }
 
     @Override
@@ -113,7 +111,10 @@ public class TimeLineActivity extends AppCompatActivity implements AdapterView.O
     }else if(parent.getItemAtPosition(pos).toString().equals("Friends")){
          Intent mainScreen = new Intent(TimeLineActivity.this,FriendActivity.class);
          startActivity(mainScreen);
-    }
+    }else if(parent.getItemAtPosition(pos).toString().equals("ALL")){
+         Intent mainScreen = new Intent(TimeLineActivity.this,ListAllFriendsActivity.class);
+         startActivity(mainScreen);
+     }
     }
 
     public void onNothingSelected(AdapterView<?> parent) {
