@@ -81,6 +81,7 @@ public class FriendActivity extends AppCompatActivity {
         Friend notmyfriend = new Friend("Name","ADD");
         friends.add(myfriend);
         friends.add(notmyfriend);*/
+
         CustomFriendViewAdapter adapter = null;
         ListView listView = (ListView) findViewById(R.id.friendsView);
         if(friends != null && friends.size() > 0) {

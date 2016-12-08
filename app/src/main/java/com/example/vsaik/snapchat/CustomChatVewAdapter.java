@@ -45,9 +45,9 @@ public class CustomChatVewAdapter extends ArrayAdapter<ChatItem> {
             holder.txtTitle = (TextView) convertView.findViewById(R.id.name);
             holder.imageView = (ImageView) convertView.findViewById(R.id.icon);
             convertView.setTag(holder);
-        } else
+        } else {
             holder = (ViewHolder) convertView.getTag();
-
+        }
         holder.status.setImageResource(rowItem.getStatus());
         holder.txtTitle.setText(rowItem.getTitle());
         holder.imageView.setImageBitmap(rowItem.getImage());
