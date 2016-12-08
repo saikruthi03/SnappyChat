@@ -13,4 +13,5 @@ public class Friend {
         this.name = name;
         this.level = level;
     }
+
 }

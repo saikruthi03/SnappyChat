@@ -32,6 +32,7 @@ public class GetData {
             hashMap.remove("Method");
             hashMap.remove("URL");
             url += "?" + getGetDataString(hashMap);
+            Log.d("GET",url);
             URL ur = new URL(url);
             URLConnection conn = (URLConnection) ur.openConnection();
             conn.getInputStream();
@@ -43,7 +44,7 @@ public class GetData {
             System.out.println(response);
         }
         catch(Exception e){
-            Log.d("ERROR","Error in get request");
+            Log.d("ERROR","Error in get request"+e.getCause());
         }
         return response;
     }

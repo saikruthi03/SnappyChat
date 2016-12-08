@@ -154,7 +154,7 @@ public class StartChatActivity extends AppCompatActivity {
         RetrieveChatData chatpush = new RetrieveChatData(myName, friend, "POST");
 
         String[] params = new String[2];
-        params[0] = (chatText.getText().length() > 0 ) ? "Text" : "Image";
+        params[0] = (chatText.getText().length() > 0 ) ? "text" : "image";
         params[1] = chatText.getText().toString()+"";
         if(capturedImage != null)
             params[1] = ImageUtils.getStringImage(capturedImage);
@@ -191,14 +191,25 @@ public class StartChatActivity extends AppCompatActivity {
     private void updateChat(){
 
         int size = responseFetch.length();
-        for(int i = 0 ; i < size ; i++){
+        for(int i = size-1 ; i >= 0 ; i--){
             ChatMessage item = null;
             try {
                 JSONObject object = responseFetch.getJSONObject(i);
-                if (myName.equalsIgnoreCase(object.getString("sender"))) {
-                    item = new ChatMessage(null, object.getString("data"), "ME");
-                } else {
-                    item = new ChatMessage(null, object.getString("data"), "HIM");
+                String data = object.getString("data");
+                if(data!= null && data.length() < 100) {
+                    if (myName.equalsIgnoreCase(object.getString("sender"))) {
+                        item = new ChatMessage(null, data, "ME");
+                    } else {
+                        item = new ChatMessage(null, data, "HIM");
+                    }
+                }
+                else{
+                    Bitmap chatImage = ImageUtils.getBitmapFromBase64(data);
+                    if (myName.equalsIgnoreCase(object.getString("sender"))) {
+                        item = new ChatMessage(chatImage,"" , "ME");
+                    } else {
+                        item = new ChatMessage(chatImage, "", "HIM");
+                    }
                 }
             }
             catch(Exception e){
@@ -234,9 +245,7 @@ public class StartChatActivity extends AppCompatActivity {
 
             Log.d("background tasks -- ", Arrays.toString(string)+" : "+op+" : "+myName+ " : "+friend);
             if(myName.length() > 0 && friend.length() > 0) {
-
                 if("GET".equalsIgnoreCase(op)){
-
                     friendDP = BitmapFactory.decodeResource(getResources(), R.drawable.com_facebook_button_icon_blue);
                     myDP = BitmapFactory.decodeResource(getResources(), R.drawable.com_facebook_button_send_icon_white);
 
@@ -251,7 +260,6 @@ public class StartChatActivity extends AppCompatActivity {
                         res = res.substring(res.indexOf("["));
                         responseFetch = new JSONArray(res);
                         Log.e("RESPONSE",responseFetch.toString());
-
                     }
                     catch(Exception e){
                         Log.e("RESPONSE- ERROR",e.toString());

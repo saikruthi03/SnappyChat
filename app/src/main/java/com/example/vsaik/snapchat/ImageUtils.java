@@ -7,6 +7,7 @@ import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
 
 /**
  * Created by jay on 12/4/16.
@@ -52,8 +53,18 @@ public class ImageUtils {
             byte[] b = baos.toByteArray();
             String temp = Base64.encodeToString(b, Base64.DEFAULT);
             return temp;
+
         }
         return "";
+    }
+
+    public static String getStringImageWithoutCompression(Bitmap bitmap) {
+        final int lnth=bitmap.getByteCount();
+        ByteBuffer dst= ByteBuffer.allocate(lnth);
+        bitmap.copyPixelsToBuffer( dst);
+        byte[] barray=dst.array();
+        String temp = Base64.encodeToString(barray, Base64.DEFAULT);
+        return temp;
     }
 
 }

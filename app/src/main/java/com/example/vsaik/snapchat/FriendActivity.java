@@ -22,6 +22,7 @@ public class FriendActivity extends AppCompatActivity {
 
     String myName = "jay";
     List<Friend> friends;
+    String method = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,18 +54,21 @@ public class FriendActivity extends AppCompatActivity {
         friendVanilla.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                method = "friendVanilla";
                 new SearchFriends("friend").execute();
             }
         });
         friendRequests.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                method = "friendRequests";
                 new SearchFriends("requests").execute();
             }
         });
         friendWaiting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                method = "friendWaiting";
                 new SearchFriends("waiting").execute();
             }
         });
@@ -77,9 +81,16 @@ public class FriendActivity extends AppCompatActivity {
         Friend notmyfriend = new Friend("Name","ADD");
         friends.add(myfriend);
         friends.add(notmyfriend);*/
-        CustomFriendViewAdapter adapter = new CustomFriendViewAdapter(this, R.layout.friend_individual, friends);
-        ListView listView = (ListView) findViewById(R.id.friendsView);
-        listView.setAdapter(adapter);
+        if(method.length() > 0){
+            CustomFriendViewAdapter adapter = new CustomFriendViewAdapter(myName,this, R.layout.friend_individual, friends,method);
+            ListView listView = (ListView) findViewById(R.id.friendsView);
+            listView.setAdapter(adapter);
+        }
+        else {
+            CustomFriendViewAdapter adapter = new CustomFriendViewAdapter(this, R.layout.friend_individual, friends);
+            ListView listView = (ListView) findViewById(R.id.friendsView);
+            listView.setAdapter(adapter);
+        }
         //setOnItemClickListener(this);
     }
 
@@ -128,8 +139,8 @@ public class FriendActivity extends AppCompatActivity {
             for(int i = 0 ; i < size ; i++) {
                 Friend item = null;
                 try {
-                    JSONObject object = friendsJSON.getJSONObject(i);
 
+                    JSONObject object = friendsJSON.getJSONObject(i);
                     item = new Friend(object.getString("data"), "ADD");
 
                 } catch (Exception e) {

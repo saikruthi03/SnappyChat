@@ -8,13 +8,8 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-feature android:name="android.hardware.camera" />
-
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
@@ -23,11 +18,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service
-            android:name=".GetMessagesService"
-            android:enabled="true"
-            android:exported="false" />
-
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -38,47 +28,51 @@
             android:value="@string/facebook_applicsation_id" />
 
         <activity
+            android:name=".SignUpActivity"
+            android:label="@string/title_activity_sign_up"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainScreen"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_main_screen"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ChatActivity"
+            android:label="@string/title_activity_chat"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ContactsActivity"
             android:label="@string/title_activity_contacts"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".AllFriendsChatActivity" />
-        <activity android:name=".StartChatActivity" />
-        <activity android:name=".TimeLineActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            </activity>
-        <activity
-            android:name=".FriendActivity"
-            android:label="@string/title_activity_friend"
+            android:name=".NoDataActivity"
+            android:label="@string/title_activity_no_data"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SearchActivity"
-            android:label="@string/title_activity_search"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".AllFriendsChatActivity" />
+        <activity android:name=".StartChatActivity">
+
+        </activity>
+        <activity android:name=".TimeLineActivity" />
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".FriendActivity" />
+        <activity android:name=".AddFriendsActivity"></activity>
     </application>
 
 </manifest>

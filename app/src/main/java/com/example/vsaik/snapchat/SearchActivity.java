@@ -95,17 +95,17 @@ public class SearchActivity extends AppCompatActivity {
             try{
                 if("friend".equalsIgnoreCase(method)) {
                     hashMap.put("URL",Constants.URL+"/search_user_username");
-                    PostData post = new PostData(hashMap);
+                    GetData post = new GetData(hashMap);
                     friendsJSON = new JSONArray(post.doInBackground());
                 }
                 else if("interest".equalsIgnoreCase(method)) {
                     hashMap.put("URL", Constants.URL + "/search_user_interests");
-                    PostData post = new PostData(hashMap);
+                    GetData post = new GetData(hashMap);
                     friendsJSON = new JSONArray(post.doInBackground());
                 }
                 else{
                     hashMap.put("URL", Constants.URL + "/search_user_email");
-                    PostData post = new PostData(hashMap);
+                    GetData post = new GetData(hashMap);
                     friendsJSON = new JSONArray(post.doInBackground());
                 }
             }
