@@ -30,4 +30,11 @@
     <string name="title_activity_contacts">ContactsActivity</string>
     <string name="title_activity_no_data">NoDataActivity</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_friend">FriendActivity</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string-array name="options_array">
+        <item>More</item>
+        <item>Search</item>
+        <item>Friends</item>
+    </string-array>
 </resources>
