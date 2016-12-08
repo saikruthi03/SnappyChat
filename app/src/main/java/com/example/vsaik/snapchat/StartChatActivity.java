@@ -50,6 +50,7 @@ public class StartChatActivity extends AppCompatActivity {
     List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
     TextView friendText;
     ImageButton imageButton;
+    Thread mThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,19 @@ public class StartChatActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            if (mThread != null) {
+                mThread.stop();
+            }
+        }
+        catch(Exception e){
+            Log.d("ERR","Failed to stop thread");
+        }
     }
 
     @Override
@@ -106,7 +120,9 @@ public class StartChatActivity extends AppCompatActivity {
         });
 
         getInfo(friend);
-
+        FetchChat fetchChat = new FetchChat(friend);
+        mThread = new Thread(fetchChat);
+        mThread.start();
 
         chatText = (EditText) findViewById(R.id.chatText);
         final Button sendChat = (Button) findViewById(R.id.sendChat);
@@ -251,6 +267,57 @@ public class StartChatActivity extends AppCompatActivity {
             listActiveFriends.setAdapter(adapter);
         }
 
+    }
+    class FetchChat extends Thread{
+
+        String name;
+        int oldCount;
+
+        public FetchChat(String name){
+            this.name = name;
+        }
+
+        @Override
+        public void run() {
+            super.run();
+            while(1==1){
+                if(responseFetch != null ) {
+                    oldCount = responseFetch.length();
+                    JSONArray responseFetchThread = null;
+                    HashMap<String, String> hashMap = new HashMap<String, String>();
+                    hashMap.put("username", myName);
+                    hashMap.put("receiver", friend);
+                    hashMap.put("URL", Constants.URL + "/get_chat");
+                    hashMap.put("Method", "GET");
+                    GetData fecth = new GetData(hashMap);
+                    try {
+                        String res = fecth.doInBackground();
+                        res = res.substring(res.indexOf("["));
+                        responseFetchThread = new JSONArray(res);
+                        Log.e("RESPONSE", responseFetchThread.toString());
+                        if (oldCount != responseFetchThread.length()) {
+                            RetrieveChatData chatFetch = new RetrieveChatData(myName, friend, "GET");
+                            chatFetch.execute();
+
+                        }
+
+
+
+                    } catch (Exception e) {
+                        Log.e("RESPONSE- ERROR", e.toString());
+                    }
+                }
+                try{
+                    Thread.sleep(1000);
+                }catch
+                        (Exception e){
+                    Log.e("THREAD- ERROR", e.toString());
+                }
+
+
+
+            }
+        }
     }
 
 

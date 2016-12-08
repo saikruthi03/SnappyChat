@@ -39,7 +39,7 @@ public class ChatActivity extends AppCompatActivity implements
     private String chatSession = "";
     private Context context = null;
     private String myName = "jay";
-    JSONArray responseFetch = null;
+    String[] responseFetch = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +108,7 @@ public class ChatActivity extends AppCompatActivity implements
     }
 
     private void getActiveFriends() {
-        activeFriends = new ArrayList<ChatItem>();
+
         RetrieveFriends retrieveFriends = new RetrieveFriends();
         retrieveFriends.execute();
 
@@ -120,14 +120,23 @@ public class ChatActivity extends AppCompatActivity implements
 
         @Override
         protected Void doInBackground(Void... voids) {
-
+            activeFriends = new ArrayList<ChatItem>();
             HashMap<String, String> hashMap = new HashMap<String, String>();
             hashMap.put("username", myName);
             hashMap.put("URL", Constants.URL + "/list_chats");
             hashMap.put("Method", "GET");
             GetData fecth = new GetData(hashMap);
             try {
-                responseFetch = new JSONArray(fecth.doInBackground());
+                String junk = fecth.doInBackground();
+                //String junk = "[\"vivek\",\"anvita\",\"anushka\"]";
+                Log.d("RESPONSE",junk);
+
+                junk = junk.substring(1,junk.length()-2);
+                Log.d("RESPONSE",junk);
+                junk = junk.replace("\"","");
+                Log.d("RESPONSE",junk);
+
+                responseFetch = junk.split(",");
                 Log.e("RESPONSE", responseFetch.toString());
 
             } catch (Exception e) {
@@ -136,18 +145,14 @@ public class ChatActivity extends AppCompatActivity implements
 
 
         if(responseFetch != null ) {
-            int size = responseFetch.length();
+            int size = responseFetch.length;
             for (int i = 0; i < size; i++) {
                 ChatItem item = null;
                 try {
-                    JSONObject object = responseFetch.getJSONObject(i);
+                    String object = responseFetch[i];
                     Log.d("FRIEND OOBJ",object.toString());
-                    String friendName = "";
-                    if (myName.equalsIgnoreCase(object.getString("friend_username"))) {
-                        friendName = object.getString("username");
-                    } else {
-                        friendName = object.getString("friend_username");
-                    }
+                    String friendName = object.trim();
+
                     HashMap<String,String> hashMap1 = new HashMap<String, String>();
                     hashMap1.put("username", friendName);
                     hashMap1.put("URL", Constants.URL + "/check_user");
@@ -158,10 +163,10 @@ public class ChatActivity extends AppCompatActivity implements
                         JSONObject obj = result.getJSONObject(0);
                         Log.d("ACTIVE",obj.toString());
                         boolean level = Boolean.parseBoolean(obj.getString("isActive"));
-                        item = new ChatItem(null, object.getString("friend"), ImageUtils.getStatus(level));
+                        item = new ChatItem(null, friendName, ImageUtils.getStatus(level));
                     }
                     else {
-                        item = new ChatItem(null, object.getString("friend"), ImageUtils.getStatus(false));
+                        item = new ChatItem(null, friendName, ImageUtils.getStatus(false));
                     }
                     activeFriends.add(item);
                 } catch (Exception e) {

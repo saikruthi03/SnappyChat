@@ -44,7 +44,7 @@ public class ImageUtils {
         if(online)
             return R.drawable.greendot;
         else
-            return 0;
+            return R.drawable.black_dot;
     }
 
     public static String getStringImage(Bitmap bitmap) {
