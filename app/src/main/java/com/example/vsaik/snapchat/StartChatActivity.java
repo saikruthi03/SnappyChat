@@ -58,15 +58,7 @@ public class StartChatActivity extends AppCompatActivity {
         friend = "friend";
         setContentView(R.layout.activity_chat_click);
 
-       imageButton = (ImageButton)findViewById(R.id.backButton);
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               Intent back = new Intent(StartChatActivity.this,ChatActivity.class);
-                startActivity(back);
-            }
-        });
-        friendText = (TextView)findViewById(R.id.Friend);
+
        /* if(getIntent() != null){
             friend = getIntent().getStringExtra("friend");
             friendText.setText(friend);
@@ -82,6 +74,15 @@ public class StartChatActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        imageButton = (ImageButton)findViewById(R.id.backButton);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent back = new Intent(StartChatActivity.this,ChatActivity.class);
+                startActivity(back);
+            }
+        });
+        friendText = (TextView)findViewById(R.id.Friend);
         getInfo(friend);
 
 
@@ -156,6 +157,7 @@ public class StartChatActivity extends AppCompatActivity {
         String[] params = new String[2];
         params[0] = (chatText.getText().length() > 0 ) ? "text" : "image";
         params[1] = chatText.getText().toString()+"";
+        chatText.setText("");
         if(capturedImage != null)
             params[1] = ImageUtils.getStringImage(capturedImage);
 
@@ -191,7 +193,7 @@ public class StartChatActivity extends AppCompatActivity {
     private void updateChat(){
 
         int size = responseFetch.length();
-        for(int i = size-1 ; i >= 0 ; i--){
+        for(int i = 0 ; i < size ; i++){
             ChatMessage item = null;
             try {
                 JSONObject object = responseFetch.getJSONObject(i);
@@ -318,6 +320,7 @@ public class StartChatActivity extends AppCompatActivity {
 
             if("POST".equalsIgnoreCase(op)){
                 Toast.makeText(getApplicationContext(),"Success",Toast.LENGTH_SHORT).show();
+                onResume();
             }
             else{
                 updateChat();

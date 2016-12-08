@@ -50,6 +50,7 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
         TextView name;
         TextView level;
         Button chat;
+        Button delete;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -64,35 +65,55 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
             holder.image = (ImageView) convertView.findViewById(R.id.friend_dp);
             holder.name = (TextView) convertView.findViewById(R.id.friend_name);
             holder.level = (TextView) convertView.findViewById(R.id.friend_level);
-            holder.chat = (Button) convertView.findViewById(R.id.showChat);
+
             convertView.setTag(holder);
         } else
             holder = (ViewHolder) convertView.getTag();
 
         //holder.image.setImageResource(rowItem.imag);
         holder.name.setText(rowItem.name);
-        holder.level.setText(rowItem.level);
-        final String level = rowItem.level;
         final String name = rowItem.name;
+
+        //holder.level.setText(rowItem.level);
+        final String level = rowItem.level;
+
         final HashMap<String,String> myMap = new HashMap<String,String>();
         myMap.put("friend_username",name);
         myMap.put("username",myName);
-        if("friendsVanilla".equalsIgnoreCase(showChat)) {
+
+        if("friendVanilla".equalsIgnoreCase(showChat)) {
+
+            holder.chat = (Button) convertView.findViewById(R.id.showChat);
+
             holder.chat.setText("CHAT");
             holder.chat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Log.d("CHAT","Clicked chat");
                     Intent i = new Intent(context,StartChatActivity.class);
                     i.putExtra("friend",name);
                     context.startActivity(i);
                 }
             });
+            holder.name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(context,TimeLineActivity.class);
+                    i.putExtra("friend",name);
+                    context.startActivity(i);
+                }
+            });
+
         }
         if("friendRequests".equalsIgnoreCase(showChat)) {
+
+            holder.chat = (Button) convertView.findViewById(R.id.showChat);
+
             holder.chat.setText("ACCEPT");
             holder.chat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Log.d("FRIEND WAITING","username "+myName + " : "+"friend_username " +name);
 
                     new FriendOperation("accept",myMap).execute();
                 }
@@ -101,13 +122,17 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
 
 
         if("friendWaiting".equalsIgnoreCase(showChat)) {
+            holder.chat = (Button) convertView.findViewById(R.id.showChat);
+
             holder.chat.setText("CANCEL");
+            Log.d("FRIEND WAITING","username "+myName + " : "+"friend_username " +name);
             holder.chat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     new FriendOperation("cancel",myMap).execute();
                 }
             });
+
         }
         holder.level.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,16 +168,20 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            hashMap.put("Method","GET");
+
 
             try {
                 if ("accept".equalsIgnoreCase(operation)) {
+                    hashMap.put("Method","GET");
                     hashMap.put("URL", Constants.URL + "/accept_friend");
+                    GetData post = new GetData(hashMap);
+                    response = post.doInBackground();
                 } else if ("cancel".equalsIgnoreCase(operation)) {
                     hashMap.put("URL", Constants.URL + "/delete_friend");
+                    GetData post = new GetData(hashMap);
+                    response = post.doInBackground();
                 }
-                PostData post = new PostData(hashMap);
-                response = post.doInBackground();
+
             }
             catch(Exception e){
                 errFlag = true;

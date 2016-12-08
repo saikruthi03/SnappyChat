@@ -1,5 +1,7 @@
 package com.example.vsaik.snapchat;
 
+import android.graphics.Bitmap;
+
 import java.util.List;
 
 /**

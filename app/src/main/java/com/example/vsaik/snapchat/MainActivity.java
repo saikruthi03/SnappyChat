@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
                             if(!user.getProfilePicUrl().equals("")){
                                 imgDecodableString = user.getProfilePicUrl();
-                                imageView.setImageBitmap(ImageUtils.getBitmapFromBase64(imgDecodableString));
+                               // imageView.setImageBitmap(ImageUtils.getBitmapFromBase64(imgDecodableString));
                             }
                             if(!user.getPhoneNumber().equals("")){
                                 password.setText(user.getPhoneNumber());
@@ -371,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Uri selectedImage = data.getData();
                 imageView.setImageURI(selectedImage);
                 Bitmap bm = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
-                bm =ImageUtils.compressEx(bm);
+                bm =ImageUtils.compress(bm);
                 imgDecodableString=  ImageUtils.getStringImage(bm);
                 UserDetails.setImage(bm);
                 FirebaseDatabase.getInstance()

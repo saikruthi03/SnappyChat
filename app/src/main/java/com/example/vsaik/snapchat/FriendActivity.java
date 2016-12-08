@@ -46,7 +46,7 @@ public class FriendActivity extends AppCompatActivity {
     }
     private void initButtons() {
 
-
+        friends = new ArrayList<Friend>();
         final RadioButton friendVanilla = (RadioButton) findViewById(R.id.friendVanilla);
         final RadioButton friendRequests = (RadioButton) findViewById(R.id.friendRequests);
         final RadioButton friendWaiting = (RadioButton) findViewById(R.id.friendWaiting);
@@ -81,16 +81,20 @@ public class FriendActivity extends AppCompatActivity {
         Friend notmyfriend = new Friend("Name","ADD");
         friends.add(myfriend);
         friends.add(notmyfriend);*/
-        if(method.length() > 0){
-            CustomFriendViewAdapter adapter = new CustomFriendViewAdapter(myName,this, R.layout.friend_individual, friends,method);
-            ListView listView = (ListView) findViewById(R.id.friendsView);
-            listView.setAdapter(adapter);
+        CustomFriendViewAdapter adapter = null;
+        ListView listView = (ListView) findViewById(R.id.friendsView);
+        if(friends != null && friends.size() > 0) {
+            if (method.length() > 0) {
+                adapter = new CustomFriendViewAdapter(myName, this, R.layout.friend_individual, friends, method);
+
+
+            } else {
+                adapter = new CustomFriendViewAdapter(this, R.layout.friend_individual, friends);
+
+            }
         }
-        else {
-            CustomFriendViewAdapter adapter = new CustomFriendViewAdapter(this, R.layout.friend_individual, friends);
-            ListView listView = (ListView) findViewById(R.id.friendsView);
-            listView.setAdapter(adapter);
-        }
+
+        listView.setAdapter(adapter);
         //setOnItemClickListener(this);
     }
 
@@ -111,19 +115,15 @@ public class FriendActivity extends AppCompatActivity {
             try{
                 if("friend".equalsIgnoreCase(method)) {
                     hashMap.put("URL",Constants.URL+"/get_added_friends");
-                    PostData post = new PostData(hashMap);
-                    friendsJSON = new JSONArray(post.doInBackground());
                 }
-                else if("request".equalsIgnoreCase(method)) {
+                else if("waiting".equalsIgnoreCase(method)) {
                     hashMap.put("URL", Constants.URL + "/get_unadded_friends");
-                    PostData post = new PostData(hashMap);
-                    friendsJSON = new JSONArray(post.doInBackground());
                 }
-                else{//waiting requests api --- Tooo DOO
-                    /*hashMap.put("URL", Constants.URL + "/search_user_email");
-                    PostData post = new PostData(hashMap);
-                    friendsJSON = new JSONArray(post.doInBackground());*/
+                else if("requests".equalsIgnoreCase(method)){//waiting requests api --- Tooo DOO
+                    hashMap.put("URL", Constants.URL + "/get_friend_requests");
                 }
+                GetData post = new GetData(hashMap);
+                friendsJSON = new JSONArray(post.doInBackground());
             }
             catch (Exception e){
                 Log.d("EXCEPTION","Exception in friendsJSON "+e.getCause());
@@ -135,18 +135,28 @@ public class FriendActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            int size = friendsJSON.length();
-            for(int i = 0 ; i < size ; i++) {
-                Friend item = null;
-                try {
+            friends = new ArrayList<Friend>();
+            if(friendsJSON != null) {
 
-                    JSONObject object = friendsJSON.getJSONObject(i);
-                    item = new Friend(object.getString("data"), "ADD");
+                int size = friendsJSON.length();
+                for (int i = 0; i < size; i++) {
+                    Friend item = null;
+                    try {
+                        JSONObject object = friendsJSON.getJSONObject(i);
+                        String name = object.getString("friend_username");
+                        if(name != null && name.length() > 0 ){
+                            if(name.equalsIgnoreCase(myName)){
+                                name =object.getString("username");
+                            }
+                            item = new Friend(name, "ADD");
+                        }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    friends.add(item);
                 }
-                friends.add(item);
             }
             populateFriends();
         }

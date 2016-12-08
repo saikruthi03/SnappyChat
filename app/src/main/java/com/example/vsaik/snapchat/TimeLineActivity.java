@@ -38,7 +38,7 @@ public class TimeLineActivity extends AppCompatActivity implements AdapterView.O
                 startActivity(main);
             }
         });
-        Spinner spinner = (Spinner) findViewById(R.id.planets_spinner);
+       /* Spinner spinner = (Spinner) findViewById(R.id.planets_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.options_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -47,7 +47,7 @@ public class TimeLineActivity extends AppCompatActivity implements AdapterView.O
         spinner.setOnItemSelectedListener(this);
         TextView txtView = (TextView) findViewById(R.id.txtLink);
         txtView.setText(Html.fromHtml("<a href='#'>"+UserDetails.getNickname().toUpperCase()+"</a>"));
-
+*/
         onStart();
     }
 

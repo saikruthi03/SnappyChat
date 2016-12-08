@@ -39,11 +39,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_main_screen"
             android:theme="@style/AppTheme.NoActionBar" >
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
         </activity>
         <activity
             android:name=".SettingsActivity"
@@ -64,14 +60,25 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" >
+
+        </activity>
         <activity android:name=".AllFriendsChatActivity" />
         <activity android:name=".StartChatActivity">
 
         </activity>
         <activity android:name=".TimeLineActivity" />
-        <activity android:name=".SearchActivity" />
-        <activity android:name=".FriendActivity" />
+        <activity android:name=".SearchActivity" >
+
+        </activity>
+        <activity android:name=".FriendActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".AddFriendsActivity"></activity>
     </application>
 
