@@ -20,6 +20,7 @@ import java.util.List;
 
 public class TimeLineActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener {
 
+    private String name = "";
     private ListView listTimeLine = null;
     private Context context= null;
     @Override
@@ -30,7 +31,8 @@ public class TimeLineActivity extends AppCompatActivity implements AdapterView.O
         listTimeLine = (ListView) findViewById(R.id.list_time_line);
         context = this;
         View contentView = (View)findViewById(R.id.activity_time_line);
-        onStart();
+        Intent current = getIntent();
+        name = current.getStringExtra("name");
         contentView.setOnTouchListener(new OnSwipeTouchListener(context) {
             @Override
             public void onSwipeRight() {
@@ -38,6 +40,8 @@ public class TimeLineActivity extends AppCompatActivity implements AdapterView.O
                 startActivity(main);
             }
         });
+        onStart();
+
        /* Spinner spinner = (Spinner) findViewById(R.id.planets_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.options_array, android.R.layout.simple_spinner_item);
@@ -48,7 +52,6 @@ public class TimeLineActivity extends AppCompatActivity implements AdapterView.O
         TextView txtView = (TextView) findViewById(R.id.txtLink);
         txtView.setText(Html.fromHtml("<a href='#'>"+UserDetails.getNickname().toUpperCase()+"</a>"));
 */
-        onStart();
     }
 
     @Override

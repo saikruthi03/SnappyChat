@@ -74,34 +74,34 @@ public class CustomChatMessageAdapter extends ArrayAdapter<ChatMessage> {
             convertView.setTag(holder);
         } else
             holder = (ViewHolder) convertView.getTag();
-        final Bitmap chatPicturersid = rowItem.getChatImage();
+        if(rowItem != null) {
+            final Bitmap chatPicturersid = rowItem.getChatImage();
 
-        if(rowItem.getUser().equalsIgnoreCase("ME")) {
-            RelativeLayout.LayoutParams paramsImage = (RelativeLayout.LayoutParams) holder.displayPicture.getLayoutParams();
-            paramsImage.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-            holder.displayPicture.setLayoutParams(paramsImage);
-            holder.displayPicture.setImageBitmap(myDP);
-            holder.chatPictureLeft.setImageBitmap(rowItem.getChatImage());
-            holder.chatTextLeft.setText(rowItem.getChatText());
-            holder.chatPictureLeft.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    zoomImageFromThumb(v,chatPicturersid,expandedImageView,chatClick);
-                }
-            });
+            if (rowItem.getUser().equalsIgnoreCase("ME")) {
+                RelativeLayout.LayoutParams paramsImage = (RelativeLayout.LayoutParams) holder.displayPicture.getLayoutParams();
+                paramsImage.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+                holder.displayPicture.setLayoutParams(paramsImage);
+                holder.displayPicture.setImageBitmap(myDP);
+                holder.chatPictureLeft.setImageBitmap(rowItem.getChatImage());
+                holder.chatTextLeft.setText(rowItem.getChatText());
+                holder.chatPictureLeft.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        zoomImageFromThumb(v, chatPicturersid, expandedImageView, chatClick);
+                    }
+                });
+            } else {
+                holder.chatPicture.setImageBitmap(rowItem.getChatImage());
+                holder.chatText.setText(rowItem.getChatText());
+                holder.displayPicture.setImageBitmap(friendDP);
+                holder.chatPicture.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        zoomImageFromThumb(v, chatPicturersid, expandedImageView, chatClick);
+                    }
+                });
+            }
         }
-        else{
-            holder.chatPicture.setImageBitmap(rowItem.getChatImage());
-            holder.chatText.setText(rowItem.getChatText());
-            holder.displayPicture.setImageBitmap(friendDP);
-            holder.chatPicture.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    zoomImageFromThumb(v,chatPicturersid,expandedImageView,chatClick);
-                }
-            });
-        }
-
         return convertView;
     }
     @Override

@@ -46,6 +46,7 @@ public class StartChatActivity extends AppCompatActivity {
     private EditText chatText = null;
     String friend = "";
     JSONArray responseFetch = null;
+    ListView listActiveFriends = null;
     List<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
     TextView friendText;
     ImageButton imageButton;
@@ -72,9 +73,18 @@ public class StartChatActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        onResume();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         imageButton = (ImageButton)findViewById(R.id.backButton);
+        final Button capturePicture = (Button) findViewById(R.id.clickPicture);
+        listActiveFriends = (ListView) findViewById(R.id.chat_listView);
+
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,6 +93,18 @@ public class StartChatActivity extends AppCompatActivity {
             }
         });
         friendText = (TextView)findViewById(R.id.Friend);
+        Button del = (Button) findViewById(R.id.terminateChat);
+        del.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //capturePicture.setBackgroundResource(R.drawable.click);
+                listActiveFriends.setAdapter(null);
+                Log.d("TAG","on delete");
+                RetrieveChatData chatDel = new RetrieveChatData(myName, friend, "DEL");
+                chatDel.execute();
+            }
+        });
+
         getInfo(friend);
 
 
@@ -96,7 +118,6 @@ public class StartChatActivity extends AppCompatActivity {
                 sendChat();
             }
         });
-        final Button capturePicture = (Button) findViewById(R.id.clickPicture);
         if(capturedImage != null ) {
             capturePicture.setBackgroundResource(R.drawable.click3);
             capturePicture.setOnClickListener(new View.OnClickListener() {
@@ -192,41 +213,44 @@ public class StartChatActivity extends AppCompatActivity {
     }
     private void updateChat(){
 
-        int size = responseFetch.length();
-        for(int i = 0 ; i < size ; i++){
-            ChatMessage item = null;
-            try {
-                JSONObject object = responseFetch.getJSONObject(i);
-                String data = object.getString("data");
-                if(data!= null && data.length() < 100) {
-                    if (myName.equalsIgnoreCase(object.getString("sender"))) {
-                        item = new ChatMessage(null, data, "ME");
+        chatMessages = new ArrayList<ChatMessage>();
+        if(responseFetch != null ) {
+            int size = responseFetch.length();
+            for (int i = 0; i < size; i++) {
+                ChatMessage item = null;
+                try {
+                    JSONObject object = responseFetch.getJSONObject(i);
+                    String data = object.getString("data");
+                    if (data != null && data.length() < 100) {
+                        if (myName.equalsIgnoreCase(object.getString("sender"))) {
+                            item = new ChatMessage(null, data, "ME");
+                        } else {
+                            item = new ChatMessage(null, data, "HIM");
+                        }
                     } else {
-                        item = new ChatMessage(null, data, "HIM");
+                        Bitmap chatImage = ImageUtils.getBitmapFromBase64(data);
+                        if (myName.equalsIgnoreCase(object.getString("sender"))) {
+                            item = new ChatMessage(chatImage, "", "ME");
+                        } else {
+                            item = new ChatMessage(chatImage, "", "HIM");
+                        }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                else{
-                    Bitmap chatImage = ImageUtils.getBitmapFromBase64(data);
-                    if (myName.equalsIgnoreCase(object.getString("sender"))) {
-                        item = new ChatMessage(chatImage,"" , "ME");
-                    } else {
-                        item = new ChatMessage(chatImage, "", "HIM");
-                    }
-                }
+                chatMessages.add(item);
             }
-            catch(Exception e){
-                e.printStackTrace();
-            }
-            chatMessages.add(item);
+        }
+        if(chatMessages != null &&  chatMessages.size() > 0) {
+
+            final RelativeLayout chatClick = (RelativeLayout) findViewById(R.id.chat_click);
+            final ImageView expandedImageView = (ImageView) findViewById(
+                    R.id.expanded_image);
+
+            CustomChatMessageAdapter adapter = new CustomChatMessageAdapter(friendDP, myDP, this, R.layout.chat_message, chatMessages, chatClick, expandedImageView);
+            listActiveFriends.setAdapter(adapter);
         }
 
-        ListView listActiveFriends = (ListView) findViewById(R.id.chat_listView);
-        final RelativeLayout chatClick = (RelativeLayout) findViewById(R.id.chat_click);
-        final ImageView expandedImageView = (ImageView) findViewById(
-                R.id.expanded_image);
-
-        CustomChatMessageAdapter adapter = new CustomChatMessageAdapter(friendDP, myDP, this, R.layout.chat_message, chatMessages,chatClick,expandedImageView);
-        listActiveFriends.setAdapter(adapter);
     }
 
 
@@ -266,35 +290,10 @@ public class StartChatActivity extends AppCompatActivity {
                     catch(Exception e){
                         Log.e("RESPONSE- ERROR",e.toString());
                     }
-
-
-                   /* ChatMessage itemhim = new ChatMessage(null,"this is chat message from him","HIM");
-                    ChatMessage item = new ChatMessage(null,"this is chat message from me","ME");
-                    Bitmap chatImage = BitmapFactory.decodeResource(getResources(),R.drawable.common_google_signin_btn_icon_dark_pressed);
-                    ChatMessage imagehim = new ChatMessage(chatImage,"","HIM");
-                    chatMessages.add(item);
-                    chatMessages.add(itemhim);
-                    chatMessages.add(item);
-                    chatMessages.add(itemhim);
-                    chatMessages.add(itemhim);
-                    chatMessages.add(item);
-                    chatMessages.add(imagehim);
-                    chatMessages.add(item);
-                    chatMessages.add(itemhim);
-                    chatMessages.add(itemhim);
-                    chatMessages.add(itemhim);
-                    chatMessages.add(imagehim);
-                    chatMessages.add(itemhim);
-                    chatMessages.add(item);
-                    chatMessages.add(itemhim);
-                    chatMessages.add(itemhim);
-                    chatMessages.add(itemhim);*/
-
-
                 }
                 else if("POST".equalsIgnoreCase(op)){
                     Log.d("background tasks -- ", Arrays.toString(string));
-
+                    responseFetch = null;
                     HashMap<String,String> hashMap =  new HashMap<String,String>();
                     hashMap.put("sender",myName);
                     hashMap.put("receiver",friend);
@@ -304,7 +303,38 @@ public class StartChatActivity extends AppCompatActivity {
                     hashMap.put("Method","POST");
                     PostData post = new PostData(hashMap);
                     String response = post.doInBackground();
+
+                    HashMap<String,String> hashMap2 = new HashMap<String, String>();
+                    hashMap2.put("username",myName);
+                    hashMap2.put("receiver",friend);
+                    hashMap2.put("URL",Constants.URL+"/get_chat");
+                    hashMap2.put("Method","GET");
+                    GetData fecth = new GetData(hashMap2);
+                    try {
+                        String res = fecth.doInBackground();
+                        res = res.substring(res.indexOf("["));
+                        responseFetch = new JSONArray(res);
+                        Log.e("RESPONSE",responseFetch.toString());
+                    }
+                    catch(Exception e){
+                        Log.e("RESPONSE- ERROR",e.toString());
+                    }
+
                     Log.d("RESPONSE",response);
+                }
+                else if("DEL".equalsIgnoreCase(op)){
+                    Log.d("background tasks -- ", Arrays.toString(string));
+
+                    HashMap<String,String> hashMap =  new HashMap<String,String>();
+                    hashMap.put("username",myName);
+                    hashMap.put("receiver",friend);
+                    hashMap.put("URL",Constants.URL+"/delete_friend_chat");
+
+                    hashMap.put("Method","GET");
+                    GetData fecth = new GetData(hashMap);
+                    String response = fecth.doInBackground();
+                    Log.d("RESPONSE",response);
+                    responseFetch = null;
                 }
             }
             /*returner.put("chatMessages",chatMessages);
@@ -318,13 +348,10 @@ public class StartChatActivity extends AppCompatActivity {
         protected void onPostExecute(Void hashMap) {
             super.onPostExecute(hashMap);
 
-            if("POST".equalsIgnoreCase(op)){
-                Toast.makeText(getApplicationContext(),"Success",Toast.LENGTH_SHORT).show();
-                onResume();
-            }
-            else{
-                updateChat();
-            }
+
+                capturedImage = null;
+
+            updateChat();
         }
 
     }

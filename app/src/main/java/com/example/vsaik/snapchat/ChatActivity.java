@@ -78,9 +78,11 @@ public class ChatActivity extends AppCompatActivity implements
 
     private void showFriends() {
 
-        CustomChatVewAdapter adapter = new CustomChatVewAdapter(this, R.layout.chat_list_item, activeFriends);
-        listActiveFriends.setAdapter(adapter);
-        listActiveFriends.setOnItemClickListener(this);
+        if(activeFriends != null && activeFriends.size() > 0) {
+            CustomChatVewAdapter adapter = new CustomChatVewAdapter(this, R.layout.chat_list_item, activeFriends);
+            listActiveFriends.setAdapter(adapter);
+            listActiveFriends.setOnItemClickListener(this);
+        }
     }
 
     @Override
@@ -106,6 +108,7 @@ public class ChatActivity extends AppCompatActivity implements
     }
 
     private void getActiveFriends() {
+        activeFriends = new ArrayList<ChatItem>();
         RetrieveFriends retrieveFriends = new RetrieveFriends();
         retrieveFriends.execute();
 
@@ -118,16 +121,11 @@ public class ChatActivity extends AppCompatActivity implements
         @Override
         protected Void doInBackground(Void... voids) {
 
-            //you get a json object
-            //iterate over the json data and add data like this
-            //convert string to bitmap
-
-
             HashMap<String, String> hashMap = new HashMap<String, String>();
             hashMap.put("username", myName);
-            hashMap.put("URL", Constants.URL + "/get_added_friends");
+            hashMap.put("URL", Constants.URL + "/list_chats");
             hashMap.put("Method", "GET");
-            PostData fecth = new PostData(hashMap);
+            GetData fecth = new GetData(hashMap);
             try {
                 responseFetch = new JSONArray(fecth.doInBackground());
                 Log.e("RESPONSE", responseFetch.toString());
@@ -137,25 +135,41 @@ public class ChatActivity extends AppCompatActivity implements
             }
 
 
-          /*  String base64Image = "";
-            Bitmap friend = ImageUtils.getBitmapFromBase64(base64Image);
-            String name = "";
-             //1 and 0 based on online, offline
-            int status = ImageUtils.getStatus("Online");
-            ChatItem item1 = new ChatItem(friend,name,status);*/
+        if(responseFetch != null ) {
             int size = responseFetch.length();
             for (int i = 0; i < size; i++) {
                 ChatItem item = null;
                 try {
                     JSONObject object = responseFetch.getJSONObject(i);
-
-                    item = new ChatItem(null, object.getString("friend"), ImageUtils.getStatus("Online"));
-
+                    Log.d("FRIEND OOBJ",object.toString());
+                    String friendName = "";
+                    if (myName.equalsIgnoreCase(object.getString("friend_username"))) {
+                        friendName = object.getString("username");
+                    } else {
+                        friendName = object.getString("friend_username");
+                    }
+                    HashMap<String,String> hashMap1 = new HashMap<String, String>();
+                    hashMap1.put("username", friendName);
+                    hashMap1.put("URL", Constants.URL + "/check_user");
+                    hashMap1.put("Method", "GET");
+                    GetData activeData = new GetData(hashMap1);
+                    JSONArray result = new JSONArray(activeData.doInBackground());
+                    if(result != null && result.length() > 0) {
+                        JSONObject obj = result.getJSONObject(0);
+                        Log.d("ACTIVE",obj.toString());
+                        boolean level = Boolean.parseBoolean(obj.getString("isActive"));
+                        item = new ChatItem(null, object.getString("friend"), ImageUtils.getStatus(level));
+                    }
+                    else {
+                        item = new ChatItem(null, object.getString("friend"), ImageUtils.getStatus(false));
+                    }
+                    activeFriends.add(item);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                activeFriends.add(item);
+
             }
+        }
             return null;
         }
 

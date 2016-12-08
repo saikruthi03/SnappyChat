@@ -40,10 +40,11 @@ public class ImageUtils {
         return bitmap;
     }
 
-    public static int getStatus(String online) {
-        if("ONLINE".equalsIgnoreCase(online))
+    public static int getStatus(boolean online) {
+        if(online)
             return R.drawable.greendot;
-        return 0;
+        else
+            return 0;
     }
 
     public static String getStringImage(Bitmap bitmap) {

@@ -70,9 +70,11 @@ public class SearchActivity extends AppCompatActivity {
         Friend notmyfriend = new Friend("Name","ADD");
         friends.add(myfriend);
         friends.add(notmyfriend);*/
-        CustomFriendViewAdapter adapter = new CustomFriendViewAdapter(this, R.layout.friend_individual, friends);
-        ListView listView = (ListView) findViewById(R.id.list_friends);
-        listView.setAdapter(adapter);
+        if(friends != null && friends.size() > 0) {
+            CustomFriendViewAdapter adapter = new CustomFriendViewAdapter(this, R.layout.friend_individual, friends);
+            ListView listView = (ListView) findViewById(R.id.list_friends);
+            listView.setAdapter(adapter);
+        }
         //setOnItemClickListener(this);
     }
 
@@ -119,18 +121,20 @@ public class SearchActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            int size = friendsJSON.length();
-            for(int i = 0 ; i < size ; i++) {
-                Friend item = null;
-                try {
-                    JSONObject object = friendsJSON.getJSONObject(i);
+            if(friendsJSON != null) {
+                int size = friendsJSON.length();
+                for (int i = 0; i < size; i++) {
+                    Friend item = null;
+                    try {
+                        JSONObject object = friendsJSON.getJSONObject(i);
 
-                    item = new Friend(object.getString("username"), "ADD");
+                        item = new Friend(object.getString("username"), "ADD");
 
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    friends.add(item);
                 }
-                friends.add(item);
             }
             populateFriends();
         }
