@@ -77,13 +77,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static HashMap<String,String> userMap= new HashMap<String,String>();
     String path;
     private GoogleApiClient mGoogleApiClient;
-    String imgDecodableString = "No Image";
+    String imgDecodableString = "NoImage";
     private Context context ;
     DatabaseReference myRef = mDatabase.getReference(Constants.dataBase);
-    // TextView nickName;
     EditText nickName;
     EditText email;
-    EditText password;
+    EditText interests;
     EditText profession;
     EditText aboutMe;
     EditText location;
@@ -122,8 +121,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         nickName.setText(" ");
         email=(EditText)findViewById(R.id.emailText);
         email.setText(" ");
-        password= (EditText) findViewById(R.id.passwordText);
-        password.setText(" ");
+        interests= (EditText) findViewById(R.id.passwordText);
+        interests.setText(" ");
         profession=(EditText)findViewById(R.id.professionText);
         profession.setText(" ");
         aboutMe=(EditText)findViewById(R.id.aboutMeText);
@@ -188,37 +187,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 DatabaseReference myRef1 = myRef.child(Constants.dataBase).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 UserDetails.setEmail(email.getText().toString());
                 UserDetails.setNickname(nickName.getText().toString());
-                UserDetails.setPhoneNumber(password.getText().toString());
-                UserDetails.setInterests(" ");
-                UserDetails.setAboutMe(location.getText().toString());
-                UserDetails.setLocation(aboutMe.getText().toString());
+                UserDetails.setInterests(interests.getText().toString());
+                UserDetails.setAboutMe(aboutMe.getText().toString());
+                UserDetails.setLocation(location.getText().toString());
                 UserDetails.setProfilePicUrl(imgDecodableString);
+                UserDetails.setProfession(profession.getText().toString());
                 UserDetails.setImage(ImageUtils.getBitmapFromBase64(UserDetails.getProfilePicUrl()));
                 UserDetails.setVisibilty(visibilty);
-                UserDetails.setProfession(profession.getText().toString());
                 User user = new User();
                 user.setUserId(UserDetails.getUserId());
                 user.setEmail(UserDetails.getEmail());
                 user.setNickname(UserDetails.getNickname());
-                user.setPhoneNumber(UserDetails.getPhoneNumber());
+                user.setPhoneNumber(" ");
                 user.setInterests(UserDetails.getInterests());
                 user.setAboutMe(UserDetails.getAboutMe());
                 user.setLocation(UserDetails.getLocation());
+                user.setVisibilty(UserDetails.getProfession());
                 user.setProfilePicUrl(imgDecodableString);
                 user.setVisibilty(UserDetails.getVisibilty());
                 myRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
-                userMap = new HashMap<String, String>();
-                userMap.put("URL",Constants.URL+"/insert_user?");
-                userMap.put("email",UserDetails.getEmail());
-                userMap.put("username",UserDetails.getEmail());
-                userMap.put("fullname",UserDetails.getNickname());
-                userMap.put("interests",UserDetails.getInterests());
-                userMap.put("about",UserDetails.getAboutMe());
-                userMap.put("account_type",visibilty);
-                userMap.put("is_active_timeline","false");
-                userMap.put("thumbnail_profile_pic",imgDecodableString);
-                userMap.put("isActive","true");
-                pushUser.insertData(userMap);
+                try {
+                    userMap = new HashMap<String, String>();
+                    userMap.put("URL", Constants.URL + "/insert_user?");
+                    userMap.put("email", UserDetails.getEmail());
+                    userMap.put("username", UserDetails.getEmail());
+                    userMap.put("fullname", UserDetails.getNickname());
+                    userMap.put("interests", UserDetails.getInterests());
+                    userMap.put("about", UserDetails.getAboutMe());
+                    userMap.put("account_type", visibilty);
+                    userMap.put("is_active_timeline", "false");
+                    userMap.put("thumbnail_profile_pic", imgDecodableString);
+                    userMap.put("isActive", "true");
+                    pushUser.insertData(userMap);
+                }catch(Exception ex){
+
+                }
                 Intent mainScreen = new Intent(MainActivity.this,MainScreen.class);
                 startActivity(mainScreen);
 
@@ -275,8 +278,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                }
 
                             }
-                            if(!user.getPhoneNumber().equals("")){
-                                password.setText(user.getPhoneNumber());
+                            if(!user.getInterests().equals("")){
+                                interests.setText(user.getInterests());
                             }
                             if(!user.getLocation().equals("")){
                                 location.setText(user.getLocation());
@@ -291,15 +294,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 friendsButton.setChecked(false);
                                 privacyButton.setChecked(false);
                                 publicButton.setChecked(false);
-                            }else if(!user.getVisibilty().equals("") && user.getVisibilty().equals(Constants.Friends)){
+                            }else if(!(user.getVisibilty().equals("")) && user.getVisibilty().equals(Constants.Friends)){
                                 friendsButton.setChecked(true);
                                 privacyButton.setChecked(false);
                                 publicButton.setChecked(false);
-                            }else if(!user.getVisibilty().equals("") && user.getVisibilty().equals(Constants.Private)){
+                            }else if(!(user.getVisibilty().equals("")) && user.getVisibilty().equals(Constants.Private)){
                                 friendsButton.setChecked(false);
                                 privacyButton.setChecked(true);
                                 publicButton.setChecked(false);
-                            }else if(!user.getVisibilty().equals("") && user.getVisibilty().equals(Constants.Public)){
+                            }else if(!(user.getVisibilty().equals("")) && user.getVisibilty().equals(Constants.Public)){
                                 friendsButton.setChecked(false);
                                 privacyButton.setChecked(false);
                                 publicButton.setChecked(true);
@@ -347,24 +350,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
         LoginActivity.curUser= "NA";
-        userMap = new HashMap<>();
-        userMap.put("URL",Constants.URL+"'/is_active_false_user?");
-        userMap.put("email",UserDetails.getEmail());
-        userMap.put("username",UserDetails.getEmail());
-        userMap.put("fullname",UserDetails.getNickname());
-        userMap.put("interests",UserDetails.getInterests());
-        userMap.put("about",UserDetails.getAboutMe());
-        userMap.put("account_type",visibilty);
-        userMap.put("is_active_timeline","false");
-        userMap.put("thumbnail_profile_pic",imgDecodableString);
-        userMap.put("isActive","false");
-        PushUser pushUser = new PushUser();
-        pushUser.insertData(userMap);
+       try {
+           userMap = new HashMap<>();
+           userMap.put("URL", Constants.URL + "'/is_active_false_user?");
+           userMap.put("email", UserDetails.getEmail());
+           userMap.put("username", UserDetails.getEmail());
+           userMap.put("fullname", UserDetails.getNickname());
+           userMap.put("interests", UserDetails.getInterests());
+           userMap.put("about", UserDetails.getAboutMe());
+           userMap.put("account_type", visibilty);
+           userMap.put("is_active_timeline", "false");
+           userMap.put("thumbnail_profile_pic", imgDecodableString);
+           userMap.put("isActive", "false");
+           PushUser pushUser = new PushUser();
+           pushUser.insertData(userMap);
+       }catch(Exception ex){
+
+       }
         mAuth.signOut();
         UserDetails.setUserId("");
         UserDetails.setEmail("");
         UserDetails.setNickname("");
-        UserDetails.setPhoneNumber("");
         UserDetails.setInterests("");
         UserDetails.setAboutMe("");
         UserDetails.setLocation("");
