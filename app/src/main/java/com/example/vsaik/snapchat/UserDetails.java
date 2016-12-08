@@ -16,8 +16,18 @@ public class UserDetails {
     public static String interests;
     public static String userId;
     public static String visibilty;
-    public static String phoneNumber;
     public static Bitmap image;
+    public static String provider;
+
+    public static String getProvider() {
+        return provider;
+    }
+
+    public static void setProvider(String provider) {
+        UserDetails.provider = provider;
+    }
+
+
 
     public static Bitmap getImage() {
         return image;
@@ -99,24 +109,12 @@ public class UserDetails {
         UserDetails.visibilty = visibilty;
     }
 
-    public static String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public static void setPhoneNumber(String phoneNumber) {
-        UserDetails.phoneNumber = phoneNumber;
-    }
-
-
-
-
-
 
     public UserDetails(){
 
     }
 
-    public UserDetails(String nickname, String email, String profilePicUrl, String location, String profession, String aboutMe, String interests,String userId,String visibilty,String phoneNumber) {
+    public UserDetails(String nickname, String email, String profilePicUrl, String location, String profession, String aboutMe, String interests,String userId,String visibilty) {
         this.nickname = nickname;
         this.email = email;
         this.profilePicUrl = profilePicUrl;
@@ -126,7 +124,6 @@ public class UserDetails {
         this.interests = interests;
         this.visibilty = visibilty;
         this.userId = userId;
-        this.phoneNumber = phoneNumber;
     }
 
 
