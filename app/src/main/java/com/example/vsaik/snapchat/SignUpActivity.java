@@ -124,7 +124,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                         }else {
                             Intent create = new Intent();
                             setResult(Activity.RESULT_OK,create);
-                                                       UserDetails user = new UserDetails(nickNm,email1,pfs," "," "," "," ",mAuth.getCurrentUser().getUid().toString(),"FriendsOnly"," ");
+                                                       UserDetails user = new UserDetails(nickNm,email1,pfs," "," "," ",mAuth.getCurrentUser().getUid().toString(),"FriendsOnly"," ");
                             myRef.child(mAuth.getCurrentUser().getUid().toString()).setValue(user);
                             finish();
                         }

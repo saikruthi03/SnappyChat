@@ -339,9 +339,14 @@ public class StartChatActivity extends AppCompatActivity {
             Log.d("background tasks -- ", Arrays.toString(string)+" : "+op+" : "+myName+ " : "+friend);
             if(myName.length() > 0 && friend.length() > 0) {
                 if("GET".equalsIgnoreCase(op)){
-                    friendDP = BitmapFactory.decodeResource(getResources(), R.drawable.com_facebook_button_icon_blue);
-                    myDP = BitmapFactory.decodeResource(getResources(), R.drawable.com_facebook_button_send_icon_white);
 
+                    friendDP = BitmapFactory.decodeResource(getResources(), R.drawable.com_facebook_button_icon_blue);
+
+                    if(UserDetails.getImage() != null)
+                        myDP = UserDetails.getImage();
+                    else {
+                        myDP = BitmapFactory.decodeResource(getResources(), R.drawable.com_facebook_button_send_icon_white);
+                    }
                     HashMap<String,String> hashMap = new HashMap<String, String>();
                     hashMap.put("username",myName);
                     hashMap.put("receiver",friend);

@@ -16,28 +16,46 @@ import java.nio.ByteBuffer;
 public class ImageUtils {
 
     public static Bitmap compress(Bitmap original){
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        original.compress(Bitmap.CompressFormat.PNG, 30, out);
-        Bitmap compressed = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
-        original = null;
-        out = null;
-        return compressed;
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            original.compress(Bitmap.CompressFormat.PNG, 30, out);
+            Bitmap compressed = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
+            original = null;
+            out = null;
+            return compressed;
+        }
+        catch(Exception e){
+            Log.d("MEMORY","Out of Memory errors");
+        }
+        return null;
     }
 
     public static Bitmap getBitmapFromBase64(String base64Encoded){
-        byte[] decodedString = Base64.decode(base64Encoded, Base64.DEFAULT);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        if(bitmap == null) {
-            Log.d("Base64", "Might be using a json response as string");
+       try{
+           byte[] decodedString = Base64.decode(base64Encoded, Base64.DEFAULT);
+           Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+           if(bitmap == null) {
+               Log.d("Base64", "Might be using a json response as string");
+
             return getBitmapFromJSON(base64Encoded);
         }
         return bitmap;
     }
+    catch(Exception e){
+        Log.d("MEMORY","Out of Memory errors");
+    }
+    return null;
+    }
 
     public static Bitmap getBitmapFromJSON(String urlSafeBitmap) {
-        byte[] decodedString = Base64.decode(urlSafeBitmap, Base64.URL_SAFE);
+    try{    byte[] decodedString = Base64.decode(urlSafeBitmap, Base64.URL_SAFE);
         Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         return bitmap;
+    }
+    catch(Exception e){
+        Log.d("MEMORY","Out of Memory errors");
+    }
+    return null;
     }
 
     public static int getStatus(boolean online) {
@@ -48,7 +66,7 @@ public class ImageUtils {
     }
 
     public static String getStringImage(Bitmap bitmap) {
-        if (bitmap != null) {
+     try{   if (bitmap != null) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
             byte[] b = baos.toByteArray();
@@ -58,14 +76,24 @@ public class ImageUtils {
         }
         return "";
     }
+    catch(Exception e){
+        Log.d("MEMORY","Out of Memory errors");
+    }
+    return "";
+    }
 
     public static String getStringImageWithoutCompression(Bitmap bitmap) {
-        final int lnth=bitmap.getByteCount();
+    try{    final int lnth=bitmap.getByteCount();
         ByteBuffer dst= ByteBuffer.allocate(lnth);
         bitmap.copyPixelsToBuffer( dst);
         byte[] barray=dst.array();
         String temp = Base64.encodeToString(barray, Base64.DEFAULT);
         return temp;
+    }
+    catch(Exception e){
+        Log.d("MEMORY","Out of Memory errors");
+    }
+    return "";
     }
 
 }

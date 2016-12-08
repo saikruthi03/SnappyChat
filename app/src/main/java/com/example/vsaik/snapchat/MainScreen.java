@@ -19,6 +19,7 @@ import android.hardware.Camera;
 import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -276,6 +277,7 @@ public class MainScreen extends AppCompatActivity {
 
         HashMap<String,String> hashMap = new HashMap<String,String>();
         hashMap.put("username",myName);
+        //currentBitMap = ImageUtils.compress(currentBitMap);
         hashMap.put("pictures",ImageUtils.getStringImage(currentBitMap));
         hashMap.put("caption",caption);
         PushContent pushContent = new PushContent(hashMap);
@@ -306,19 +308,36 @@ public class MainScreen extends AppCompatActivity {
         bitmap2.setY(100);
 
         BitmapCollection bitmap3 = new BitmapCollection();
-        bitmap3.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.photos));
-        bitmap3.setX(1000);
-        bitmap3.setY(100);
+        bitmap3.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.sharks));
+        bitmap3.setX(1200);
+        bitmap3.setY(3000);
 
         BitmapCollection bitmap4 = new BitmapCollection();
-        bitmap4.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.mobile_geek));
-        bitmap4.setX(1900);
-        bitmap4.setY(1000);
+        bitmap4.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cali));
+        bitmap4.setX(200);
+        bitmap4.setY(3000);
 
+        BitmapCollection bitmap5 = new BitmapCollection();
+        bitmap5.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.drow));
+        bitmap5.setX(1300);
+        bitmap5.setY(300);
+
+        BitmapCollection bitmap6 = new BitmapCollection();
+        bitmap6.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.dota));
+        bitmap6.setX(1000);
+        bitmap6.setY(200);
+
+        BitmapCollection bitmap7 = new BitmapCollection();
+        bitmap7.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.epl));
+        bitmap7.setX(2500);
+        bitmap7.setY(3000);
         overlays.add(bitmap1);
         overlays.add(bitmap2);
         overlays.add(bitmap3);
         overlays.add(bitmap4);
+        overlays.add(bitmap5);
+        overlays.add(bitmap6);
+        overlays.add(bitmap7);
     }
 
     class PushContent extends

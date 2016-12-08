@@ -17,7 +17,8 @@
         android:icon="@drawable/appicon"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:largeHeap="true">
         <service
             android:name=".GetMessagesService"
          android:enabled="true"
@@ -42,6 +43,7 @@
             android:label="@string/title_activity_main_screen"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">
+
 
         </activity>
 

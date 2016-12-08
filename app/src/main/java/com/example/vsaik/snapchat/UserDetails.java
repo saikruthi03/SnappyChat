@@ -125,8 +125,6 @@ public class UserDetails {
         this.visibilty = visibilty;
         this.userId = userId;
     }
-
-
 }
 
 
