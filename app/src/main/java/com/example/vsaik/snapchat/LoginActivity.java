@@ -7,7 +7,9 @@ import android.app.ProgressDialog;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -57,6 +59,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -75,12 +78,14 @@ public class LoginActivity extends AppCompatActivity implements
     LoginButton fbLogin;
     ProgressDialog progressDialog;
     Context ctx=null;
+    public String imgDecodableString = "NoImage";
     PushUser pushUser = new PushUser();
 
     public static FirebaseAuth mAuth = null;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private CallbackManager mCallbackManager;
     private GoogleApiClient mGoogleApiClient;
+    String user = " ";
     FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     DatabaseReference myRef = mDatabase.getReference(Constants.dataBase);
 
@@ -173,26 +178,35 @@ public class LoginActivity extends AppCompatActivity implements
             }
         });
     }
-    String user = " ";
+
     public void fetchUserDetails(){
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                    if(user.equals(postSnapshot.getKey())){
+                   try {
                        User user = postSnapshot.getValue(User.class);
-                       Log.d("userrrrr",user.getUserId()+"");
                        UserDetails.setUserId(postSnapshot.getKey());
                        UserDetails.setEmail(user.getEmail());
                        UserDetails.setNickname(user.getNickname());
-                       UserDetails.setProfilePicUrl(user.getProfilePicUrl());
-                       UserDetails.setImage(ImageUtils.getBitmapFromBase64(user.getProfilePicUrl()));
-                       Log.d("Bitmap",UserDetails.getProfilePicUrl());
+                       try{if (!user.getProfilePicUrl().isEmpty()) {
+                           UserDetails.setProfilePicUrl(user.getProfilePicUrl());
+                           UserDetails.setImage(ImageUtils.getBitmapFromBase64(user.getProfilePicUrl()));
+                       } else {
+                           UserDetails.setProfilePicUrl(imgDecodableString);
+                       }}catch(Exception ex){
+
+                       }
+
                        UserDetails.setPhoneNumber(user.getPhoneNumber());
                        UserDetails.setInterests(user.getInterests());
                        UserDetails.setAboutMe(user.getAboutMe());
                        UserDetails.setLocation(user.getLocation());
                        UserDetails.setVisibilty(user.getVisibilty());
+                   }catch(Exception ex){
+
+                   }
                    }
                 }
             }
@@ -255,26 +269,34 @@ public class LoginActivity extends AppCompatActivity implements
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (!dataSnapshot.hasChild("email")) {
                                         DatabaseReference myref1 = myRef.child(Constants.dataBase).child(mUser.getUid());
-                                        userMap = new HashMap<String, String>();
-                                        userMap.put("URL",Constants.URL+"/insert_user?");
-                                        userMap.put("email",mUser.getEmail());
-                                        userMap.put("username",mUser.getEmail());
-                                        userMap.put("fullname",mUser.getDisplayName());
-                                        userMap.put("interests"," ");
-                                        userMap.put("about"," ");
-                                        userMap.put("profession"," ");
-                                        userMap.put("account_type","FriendsOnly");
-                                        userMap.put("is_active_timeline","false");
-                                        userMap.put("thumbnail_profile_pic","");
-                                        userMap.put("isActive","true");
+
                                          if(redirect){
                                             user= mUser.getUid();
                                                 fetchUserDetails();
+                                             UserDetails.setProvider("G");
                                                     progressDialog.dismiss();
                                                     startCameraActivity(mUser.getUid());
                                         }else{
+                                            try {
+                                                userMap = new HashMap<String, String>();
+                                                userMap.put("URL", Constants.URL + "/insert_user?");
+                                                userMap.put("email", mUser.getEmail());
+                                                userMap.put("username", mUser.getEmail());
+                                                userMap.put("fullname", mUser.getDisplayName());
+                                                userMap.put("interests", " ");
+                                                userMap.put("about", " ");
+                                                userMap.put("profession", " ");
+                                                userMap.put("account_type", "FriendsOnly");
+                                                userMap.put("is_active_timeline", "false");
+                                                userMap.put("thumbnail_profile_pic", imgDecodableString);
+                                                userMap.put("isActive", "true");
+                                                pushUser.insertData(userMap);
+                                            }catch(Exception ex){
+
+                                            }
 
                                             UserDetails.setUserId(mUser.getUid());
+                                             UserDetails.setProvider("G");
                                             UserDetails.setEmail(mUser.getEmail());
                                             UserDetails.setNickname(mUser.getDisplayName());
                                             UserDetails.setUserId(mUser.getUid());
@@ -282,7 +304,7 @@ public class LoginActivity extends AppCompatActivity implements
                                             UserDetails.setInterests(" ");
                                             UserDetails.setAboutMe(" ");
                                             UserDetails.setLocation(" ");
-                                            UserDetails.setProfilePicUrl(" ");
+                                            UserDetails.setProfilePicUrl(imgDecodableString);
                                             UserDetails.setVisibilty(Constants.Friends);
                                             User user = new User();
                                             user.setUserId(mUser.getUid());
@@ -297,7 +319,6 @@ public class LoginActivity extends AppCompatActivity implements
                                             user.setVisibilty(Constants.Friends);
                                             myRef.child(mUser.getUid()).setValue(user);
                                             userId.add(mUser.getUid());
-                                            pushUser.insertData(userMap);
                                             progressDialog.dismiss();
                                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                             startActivity(intent);
@@ -336,56 +357,66 @@ public class LoginActivity extends AppCompatActivity implements
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
 
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }else{
                             final FirebaseUser fbUser = mAuth.getCurrentUser();
                             for(String user:userId){
                                 if(user.equals(fbUser.getUid())){
                                     redirect = true;
                                 }
                             }
-                            myRef.child("USERS").child(fbUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            myRef.child(Constants.dataBase).child(fbUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if (!dataSnapshot.hasChild("emailid")) {
+                                    if (!dataSnapshot.hasChild("email")) {
                                         DatabaseReference myref1 = myRef.child(Constants.dataBase).child(fbUser.getUid());
-                                        userMap = new HashMap<String, String>();
-                                        userMap.put("URL",Constants.URL+"/insert_user?");
-                                        userMap.put("email",fbUser.getEmail());
-                                        userMap.put("username",fbUser.getEmail());
-                                        userMap.put("fullname",fbUser.getDisplayName());
-                                        userMap.put("interests"," ");
-                                        userMap.put("about"," ");
-                                        userMap.put("account_type","FriendsOnly");
-                                        userMap.put("is_active_timeline","false");
-                                        userMap.put("thumbnail_profile_pic","");
-                                        userMap.put("isActive","true");
 
+                                        try {
+                                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), fbUser.getPhotoUrl());
+                                            imgDecodableString = ImageUtils.getStringImage(bitmap);
+                                        }catch (IOException ex){
+                                            imgDecodableString ="NoImage";
+                                        }
                                         Toast.makeText(LoginActivity.this, " Successfully Signed In ", Toast.LENGTH_SHORT).show();
                                         if(redirect) {
                                             user= fbUser.getUid();
                                             fetchUserDetails();
+                                            UserDetails.setProvider("F");
                                             startCameraActivity(fbUser.getUid());
                                         }else{
-                                            UserDetails.setEmail(fbUser.getEmail());
-                                            UserDetails.setNickname(fbUser.getDisplayName());
-                                            UserDetails.setUserId(fbUser.getUid());
-                                            UserDetails.setPhoneNumber("");
-                                            UserDetails.setInterests("");
-                                            UserDetails.setAboutMe("");
-                                            UserDetails.setLocation("");
-                                            UserDetails.setProfilePicUrl("");
-                                            UserDetails.setVisibilty(Constants.Friends);
-                                            UserDetails.setUserId(fbUser.getUid());
-                                            User user = new User(fbUser.getDisplayName(),fbUser.getEmail(),fbUser.getPhotoUrl().toString()," ",""," "," ",fbUser.getUid()," "," ");
-                                            myRef.child(fbUser.getUid()).setValue(user);
+                                          try {
+                                              UserDetails.setEmail(fbUser.getEmail());
+                                              UserDetails.setProvider("F");
+                                              UserDetails.setNickname(fbUser.getDisplayName());
+                                              UserDetails.setUserId(fbUser.getUid());
+                                              UserDetails.setPhoneNumber("");
+                                              UserDetails.setInterests("");
+                                              UserDetails.setAboutMe("");
+                                              UserDetails.setLocation("");
+                                              UserDetails.setProfilePicUrl(imgDecodableString);
+                                              UserDetails.setVisibilty(Constants.Friends);
+                                              UserDetails.setUserId(fbUser.getUid());
+                                              User user = new User(fbUser.getDisplayName(), fbUser.getEmail(), imgDecodableString, " ", "", " ", " ", fbUser.getUid(), " ", " ");
+                                              myRef.child(fbUser.getUid()).setValue(user);
+                                          }catch(Exception ex){
+
+                                          }
                                             //new PostData(userMap).execute();
-                                            pushUser.insertData(userMap);
+                                           try {
+                                               userMap = new HashMap<String, String>();
+                                               userMap.put("URL", Constants.URL + "/insert_user?");
+                                               userMap.put("email", fbUser.getEmail());
+                                               userMap.put("username", fbUser.getEmail());
+                                               userMap.put("fullname", fbUser.getDisplayName());
+                                               userMap.put("interests", " ");
+                                               userMap.put("about", " ");
+                                               userMap.put("account_type", "FriendsOnly");
+                                               userMap.put("is_active_timeline", "false");
+                                               userMap.put("thumbnail_profile_pic",imgDecodableString);
+                                               userMap.put("isActive", "true");
+                                               pushUser.insertData(userMap);
+                                           }catch(Exception ex){
+
+                                           }
                                             progressDialog.dismiss();
 
                                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -404,7 +435,7 @@ public class LoginActivity extends AppCompatActivity implements
                             });
 
 
-                        }
+
 
 
                     }
@@ -428,5 +459,7 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
 }
+
+
 
 
