@@ -85,14 +85,13 @@ public class LoginActivity extends AppCompatActivity implements
     private FirebaseAuth.AuthStateListener mAuthListener;
     private CallbackManager mCallbackManager;
     private GoogleApiClient mGoogleApiClient;
-    String user = " ";
+    String userN = " ";
     FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     DatabaseReference myRef = mDatabase.getReference(Constants.dataBase);
-
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("Current User", "Current User Id:" + curUser);
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
@@ -101,7 +100,7 @@ public class LoginActivity extends AppCompatActivity implements
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                 user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                     curUser = user.getUid();
@@ -148,14 +147,27 @@ public class LoginActivity extends AppCompatActivity implements
             .requestEmail()
             .build();
 
-    mGoogleApiClient= new GoogleApiClient.Builder(this).enableAutoManage(this,this).addApi(Auth.GOOGLE_SIGN_IN_API,gso).build();
+   try{ mGoogleApiClient= new GoogleApiClient.Builder(this).enableAutoManage(this,this).addApi(Auth.GOOGLE_SIGN_IN_API,gso).build();
     googlesignInButton.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             Intent signInIntent=Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
             startActivityForResult(signInIntent,1004);
         }
-    });
+    });}catch(IllegalStateException ex){
+
+   }catch(Exception ex){
+
+   }
+
+       try{ if(user.getUid() != null){
+           Log.d("Exc","Exc"+user.getUid());
+            userN = user.getUid();
+            fetchUserDetails();
+            startCameraActivity(userN);
+        }}catch(Exception ex){
+Log.d("Exc","Exc"+userN);
+       }
 }
 
 
@@ -199,7 +211,6 @@ public class LoginActivity extends AppCompatActivity implements
 
                        }
 
-                       UserDetails.setPhoneNumber(user.getPhoneNumber());
                        UserDetails.setInterests(user.getInterests());
                        UserDetails.setAboutMe(user.getAboutMe());
                        UserDetails.setLocation(user.getLocation());
@@ -271,7 +282,7 @@ public class LoginActivity extends AppCompatActivity implements
                                         DatabaseReference myref1 = myRef.child(Constants.dataBase).child(mUser.getUid());
 
                                          if(redirect){
-                                            user= mUser.getUid();
+                                             userN= mUser.getUid();
                                                 fetchUserDetails();
                                              UserDetails.setProvider("G");
                                                     progressDialog.dismiss();
@@ -300,7 +311,6 @@ public class LoginActivity extends AppCompatActivity implements
                                             UserDetails.setEmail(mUser.getEmail());
                                             UserDetails.setNickname(mUser.getDisplayName());
                                             UserDetails.setUserId(mUser.getUid());
-                                            UserDetails.setPhoneNumber(" ");
                                             UserDetails.setInterests(" ");
                                             UserDetails.setAboutMe(" ");
                                             UserDetails.setLocation(" ");
@@ -376,9 +386,9 @@ public class LoginActivity extends AppCompatActivity implements
                                         }catch (IOException ex){
                                             imgDecodableString ="NoImage";
                                         }
-                                        Toast.makeText(LoginActivity.this, " Successfully Signed In ", Toast.LENGTH_SHORT).show();
+
                                         if(redirect) {
-                                            user= fbUser.getUid();
+                                            userN= fbUser.getUid();
                                             fetchUserDetails();
                                             UserDetails.setProvider("F");
                                             startCameraActivity(fbUser.getUid());
@@ -388,7 +398,6 @@ public class LoginActivity extends AppCompatActivity implements
                                               UserDetails.setProvider("F");
                                               UserDetails.setNickname(fbUser.getDisplayName());
                                               UserDetails.setUserId(fbUser.getUid());
-                                              UserDetails.setPhoneNumber("");
                                               UserDetails.setInterests("");
                                               UserDetails.setAboutMe("");
                                               UserDetails.setLocation("");
@@ -459,7 +468,5 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
 }
-
-
 
 
