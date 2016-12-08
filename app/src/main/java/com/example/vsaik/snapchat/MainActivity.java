@@ -30,6 +30,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -50,6 +52,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -233,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onStart() {
+        FacebookSdk.sdkInitialize(getApplicationContext());
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -263,7 +267,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
                             if(!user.getProfilePicUrl().equals("")){
                                 imgDecodableString = user.getProfilePicUrl();
-                               // imageView.setImageBitmap(ImageUtils.getBitmapFromBase64(imgDecodableString));
+                               try{ if(!imgDecodableString.isEmpty()){
+                                    if(imgDecodableString.length() > 6)
+                                        imageView.setImageBitmap(ImageUtils.getBitmapFromBase64(imgDecodableString));
+                                }}catch(Exception ex){
+
+                               }
+
                             }
                             if(!user.getPhoneNumber().equals("")){
                                 password.setText(user.getPhoneNumber());
@@ -316,16 +326,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void signOut(){
 
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        // ...
-                        Toast.makeText(getApplicationContext(),"Logged Out",Toast.LENGTH_SHORT).show();
-                        //Intent i=new Intent(getApplicationContext(),MainActivity.class);
-                        //startActivity(i);
-                    }
-                });
+       try {
+           Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                   new ResultCallback<Status>() {
+                       @Override
+                       public void onResult(Status status) {
+                           // ...
+                           Toast.makeText(getApplicationContext(), "Logged Out", Toast.LENGTH_SHORT).show();
+                           //Intent i=new Intent(getApplicationContext(),MainActivity.class);
+                           //startActivity(i);
+                       }
+                   });
+       }catch (Exception ex){
+
+       }
+        try {
+            if(UserDetails.getProvider().equals("F"))
+            LoginManager.getInstance().logOut();
+        }catch(Exception ex){
+
+        }
         LoginActivity.curUser= "NA";
         userMap = new HashMap<>();
         userMap.put("URL",Constants.URL+"'/is_active_false_user?");
@@ -395,4 +415,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 }
+
 
