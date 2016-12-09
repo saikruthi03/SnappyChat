@@ -36,5 +36,8 @@
         <item>More</item>
         <item>Search</item>
         <item>Friends</item>
+        <item>All</item>
     </string-array>
+    <string name="title_activity_list_all_friends">ListAllFriendsActivity</string>
 </resources>
+
