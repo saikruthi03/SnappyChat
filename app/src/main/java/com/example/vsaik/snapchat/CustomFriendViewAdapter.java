@@ -134,6 +134,22 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
             });
 
         }
+        if("add".equalsIgnoreCase(showChat)) {
+            holder.chat = (Button) convertView.findViewById(R.id.showChat);
+
+            holder.chat.setText("VIEW");
+
+            holder.chat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d("T","VIEW TIME LINE");
+                    Intent i = new Intent(context,TimeLineActivity.class);
+                    i.putExtra("name",name);
+                    context.startActivity(i);
+                }
+            });
+
+        }
         holder.level.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

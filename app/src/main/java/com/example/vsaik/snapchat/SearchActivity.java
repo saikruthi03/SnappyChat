@@ -47,8 +47,6 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 friends = new ArrayList<Friend>();
-                Toast.makeText(getApplicationContext(),"friend : "+friend.isChecked()+" interest : " +
-                        interest.isChecked(),Toast.LENGTH_SHORT).show();
                 if(friend.isChecked()){
                     new SearchFriends("friend",text.getText().toString()).execute();
                 }
@@ -70,11 +68,15 @@ public class SearchActivity extends AppCompatActivity {
         Friend notmyfriend = new Friend("Name","ADD");
         friends.add(myfriend);
         friends.add(notmyfriend);*/
+        ListView listView = (ListView) findViewById(R.id.list_friends);
+
         if(friends != null && friends.size() > 0) {
-            CustomFriendViewAdapter adapter = new CustomFriendViewAdapter(this, R.layout.friend_individual, friends);
-            ListView listView = (ListView) findViewById(R.id.list_friends);
+            CustomFriendViewAdapter adapter = new CustomFriendViewAdapter(myName,this, R.layout.friend_individual, friends,"add");
             listView.setAdapter(adapter);
+        }else{
+            listView.setAdapter(null);
         }
+
         //setOnItemClickListener(this);
     }
 

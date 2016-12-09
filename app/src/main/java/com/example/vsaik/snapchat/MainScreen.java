@@ -146,8 +146,10 @@ public class MainScreen extends AppCompatActivity {
             }
         });
         try {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 50);
+                //onStart();
+            }
             else {
                 mCamera = Camera.open();
                 mCamera.startPreview();
@@ -379,6 +381,26 @@ public class MainScreen extends AppCompatActivity {
     private void reportError(){
         Toast.makeText(getApplicationContext(),"Error occured, please try again",Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,  String[] permissions,
+                                            int[] grantResults) {
+
+        if (requestCode == 50) {
+            // BEGIN_INCLUDE(permission_result)
+            // Received permission result for camera permission.
+
+            // Check if the only required permission has been granted
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Camera permission has been granted, preview can be displayed
+                mCamera = Camera.open();
+                mCamera.startPreview();
+            } else {
+                onStart();
+            }
+        }
+    }
+            // END_INCLUDE(permission_result)
 }
 
 
