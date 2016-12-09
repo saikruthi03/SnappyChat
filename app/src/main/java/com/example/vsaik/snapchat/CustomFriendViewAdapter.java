@@ -137,15 +137,16 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
         if("add".equalsIgnoreCase(showChat)) {
             holder.chat = (Button) convertView.findViewById(R.id.showChat);
 
-            holder.chat.setText("VIEW");
+            holder.chat.setText("ADD");
 
             holder.chat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("T","VIEW TIME LINE");
+                   /* Log.d("T","VIEW TIME LINE");
                     Intent i = new Intent(context,TimeLineActivity.class);
                     i.putExtra("name",name);
-                    context.startActivity(i);
+                    context.startActivity(i);*/
+                    new FriendOperation("sendReq",myMap).execute();
                 }
             });
 
@@ -195,6 +196,11 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
                 } else if ("cancel".equalsIgnoreCase(operation)) {
                     hashMap.put("URL", Constants.URL + "/delete_friend");
                     GetData post = new GetData(hashMap);
+                    response = post.doInBackground();
+                }else if ("sendReq".equalsIgnoreCase(operation)) {
+                    hashMap.put("Method","POST");
+                    hashMap.put("URL", Constants.URL + "/request_friend");
+                    PostData post = new PostData(hashMap);
                     response = post.doInBackground();
                 }
 
