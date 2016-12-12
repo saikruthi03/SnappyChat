@@ -35,7 +35,7 @@
             android:layout_width="25dp"
             android:layout_height="wrap_content"
             android:id="@+id/newChat"
-            android:background="@drawable/plusicon"
+            android:background="@drawable/chats"
             android:layout_marginRight="10dp"/>
         </LinearLayout>
     </android.support.v7.widget.Toolbar>

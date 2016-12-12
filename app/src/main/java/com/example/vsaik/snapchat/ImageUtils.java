@@ -15,6 +15,7 @@ import java.nio.ByteBuffer;
 
 public class ImageUtils {
 
+    static int i = 0;
     public static Bitmap compress(Bitmap original){
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -60,9 +61,9 @@ public class ImageUtils {
 
     public static int getStatus(boolean online) {
         if(online)
-            return R.drawable.greendot;
+            return R.drawable.online;
         else
-            return 0;
+            return R.drawable.offline;
     }
 
     public static String getStringImage(Bitmap bitmap) {
@@ -96,4 +97,12 @@ public class ImageUtils {
     return "";
     }
 
+    public static int getRandomImage() {
+        if( i > 0) {
+            i--;
+            return R.drawable.male;
+        }
+        i++;
+        return R.drawable.female;
+    }
 }

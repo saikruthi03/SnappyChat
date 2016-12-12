@@ -1,40 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:contentDescription=""
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp" />
 
     <TextView
+        android:layout_weight="3"
         android:id="@+id/name"
         android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/icon"
         android:paddingBottom="10dp"
         android:textColor="#CC0033"
         android:textSize="16dp" />
     <ImageView
+        android:layout_weight=".5"
         android:layout_gravity="center_vertical"
         android:id="@+id/unread"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_alignParentRight="true"
         android:paddingRight="10dp"
-        android:layout_alignParentTop="true" />
+       />
 
     <ImageView
+        android:layout_weight=".5"
         android:layout_gravity="center_vertical"
         android:id="@+id/status"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:paddingRight="10dp"
-        android:layout_below="@+id/name"
-        android:layout_alignStart="@+id/unread" />
-</RelativeLayout>
+        android:layout_height="wrap_content" />
+</LinearLayout>

@@ -335,7 +335,7 @@ public class StartChatActivity extends AppCompatActivity {
             if(myName.length() > 0 && friend.length() > 0) {
                 if("GET".equalsIgnoreCase(op)){
 
-                    friendDP = BitmapFactory.decodeResource(getResources(), R.drawable.com_facebook_button_icon_blue);
+                    friendDP = BitmapFactory.decodeResource(getResources(), ImageUtils.getRandomImage());
 
                     if(UserDetails.getImage() != null)
                         myDP = UserDetails.getImage();
