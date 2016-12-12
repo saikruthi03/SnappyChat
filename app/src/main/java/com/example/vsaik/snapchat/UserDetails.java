@@ -54,7 +54,7 @@ public class UserDetails {
     }
 
     public static String getEmail() {
-        return email;
+        return "kjayashankar@yahoo.com";
     }
 
     public static void setEmail(String email) {

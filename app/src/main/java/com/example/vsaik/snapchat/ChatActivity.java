@@ -38,7 +38,7 @@ public class ChatActivity extends AppCompatActivity implements
     List<ChatItem> activeFriends;
     private String chatSession = "";
     private Context context = null;
-    private String myName = "jay";
+    private String myName = UserDetails.getEmail();
     String[] responseFetch = null;
 
     @Override

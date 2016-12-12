@@ -103,18 +103,19 @@ public class TimeLineActivity extends AppCompatActivity implements AdapterView.O
         Log.d("PAUSE","Pausing");
     }
 
+
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
-     if(parent.getItemAtPosition(pos).toString().equals("Search")){
-         Intent mainScreen = new Intent(TimeLineActivity.this,SearchActivity.class);
-         startActivity(mainScreen);
-    }else if(parent.getItemAtPosition(pos).toString().equals("Friends")){
-         Intent mainScreen = new Intent(TimeLineActivity.this,FriendActivity.class);
-         startActivity(mainScreen);
-    }else if(parent.getItemAtPosition(pos).toString().equals("ALL")){
-         Intent mainScreen = new Intent(TimeLineActivity.this,ListAllFriendsActivity.class);
-         startActivity(mainScreen);
-     }
+        if (parent.getItemAtPosition(pos).toString().equals("Search")) {
+            Intent mainScreen = new Intent(TimeLineActivity.this, SearchActivity.class);
+            startActivity(mainScreen);
+        } else if (parent.getItemAtPosition(pos).toString().equals("Friends")) {
+            Intent mainScreen = new Intent(TimeLineActivity.this, FriendActivity.class);
+            startActivity(mainScreen);
+        } else if (parent.getItemAtPosition(pos).toString().equals("ALL")) {
+            Intent mainScreen = new Intent(TimeLineActivity.this, ListAllFriendsActivity.class);
+            startActivity(mainScreen);
+        }
     }
 
     public void onNothingSelected(AdapterView<?> parent) {

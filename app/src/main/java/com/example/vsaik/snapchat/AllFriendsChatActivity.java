@@ -24,7 +24,7 @@ public class AllFriendsChatActivity extends AppCompatActivity implements Adapter
     ListView listAllFriends = null;
     private Context context;
     List<ChatItem> activeFriends = null;
-    String myName = "jay";
+    String myName = UserDetails.getEmail();
     JSONArray responseFetch = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

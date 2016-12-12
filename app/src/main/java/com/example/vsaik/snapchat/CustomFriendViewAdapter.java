@@ -29,7 +29,7 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
 
     Context context;
     private String showChat= "";
-    private String myName = "";
+    private String myName = UserDetails.getEmail();
     public CustomFriendViewAdapter(Context context, int resourceId,
                                    List<Friend> items) {
         super(context, resourceId, items);

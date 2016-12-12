@@ -31,7 +31,7 @@ public class ListAllFriendsActivity extends AppCompatActivity implements
     List<Friend> allUsers;
     private String timeLine = "";
     private Context context = null;
-    private String myName = "jay";
+    private String myName = UserDetails.getEmail();
     JSONArray responseFetch = null;
 
     @Override

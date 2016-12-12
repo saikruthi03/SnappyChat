@@ -20,7 +20,7 @@ import java.util.List;
 
 public class FriendActivity extends AppCompatActivity {
 
-    String myName = "jay";
+    String myName = UserDetails.getEmail();
     List<Friend> friends;
     String method = "";
     @Override

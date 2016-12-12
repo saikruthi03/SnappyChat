@@ -22,7 +22,7 @@ import java.util.List;
 public class SearchActivity extends AppCompatActivity {
 
     private List<Friend> friends;
-    private String myName = "jay";
+    private String myName = UserDetails.getEmail();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

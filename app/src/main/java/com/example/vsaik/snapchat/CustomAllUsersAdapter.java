@@ -25,7 +25,7 @@ import java.util.List;
 public class CustomAllUsersAdapter extends ArrayAdapter<Friend> {
 
     Context context;
-    private String myName = "";
+    private String myName = UserDetails.getEmail();
 
 
     public CustomAllUsersAdapter(String myName,Context context, int resourceId,

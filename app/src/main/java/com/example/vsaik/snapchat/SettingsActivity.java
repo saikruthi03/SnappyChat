@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -120,6 +121,7 @@ public void fetchDteails(){
                 UserDetails user = postSnapshot.getValue(UserDetails.class);
                 try {
                     if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(postSnapshot.getKey())) {
+                        Log.d("PRIVACY",user.getVisibilty());
                         if(!user.getVisibilty().equals("") && user.getVisibilty().equals("FriendsOnly")){
                             friendsButton.setChecked(true);
                         }else if(!user.getVisibilty().equals("") && user.getVisibilty().equals("Private")){

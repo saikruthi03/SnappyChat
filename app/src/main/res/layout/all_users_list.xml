@@ -4,8 +4,8 @@
     android:layout_height="fill_parent" >
     <ImageView
         android:id="@+id/userdp"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:contentDescription=""
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
@@ -20,15 +20,15 @@
         android:layout_height="wrap_content"
         android:paddingBottom="10dp"
         android:textColor="#CC0033"
-        android:textSize="16dp"
+        android:textSize="30dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@+id/friend" />
 
     <ImageButton
         android:id="@+id/friend"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:contentDescription=""
         android:paddingLeft="10dp"
         android:paddingRight="10dp"

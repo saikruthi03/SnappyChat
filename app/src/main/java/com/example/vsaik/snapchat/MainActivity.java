@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
@@ -208,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 myRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
                 try {
                     userMap = new HashMap<String, String>();
-                    userMap.put("URL", Constants.URL + "/insert_user?");
+                    userMap.put("URL", Constants.URL + "/insert_user");
                     userMap.put("email", UserDetails.getEmail());
                     userMap.put("username", UserDetails.getEmail());
                     userMap.put("fullname", UserDetails.getNickname());
@@ -218,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     userMap.put("is_active_timeline", "false");
                     userMap.put("thumbnail_profile_pic", imgDecodableString);
                     userMap.put("isActive", "true");
-                    pushUser.insertData(userMap);
+                    new Dumb(userMap).execute();
                 }catch(Exception ex){
 
                 }
@@ -228,6 +229,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         });
+
+    }
+    class Dumb extends AsyncTask<Void,Void,Void>{
+        HashMap<String,String> hashMap2 = null;
+
+        public Dumb(HashMap<String,String> hashMap){
+            this.hashMap2 = hashMap;
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            PushUser push = new PushUser();
+            push.insertData(hashMap2);
+            return null;
+        }
 
     }
 

@@ -62,7 +62,7 @@ public class ImageUtils {
         if(online)
             return R.drawable.greendot;
         else
-            return R.drawable.black_dot;
+            return 0;
     }
 
     public static String getStringImage(Bitmap bitmap) {

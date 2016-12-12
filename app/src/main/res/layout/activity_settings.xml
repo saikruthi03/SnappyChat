@@ -43,14 +43,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/radio_Private"
-            android:checked="true" />
+             />
 
         <RadioButton
             android:id="@+id/radioPublic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/radio_Public"
-            android:checked="true" />
+            />
         <RadioButton
             android:id="@+id/radioFriends"
             android:layout_width="wrap_content"

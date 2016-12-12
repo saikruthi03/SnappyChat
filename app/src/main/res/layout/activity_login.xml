@@ -16,7 +16,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="#ffff00"
             app:popupTheme="@style/AppTheme.PopupOverlay" >
             <TextView
                 android:layout_width="wrap_content"
@@ -40,6 +40,7 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
+        android:background="#ffff00"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="com.example.vsaik.snapchat.LoginActivity"
         tools:showIn="@layout/activity_login">
@@ -54,34 +55,26 @@
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/google_signin_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:padding="5sp"
             android:layout_marginLeft="5sp"
             android:layout_marginRight="5sp"
+            android:layout_marginBottom="39dp"
+            android:layout_width="550dp"
+            android:layout_height="60dp"
             android:layout_alignParentBottom="true"
-            android:layout_alignEnd="@+id/fb_login_button"
-            android:layout_marginBottom="195dp"
-            android:layout_alignStart="@+id/fb_login_button" />
+            android:layout_centerHorizontal="true" />
 
 
         <com.facebook.login.widget.LoginButton
             android:id="@+id/fb_login_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="450dp"
+            android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_above="@+id/google_signin_button"
+            android:layout_alignParentStart="true" />
 
 
     </RelativeLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email" />
 
 </android.support.design.widget.CoordinatorLayout>

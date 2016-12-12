@@ -36,7 +36,7 @@
         <item>More</item>
         <item>Search</item>
         <item>Friends</item>
-        <item>All</item>
+        <item>ALL</item>
     </string-array>
     <string name="title_activity_list_all_friends">ListAllFriendsActivity</string>
 </resources>

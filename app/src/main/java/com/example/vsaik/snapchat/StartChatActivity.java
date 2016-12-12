@@ -51,23 +51,27 @@ public class StartChatActivity extends AppCompatActivity {
     TextView friendText;
     ImageButton imageButton;
     Thread mThread;
-
+    Button capturePicture = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        myName = "jay";
-        friend = "friend";
         setContentView(R.layout.activity_chat_click);
 
 
-       /* if(getIntent() != null){
+
+
+        if(getIntent() != null){
             friend = getIntent().getStringExtra("friend");
-            friendText.setText(friend);
             Log.d("TAG",friend);
-            getInfo(friend);
+            //getInfo(friend);
             //update the name on toolbar
-        }*/
+        }
+        myName = UserDetails.getEmail();
+        //friend = "friend";
+        friendText = (TextView)findViewById(R.id.Friend);
+
+        friendText.setText(friend);
 
         context = this;
         onStart();
@@ -96,7 +100,7 @@ public class StartChatActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         imageButton = (ImageButton)findViewById(R.id.backButton);
-        final Button capturePicture = (Button) findViewById(R.id.clickPicture);
+        capturePicture = (Button) findViewById(R.id.clickPicture);
         listActiveFriends = (ListView) findViewById(R.id.chat_listView);
 
         imageButton.setOnClickListener(new View.OnClickListener() {
@@ -106,12 +110,10 @@ public class StartChatActivity extends AppCompatActivity {
                 startActivity(back);
             }
         });
-        friendText = (TextView)findViewById(R.id.Friend);
         Button del = (Button) findViewById(R.id.terminateChat);
         del.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //capturePicture.setBackgroundResource(R.drawable.click);
                 listActiveFriends.setAdapter(null);
                 Log.d("TAG","on delete");
                 RetrieveChatData chatDel = new RetrieveChatData(myName, friend, "DEL");
@@ -134,56 +136,50 @@ public class StartChatActivity extends AppCompatActivity {
                 sendChat();
             }
         });
-        if(capturedImage != null ) {
-            capturePicture.setBackgroundResource(R.drawable.click3);
-            capturePicture.setOnClickListener(new View.OnClickListener() {
+        capturePicture.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    capturedImage = null;
-                    Toast.makeText(getApplicationContext(),"ClearedImage",Toast.LENGTH_SHORT).show();
-                    ;
+                    if(capturedImage != null ) {
+
+                        final AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                        final LinearLayout layout = new LinearLayout(context);
+
+                        ImageView camera = new ImageView(context);
+                        camera.setImageResource(R.drawable.click);
+
+                        camera.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                                startActivityForResult(cameraIntent, CAMERA_REQUEST_INTENT);
+                                //alert.setCancelable(true);
+                            }
+                        });
+                        ImageView gallery = new ImageView(context);
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
+                        camera.setLayoutParams(params);
+                        gallery.setLayoutParams(params);
+                        gallery.setImageResource(R.drawable.photos);
+                        gallery.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                                photoPickerIntent.setType("image/*");
+                                startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+                            }
+                        });
+                        layout.addView(camera);
+                        layout.addView(gallery);
+                        alert.setView(layout);
+                        alert.show();
+                    }
+                    else {
+                        capturedImage = null;
+                        capturePicture.setBackgroundResource(R.drawable.click);
+                    }
                 }
             });
-        }
-        else {
-            capturePicture.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
 
-                    final AlertDialog.Builder alert = new AlertDialog.Builder(context);
-                    final LinearLayout layout = new LinearLayout(context);
-
-                    ImageView camera = new ImageView(context);
-                    camera.setImageResource(R.drawable.click);
-
-                    camera.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(cameraIntent, CAMERA_REQUEST_INTENT);
-                            //alert.setCancelable(true);
-                        }
-                    });
-                    ImageView gallery = new ImageView(context);
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
-                    camera.setLayoutParams(params);
-                    gallery.setLayoutParams(params);
-                    gallery.setImageResource(R.drawable.photos);
-                    gallery.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                            photoPickerIntent.setType("image/*");
-                            startActivityForResult(photoPickerIntent, SELECT_PHOTO);
-                        }
-                    });
-                    layout.addView(camera);
-                    layout.addView(gallery);
-                    alert.setView(layout);
-                    alert.show();
-                }
-            });
-        }
 
     }
 
@@ -199,10 +195,7 @@ public class StartChatActivity extends AppCompatActivity {
             params[1] = ImageUtils.getStringImage(capturedImage);
 
         chatpush.execute(params);
-        //image - capturedImage
-        //chat text - chatText
-        //name
-        //friend name - friend
+        capturedImage = null;
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -219,6 +212,8 @@ public class StartChatActivity extends AppCompatActivity {
                 Log.d("GALLERY","Exception in gallery result intent");
             }
         }
+        if(capturedImage != null)
+            capturePicture.setBackgroundResource(R.drawable.click3);
     }
 
     private void getInfo(String friend) {
@@ -421,7 +416,7 @@ public class StartChatActivity extends AppCompatActivity {
             super.onPostExecute(hashMap);
 
 
-                capturedImage = null;
+               // capturedImage = null;
 
             updateChat();
         }

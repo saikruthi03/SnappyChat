@@ -18,7 +18,7 @@ import java.util.HashMap;
 
 public class AddFriendsActivity extends AppCompatActivity {
 
-    private String myName = "jay";
+    private String myName = UserDetails.getEmail();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
