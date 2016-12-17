@@ -2,6 +2,9 @@ package com.example.vsaik.snapchat;
 
 import android.graphics.Bitmap;
 
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,6 +13,7 @@ import java.util.List;
 
 public class TimeLineObject {
 
+    public String id;
     public ObjectStatusInfo statusInfo;
 
     public ObjectImageInfo imageInfo;
@@ -39,8 +43,13 @@ public class TimeLineObject {
     class UserInfo{
         Bitmap display_pic;
         String name;
-        int likes;
-        List<String> comments;
+
+        public UserInfo(){
+            likes = new ArrayList<String>();
+            comments = new ArrayList<JSONObject>();
+        }
+        List<String> likes;
+        List<JSONObject> comments;
         String date;
     }
 
