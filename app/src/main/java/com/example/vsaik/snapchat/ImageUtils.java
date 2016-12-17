@@ -2,6 +2,7 @@ package com.example.vsaik.snapchat;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.util.Base64;
 import android.util.Log;
 
@@ -47,6 +48,25 @@ public class ImageUtils {
     }
     return null;
     }
+    public static Bitmap getBitmapFromBase64WithRotation(String base64Encoded,int angle){
+        try{
+            byte[] decodedString = Base64.decode(base64Encoded, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
+            Matrix matrix = new Matrix();
+            matrix.postRotate(angle);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0,
+                    width, height, matrix, true);
+            return bitmap;
+        }
+        catch(Exception e){
+            Log.d("MEMORY","Out of Memory errors");
+        }
+        return null;
+    }
+
 
     public static Bitmap getBitmapFromJSON(String urlSafeBitmap) {
     try{    byte[] decodedString = Base64.decode(urlSafeBitmap, Base64.URL_SAFE);
@@ -66,13 +86,27 @@ public class ImageUtils {
             return R.drawable.offline;
     }
 
+    public static int getPrivacyImage(String privacy) {
+        if("public".equalsIgnoreCase(privacy))
+            return R.drawable.com_facebook_close;
+        else if("private".equalsIgnoreCase(privacy))
+            return R.drawable.offline;
+        return R.drawable.photos;
+    }
+
     public static String getStringImage(Bitmap bitmap) {
-     try{   if (bitmap != null) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-            byte[] b = baos.toByteArray();
-            String temp = Base64.encodeToString(b, Base64.DEFAULT);
-            return temp;
+     try{
+         if (bitmap != null) {
+             ByteArrayOutputStream out = new ByteArrayOutputStream();
+             bitmap.compress(Bitmap.CompressFormat.PNG, 30, out);
+             bitmap = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
+            final int lnth=bitmap.getByteCount();
+            ByteBuffer dst= ByteBuffer.allocate(lnth);
+            bitmap.copyPixelsToBuffer( dst);
+            byte[] barray=dst.array();
+            String temp = Base64.encodeToString(barray, Base64.DEFAULT);
+
+             return temp;
 
         }
         return "";

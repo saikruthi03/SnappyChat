@@ -28,7 +28,7 @@ public class ListAllFriendsActivity extends AppCompatActivity implements
     List<String> list = new ArrayList<String>();
     ListView listAllUsers;
 
-    List<Friend> allUsers;
+    List<FriendList> allUsers;
     private String timeLine = "";
     private Context context = null;
     private String myName = UserDetails.getEmail();
@@ -55,6 +55,14 @@ public class ListAllFriendsActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        ImageView addNew = (ImageView) findViewById(R.id.addNew);
+        addNew.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(ListAllFriendsActivity.this,AddFriendsActivity.class);
+                startActivity(i);
+            }
+        });
         getAllUsers();
         }
 
@@ -90,7 +98,7 @@ public class ListAllFriendsActivity extends AppCompatActivity implements
     }
 
     private void getAllUsers() {
-        allUsers = new ArrayList<Friend>();
+        allUsers = new ArrayList<FriendList>();
         RetrieveUsers retrieveusers = new RetrieveUsers();
         retrieveusers.execute();
 
@@ -119,57 +127,76 @@ public class ListAllFriendsActivity extends AppCompatActivity implements
 
             if(responseFetch != null ) {
                 int size = responseFetch.length();
-                for (int i = 0; i < size; i++) {
-                    Friend item = new Friend();
-                    try {
-                        JSONObject object = responseFetch.getJSONObject(i);
-                        Log.d("FRIEND OOBJ",object.toString());
-                        String friendName = "";
-                        item.setName(object.getString("fullname"));
-                        Log.d("Helooooo",item.getName());
-                        //item.setImage(object.getString("thumbnail_profile_pic"));
-                        item.setUserName(object.getString("username"));
-                        item.setLevel("Add");
-                        allUsers.add(item);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                if(size > 0) {
+                    List<String> friends = getFriends("/get_added_friends");
+                    List<String> friendReqs = getFriends("/get_unadded_friends");
+
+                    for (int i = 0; i < size; i++) {
+                        FriendList item = new FriendList();
+                        try {
+                            JSONObject object = responseFetch.getJSONObject(i);
+                            if(!myName.equalsIgnoreCase(object.getString("email"))) {
+                                Log.d("FRIEND OOBJ", object.toString());
+                                String friendName = "";
+                                boolean online = Boolean.parseBoolean(object.getString("isActive"));
+                                item.status = ImageUtils.getStatus(online);
+                                item.name = object.getString("fullname");
+                                item.email = object.getString("email");
+                                item.privacy = ImageUtils.getPrivacyImage(object.getString("account_type"));
+                                item.isFriend = friends.contains(object.getString("email"));
+
+
+                                allUsers.add(item);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
 
-            hashMap = new HashMap<String, String>();
+
+            return null;
+        }
+
+        private List<String> getFriends(String url){
+            List<String> temp = new ArrayList<String>();
+            JSONArray resDummy = null;
+            HashMap hashMap = new HashMap<String, String>();
             hashMap.put("URL", Constants.URL + "/get_added_friends");
             hashMap.put("username",myName);
             hashMap.put("Method", "GET");
             GetData fecthFrnds = new GetData(hashMap);
             try {
-                responseFetch = new JSONArray(fecthFrnds.doInBackground());
-                Log.e("RESPONSE", responseFetch.toString());
+                resDummy = new JSONArray(fecthFrnds.doInBackground());
+                Log.e("RESPONSE", resDummy.toString());
 
             } catch (Exception e) {
                 Log.e("RESPONSE- ERROR", e.toString());
             }
-            Log.d("Response",responseFetch.length()+"");
-            if(responseFetch != null ) {
-                int size = responseFetch.length();
+
+            if(resDummy != null ) {
+                Log.d("Response",resDummy.length()+"");
+                int size = resDummy.length();
                 for (int i = 0; i < size; i++) {
                     Friend item = new Friend();
                     try {
-                        JSONObject object = responseFetch.getJSONObject(i);
+                        JSONObject object = resDummy.getJSONObject(i);
                         Log.d("FRIEND OOBJ",object.toString());
                         String friendName = "";
-                        item.setName(object.getString("friend_username"));
-                       // item.setImage(object.getString("thumbnail_profile_pic"));
-                        item.setUserName(object.getString("username"));
-                        item.setLevel("Friend");
-                        allUsers.add(item);
+                        if (myName.equalsIgnoreCase(object.getString("friend_username"))) {
+                            friendName = object.getString("username");
+                        } else {
+                            friendName = object.getString("friend_username");
+                        }
+                        temp.add(friendName);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 
                 }
             }
-            return null;
+            return temp;
         }
 
         @Override

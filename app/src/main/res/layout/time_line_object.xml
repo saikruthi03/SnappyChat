@@ -3,19 +3,10 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/profilePic"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:contentDescription=""
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp" />
-
     <TextView
         android:id="@+id/profileName"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/profilePic"
+        android:layout_height="50dp"
         android:paddingBottom="10dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
@@ -25,44 +16,32 @@
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:id="@+id/date"
         />
-    <TextView
-        android:id="@+id/status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/profilePic"
-        android:layout_toLeftOf="@+id/date"
-        android:paddingLeft="10dp"
-        android:paddingTop="10dp"
-        android:textColor="#CC0033"
-        android:textSize="36dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/profilePic"
-        android:layout_toLeftOf="@+id/date"
-        android:paddingLeft="10dp"
-        android:paddingTop="10dp"
-        android:textColor="#CC0033"
-        android:textSize="13dp"
-        android:id="@+id/caption"/>
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/profilePic"
-        android:layout_toLeftOf="@+id/date"
-        android:layout_below="@+id/caption"
+        android:layout_height="500dp"
+        android:layout_below="@+id/profilePic"
         android:id="@+id/time_line_image"
         />
-    <ImageView
-        android:id="@+id/expanded_time_image"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="invisible"
-        android:contentDescription="description_zoom_touch_close" />
+        android:layout_height="20dp"
+        android:id="@+id/socialbar"
+        android:orientation="horizontal"
+        android:layout_below="@+id/time_line_image">
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:id="@+id/likes"/>
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:id="@+id/comments"/>
+
+    </LinearLayout>
+
 </RelativeLayout>

@@ -50,9 +50,8 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
     private class ViewHolder {
         ImageView image;
         TextView name;
-        TextView level;
+        ImageButton level;
         ImageButton chat;
-        ImageButton status;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -66,8 +65,7 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
             holder = new ViewHolder();
             holder.image = (ImageView) convertView.findViewById(R.id.friend_dp);
             holder.name = (TextView) convertView.findViewById(R.id.friend_name);
-            holder.level = (TextView) convertView.findViewById(R.id.friend_level);
-            holder.status = (ImageButton) convertView.findViewById(R.id.status);
+            holder.level = (ImageButton) convertView.findViewById(R.id.status);
             convertView.setTag(holder);
         } else
             holder = (ViewHolder) convertView.getTag();
@@ -80,13 +78,11 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
         final HashMap<String,String> myMap = new HashMap<String,String>();
         myMap.put("friend_username",name);
         myMap.put("username",myName);
-
+        holder.chat = (ImageButton) convertView.findViewById(R.id.showChat);
+        holder.chat.setBackgroundResource(0);
         if("friendVanilla".equalsIgnoreCase(showChat)) {
 
             holder.chat = (ImageButton) convertView.findViewById(R.id.showChat);
-            holder.image.setBackgroundResource(rowItem.status);
-
-            holder.level.setBackgroundResource(R.drawable.delete);
             holder.chat.setBackgroundResource(R.drawable.chats);
             holder.chat.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -105,19 +101,12 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
                     context.startActivity(i);
                 }
             });
-            holder.level.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    new FriendOperation("cancel",myMap).execute();
-                }
-            });
 
 
         }
-        if("friendRequests".equalsIgnoreCase(showChat)) {
+        else if("friendRequests".equalsIgnoreCase(showChat)) {
 
             holder.chat = (ImageButton) convertView.findViewById(R.id.showChat);
-            holder.image.setBackgroundResource(rowItem.status);
             holder.chat.setBackgroundResource(R.drawable.tick);
             holder.chat.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -127,29 +116,24 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
                     new FriendOperation("accept",myMap).execute();
                 }
             });
-            holder.level.setBackgroundResource(R.drawable.delete);
 
-            holder.level.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    new FriendOperation("cancel",myMap).execute();
-                }
-            });
 
         }
 
 
-        if("friendWaiting".equalsIgnoreCase(showChat)) {
-            holder.level.setBackgroundResource(R.drawable.delete);
-            holder.image.setBackgroundResource(rowItem.status);
+        //holder.chat.
 
-            holder.level.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    new FriendOperation("cancel",myMap).execute();
-                }
-            });
-        }
+        holder.image.setBackgroundResource(rowItem.status);
+
+
+        holder.level.setBackgroundResource(android.R.drawable.ic_menu_delete);
+
+        holder.level.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new FriendOperation("cancel",myMap).execute();
+            }
+        });
         return convertView;
     }
     @Override

@@ -22,14 +22,14 @@ import java.util.List;
 /**
  * Created by vsaik on 12/8/2016.
  */
-public class CustomAllUsersAdapter extends ArrayAdapter<Friend> {
+public class CustomAllUsersAdapter extends ArrayAdapter<FriendList> {
 
     Context context;
     private String myName = UserDetails.getEmail();
 
 
     public CustomAllUsersAdapter(String myName,Context context, int resourceId,
-                                   List<Friend> items) {
+                                   List<FriendList> items) {
         super(context, resourceId, items);
         Log.d("items",items.size()+"");
         this.myName = myName;
@@ -39,13 +39,13 @@ public class CustomAllUsersAdapter extends ArrayAdapter<Friend> {
     /*private view holder class*/
     private class ViewHolder {
         TextView user;
-        ImageView image;
+        ImageView userdp;
         ImageButton friend;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
-        Friend rowItem = getItem(position);
+        FriendList rowItem = getItem(position);
 
         LayoutInflater mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -54,18 +54,12 @@ public class CustomAllUsersAdapter extends ArrayAdapter<Friend> {
             convertView = mInflater.inflate(R.layout.all_users_list, null);
             holder = new ViewHolder();
             holder.user = (TextView) convertView.findViewById(R.id.username);
-            holder.image = (ImageView) convertView.findViewById(R.id.userdp);
+            holder.userdp = (ImageView) convertView.findViewById(R.id.userdp);
             holder.friend=(ImageButton) convertView.findViewById(R.id.friend);
 
             convertView.setTag(holder);
             holder.user.setText(rowItem.getName());
             Log.d("name",rowItem.getName());
-
-           /* try{ if(!rowItem.getImage().isEmpty()){
-                holder.image.setImageBitmap(ImageUtils.getBitmapFromBase64(rowItem.getImage()));
-            }}catch(Exception ex){
-
-            }*/
 
         } else {
             Log.d("inside else",rowItem.getName()+"");
@@ -73,14 +67,6 @@ public class CustomAllUsersAdapter extends ArrayAdapter<Friend> {
             holder = (ViewHolder) convertView.getTag();
             holder.user.setText(rowItem.getName());
             Log.d("name",rowItem.getName());
-
-            /*try{ if(!rowItem.getImage().isEmpty()){
-                holder.image.setImageBitmap(ImageUtils.getBitmapFromBase64(rowItem.getImage()));
-            }}catch(Exception ex){
-
-            }*/
-
-
         }
 
         return convertView;

@@ -27,12 +27,21 @@ public class TimeLineActivity extends AppCompatActivity implements AdapterView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time_line);
-
+        name = UserDetails.getEmail();
         listTimeLine = (ListView) findViewById(R.id.list_time_line);
         context = this;
         View contentView = (View)findViewById(R.id.activity_time_line);
-        Intent current = getIntent();
-        name = current.getStringExtra("name");
+
+        TextView myTimeLine = (TextView) findViewById(R.id.myTimeLine);
+        myTimeLine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(TimeLineActivity.this,IndividualTimeLineActivity.class);
+                i.putExtra("profile",name);
+                startActivity(i);
+            }
+        });
+
         contentView.setOnTouchListener(new OnSwipeTouchListener(context) {
             @Override
             public void onSwipeRight() {
@@ -66,35 +75,10 @@ public class TimeLineActivity extends AppCompatActivity implements AdapterView.O
 
     private void initDummyData(){
 
-        List<TimeLineObject> list_time = new ArrayList<TimeLineObject>();
-
-        TimeLineObject ts = new TimeLineObject();
-        ts.userInfo.display_pic = R.drawable.click;
-        ts.userInfo.name = "Jay";
-        ts.statusInfo.status = "It's no late tonight!";
-        ts.userInfo.date = "3:03 AM";
-
-        TimeLineObject ti = new TimeLineObject();
-        ti.userInfo.display_pic = R.drawable.click;
-        ti.userInfo.name = "Jay";
-        ti.imageInfo.caption = "Go Spartans!";
-        ti.imageInfo.image = R.drawable.spartan;
-        ti.userInfo.date = "3:53 AM";
-
-        list_time.add(ts);
-        list_time.add(ti);
 
 
-/*
-        final RelativeLayout chatClick = (RelativeLayout) findViewById(R.id.time_line_object);
-        final ImageView expandedImageView = (ImageView) findViewById(
-                R.id.expanded_time_image);*/
-
-        CustomTimeLineViewAdapter adapter = new CustomTimeLineViewAdapter(this, R.layout.time_line_object, list_time);
-        listTimeLine.setAdapter(adapter);
 
 
-        listTimeLine.setOnItemClickListener(this);
 
     }
 

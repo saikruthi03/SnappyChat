@@ -71,6 +71,7 @@ public class MainScreen extends AppCompatActivity {
 
     private Camera mCamera;
     private CameraView mCameraView ;
+    private byte[] rawBytes;
     private ImageView capture;
     private Context context ;
     private Bitmap currentBitMap;
@@ -81,7 +82,7 @@ public class MainScreen extends AppCompatActivity {
     private String caption;
     private List<BitmapCollection> overlays =  null;
     private FrameLayout main_layout = null;
-    String myName = "jay";
+    String myName = UserDetails.getEmail();
     private GestureDetector gestureDetector;
     View.OnTouchListener gestureListener;
     ImageButton flora, fauna;
@@ -151,7 +152,7 @@ public class MainScreen extends AppCompatActivity {
                 //onStart();
             }
             else {
-                mCamera = Camera.open();
+                mCamera = Camera.open(1);
                 mCamera.startPreview();
             }
         } catch (Exception e) {
@@ -166,6 +167,7 @@ public class MainScreen extends AppCompatActivity {
 
     public void postProcess(byte[] picture){
 
+        rawBytes = picture;
         contentView.setOnTouchListener(null);
         try {
             Bitmap bm = BitmapFactory.decodeByteArray(picture, 0, picture.length);
@@ -174,7 +176,7 @@ public class MainScreen extends AppCompatActivity {
             int width = bm.getWidth();
             int height = bm.getHeight();
             Matrix matrix = new Matrix();
-            matrix.postRotate(90);
+            matrix.postRotate(-90);
             currentBitMap = Bitmap.createBitmap(bm, 0, 0,
                     width, height, matrix, true);
             bm = null;
@@ -245,14 +247,14 @@ public class MainScreen extends AppCompatActivity {
     private void floatImage(int imagePointer){
         try {
             main_layout.setBackgroundResource(0);
-            BitmapCollection currentFilter = overlays.get(imagePointer);
+            /*BitmapCollection currentFilter = overlays.get(imagePointer);
             mutable = Bitmap.createBitmap(currentBitMap.getWidth(), currentBitMap.getHeight(), Bitmap.Config.RGB_565);
             Canvas canvas = new Canvas(mutable);
             canvas.drawBitmap(currentBitMap, new Matrix(), null);
-            canvas.drawBitmap(currentFilter.getBitmap(), currentFilter.getX(), currentFilter.getY(), null);
-            main_layout.setBackground(new BitmapDrawable(getResources(), mutable));
-            canvas = null;
-            currentFilter = null;
+            canvas.drawBitmap(currentFilter.getBitmap(), currentFilter.getX(), currentFilter.getY(), null);*/
+            main_layout.setBackground(new BitmapDrawable(getResources(), currentBitMap));
+            //canvas = null;
+            //currentFilter = null;
         }
         catch(OutOfMemoryError error) {
             Toast.makeText(getApplicationContext(),"Out Of Memory Error",Toast.LENGTH_SHORT).show();
@@ -280,8 +282,9 @@ public class MainScreen extends AppCompatActivity {
         HashMap<String,String> hashMap = new HashMap<String,String>();
         hashMap.put("username",myName);
         //currentBitMap = ImageUtils.compress(currentBitMap);
-        hashMap.put("pictures",ImageUtils.getStringImage(currentBitMap));
-        hashMap.put("caption",caption);
+        //hashMap.put("pictures",ImageUtils.getStringImage(currentBitMap));
+        hashMap.put("pictures",Base64.encodeToString(rawBytes, Base64.DEFAULT));
+        //hashMap.put("caption",caption);
         PushContent pushContent = new PushContent(hashMap);
         pushContent.execute();
 
@@ -393,7 +396,7 @@ public class MainScreen extends AppCompatActivity {
             // Check if the only required permission has been granted
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Camera permission has been granted, preview can be displayed
-                mCamera = Camera.open();
+                mCamera = Camera.open(1);
                 mCamera.startPreview();
             } else {
                 onStart();

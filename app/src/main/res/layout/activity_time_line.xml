@@ -13,13 +13,14 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true">
         <TextView
-            android:id="@+id/txtLink"
+            android:id="@+id/myTimeLine"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:autoLink="all"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:textSize="20dp"
             android:clickable="true"
+            android:text="My TimeLine"
+            android:textColor="@color/common_google_signin_btn_text_dark"
             android:textColorHighlight="@color/cardview_shadow_end_color"
             />
         <Spinner
@@ -28,11 +29,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="315dp"
             android:contentDescription="More"/>
-        <TextView
-            android:id="@+id/myTimeline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="0dp"/>
 
     </android.support.design.widget.AppBarLayout>
 <LinearLayout

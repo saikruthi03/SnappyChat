@@ -32,12 +32,12 @@ public class TimeLineObject {
     }
 
     class ObjectImageInfo{
-        int image;
+        Bitmap image;
         String caption;
     }
 
     class UserInfo{
-        int display_pic;
+        Bitmap display_pic;
         String name;
         int likes;
         List<String> comments;

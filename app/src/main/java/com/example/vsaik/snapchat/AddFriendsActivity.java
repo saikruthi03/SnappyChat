@@ -35,7 +35,7 @@ public class AddFriendsActivity extends AppCompatActivity {
     private void initButtons() {
         final EditText text = (EditText) findViewById(R.id.search_text);
 
-        Button search = (Button) findViewById(R.id.search_init);
+        Button search = (Button) findViewById(R.id.addFriends);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
