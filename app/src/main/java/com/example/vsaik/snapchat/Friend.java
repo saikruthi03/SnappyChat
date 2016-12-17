@@ -4,9 +4,10 @@ package com.example.vsaik.snapchat;
  * Created by jay on 12/6/16.
  */
 public class Friend {
-    String image;
+    int image;
     String name;
     String level;
+    int status;
     String userName;
 
     public String getUserName() {
@@ -19,18 +20,19 @@ public class Friend {
 Friend(){
 
 }
-    Friend(String name, String level) {
+    Friend(int image , String name, String level,int status) {
         this.image = image;
         this.name = name;
         this.level = level;
+        this.status = status;
     }
 
 
-    public String getImage() {
+    public int getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(int image) {
         this.image = image;
     }
 

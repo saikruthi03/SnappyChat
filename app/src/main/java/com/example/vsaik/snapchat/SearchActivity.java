@@ -130,7 +130,7 @@ public class SearchActivity extends AppCompatActivity {
                     try {
                         JSONObject object = friendsJSON.getJSONObject(i);
 
-                        item = new Friend(object.getString("username"), "ADD");
+                       // item = new Friend(object.getString("username"), "ADD");
 
                     } catch (Exception e) {
                         e.printStackTrace();

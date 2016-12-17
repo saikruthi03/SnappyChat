@@ -8,7 +8,7 @@ package com.example.vsaik.snapchat;
 
 public class Constants {
 
-    public final static String URL = "http://ec2-35-165-55-70.us-west-2.compute.amazonaws.com:3000";
+    public final static String URL = "http://ec2-35-160-141-14.us-west-2.compute.amazonaws.com:3000";
     public final static String dataBase = "users";
     public final static String Private = "private";
     public final static String Public = "public";

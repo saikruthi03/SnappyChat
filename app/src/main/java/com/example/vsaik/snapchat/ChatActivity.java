@@ -30,8 +30,6 @@ import java.util.List;
 
 public class ChatActivity extends AppCompatActivity implements
         AdapterView.OnItemClickListener {
-
-
     List<String> list = new ArrayList<String>();
     ListView listActiveFriends;
 

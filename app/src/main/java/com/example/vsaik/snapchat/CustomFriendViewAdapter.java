@@ -7,6 +7,7 @@ package com.example.vsaik.snapchat;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,8 +51,8 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
         ImageView image;
         TextView name;
         TextView level;
-        Button chat;
-        Button delete;
+        ImageButton chat;
+        ImageButton status;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -65,17 +67,15 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
             holder.image = (ImageView) convertView.findViewById(R.id.friend_dp);
             holder.name = (TextView) convertView.findViewById(R.id.friend_name);
             holder.level = (TextView) convertView.findViewById(R.id.friend_level);
-
+            holder.status = (ImageButton) convertView.findViewById(R.id.status);
             convertView.setTag(holder);
         } else
             holder = (ViewHolder) convertView.getTag();
 
-        //holder.image.setImageResource(rowItem.imag);
         holder.name.setText(rowItem.name);
         final String name = rowItem.name;
 
-        //holder.level.setText(rowItem.level);
-        final String level = rowItem.level;
+        //final String level = rowItem.level;
 
         final HashMap<String,String> myMap = new HashMap<String,String>();
         myMap.put("friend_username",name);
@@ -83,9 +83,11 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
 
         if("friendVanilla".equalsIgnoreCase(showChat)) {
 
-            holder.chat = (Button) convertView.findViewById(R.id.showChat);
+            holder.chat = (ImageButton) convertView.findViewById(R.id.showChat);
+            holder.image.setBackgroundResource(rowItem.status);
 
-            holder.chat.setText("CHAT");
+            holder.level.setBackgroundResource(R.drawable.delete);
+            holder.chat.setBackgroundResource(R.drawable.chats);
             holder.chat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -103,13 +105,20 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
                     context.startActivity(i);
                 }
             });
+            holder.level.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new FriendOperation("cancel",myMap).execute();
+                }
+            });
+
 
         }
         if("friendRequests".equalsIgnoreCase(showChat)) {
 
-            holder.chat = (Button) convertView.findViewById(R.id.showChat);
-
-            holder.chat.setText("ACCEPT");
+            holder.chat = (ImageButton) convertView.findViewById(R.id.showChat);
+            holder.image.setBackgroundResource(rowItem.status);
+            holder.chat.setBackgroundResource(R.drawable.tick);
             holder.chat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -118,15 +127,9 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
                     new FriendOperation("accept",myMap).execute();
                 }
             });
-        }
+            holder.level.setBackgroundResource(R.drawable.delete);
 
-
-        if("friendWaiting".equalsIgnoreCase(showChat)) {
-            holder.chat = (Button) convertView.findViewById(R.id.showChat);
-
-            holder.chat.setText("CANCEL");
-            Log.d("FRIEND WAITING","username "+myName + " : "+"friend_username " +name);
-            holder.chat.setOnClickListener(new View.OnClickListener() {
+            holder.level.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     new FriendOperation("cancel",myMap).execute();
@@ -134,30 +137,19 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
             });
 
         }
-        if("add".equalsIgnoreCase(showChat)) {
-            holder.chat = (Button) convertView.findViewById(R.id.showChat);
 
-            holder.chat.setText("ADD");
 
-            holder.chat.setOnClickListener(new View.OnClickListener() {
+        if("friendWaiting".equalsIgnoreCase(showChat)) {
+            holder.level.setBackgroundResource(R.drawable.delete);
+            holder.image.setBackgroundResource(rowItem.status);
+
+            holder.level.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                   /* Log.d("T","VIEW TIME LINE");
-                    Intent i = new Intent(context,TimeLineActivity.class);
-                    i.putExtra("name",name);
-                    context.startActivity(i);*/
-                    new FriendOperation("sendReq",myMap).execute();
+                    new FriendOperation("cancel",myMap).execute();
                 }
             });
-
         }
-        holder.level.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context,"clicked "+name+" : "+level,Toast.LENGTH_SHORT).show();
-            }
-        });
-
         return convertView;
     }
     @Override

@@ -127,14 +127,13 @@ public class ListAllFriendsActivity extends AppCompatActivity implements
                         String friendName = "";
                         item.setName(object.getString("fullname"));
                         Log.d("Helooooo",item.getName());
-                        item.setImage(object.getString("thumbnail_profile_pic"));
+                        //item.setImage(object.getString("thumbnail_profile_pic"));
                         item.setUserName(object.getString("username"));
                         item.setLevel("Add");
                         allUsers.add(item);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
                 }
             }
 

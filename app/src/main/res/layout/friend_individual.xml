@@ -7,26 +7,36 @@
     <ImageView
         android:layout_weight="1"
         android:layout_gravity="left"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="5dp"
+        android:layout_height="5dp"
         android:id="@+id/friend_dp"
-        android:layout_marginLeft="20dp"/>
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:layout_marginLeft="2dp"/>
     <TextView
-        android:layout_weight="10"
+        android:layout_weight="5"
         android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
-        android:textSize="24dp"
+        android:textSize="20dp"
         android:id="@+id/friend_name"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageButton  android:layout_width="5dp"
+        android:layout_height="10dp"
         android:layout_weight="1"
         android:layout_gravity="center_vertical"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:paddingLeft="10dp"
+        android:id="@+id/status"/>
+    <ImageButton
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_weight="1"
+        android:paddingLeft="10dp"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:layout_gravity="center_vertical"
         android:id="@+id/showChat"
         />
 
@@ -34,10 +44,8 @@
         android:paddingRight="10dp"
         android:layout_weight=".5"
         android:layout_gravity="center_vertical"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_width="40dp"
-        android:textSize="14dp"
+        android:layout_width="20dp"
+        android:textSize="20dp"
         android:layout_height="20dp"
         android:id="@+id/friend_level"/>
 </LinearLayout>

@@ -77,11 +77,6 @@ public class FriendActivity extends AppCompatActivity {
 
     private void populateFriends() {
 
-       /* Friend myfriend = new Friend("Name","VIEW");
-        Friend notmyfriend = new Friend("Name","ADD");
-        friends.add(myfriend);
-        friends.add(notmyfriend);*/
-
         CustomFriendViewAdapter adapter = null;
         ListView listView = (ListView) findViewById(R.id.friendsView);
         if(friends != null && friends.size() > 0) {
@@ -124,12 +119,12 @@ public class FriendActivity extends AppCompatActivity {
                     hashMap.put("URL", Constants.URL + "/get_friend_requests");
                 }
                 GetData post = new GetData(hashMap);
-                friendsJSON = new JSONArray(post.doInBackground());
+                //friendsJSON = new JSONArray(post.doInBackground());
+                friendsJSON = new JSONArray("[{username:kalanag,friend_username:jay}]");
             }
             catch (Exception e){
                 Log.d("EXCEPTION","Exception in friendsJSON "+e.getCause());
             }
-
             return null;
         }
 
@@ -149,7 +144,7 @@ public class FriendActivity extends AppCompatActivity {
                             if(name.equalsIgnoreCase(myName)){
                                 name =object.getString("username");
                             }
-                            item = new Friend(name, "ADD");
+                            item = new Friend(R.drawable.epl,name, "ADD",R.drawable.online);
                         }
 
 

@@ -60,16 +60,12 @@ public class CustomAllUsersAdapter extends ArrayAdapter<Friend> {
             convertView.setTag(holder);
             holder.user.setText(rowItem.getName());
             Log.d("name",rowItem.getName());
-            if(rowItem.getLevel().equals("Add")){
-                holder.friend.setImageResource(R.drawable.add);
-            }else{
-                holder.friend.setImageResource(R.drawable.friends);
-            }
-            try{ if(!rowItem.getImage().isEmpty()){
+
+           /* try{ if(!rowItem.getImage().isEmpty()){
                 holder.image.setImageBitmap(ImageUtils.getBitmapFromBase64(rowItem.getImage()));
             }}catch(Exception ex){
 
-            }
+            }*/
 
         } else {
             Log.d("inside else",rowItem.getName()+"");
@@ -77,16 +73,12 @@ public class CustomAllUsersAdapter extends ArrayAdapter<Friend> {
             holder = (ViewHolder) convertView.getTag();
             holder.user.setText(rowItem.getName());
             Log.d("name",rowItem.getName());
-            if(rowItem.getLevel().equals("Add")){
-                holder.friend.setImageResource(R.drawable.add);
-            }else{
-                holder.friend.setImageResource(R.drawable.friends);
-            }
-            try{ if(!rowItem.getImage().isEmpty()){
+
+            /*try{ if(!rowItem.getImage().isEmpty()){
                 holder.image.setImageBitmap(ImageUtils.getBitmapFromBase64(rowItem.getImage()));
             }}catch(Exception ex){
 
-            }
+            }*/
 
 
         }

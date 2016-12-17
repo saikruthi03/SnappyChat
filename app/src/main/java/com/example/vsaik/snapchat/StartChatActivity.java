@@ -193,9 +193,9 @@ public class StartChatActivity extends AppCompatActivity {
         chatText.setText("");
         if(capturedImage != null)
             params[1] = ImageUtils.getStringImage(capturedImage);
-
-        chatpush.execute(params);
         capturedImage = null;
+        capturePicture.setBackgroundResource(R.drawable.click);
+        chatpush.execute(params);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
