@@ -78,6 +78,23 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
         final HashMap<String,String> myMap = new HashMap<String,String>();
         myMap.put("friend_username",name);
         myMap.put("username",myName);
+
+        if("search".equalsIgnoreCase(showChat)){
+            holder.image.setBackgroundResource(rowItem.status);
+            holder.name.setText(rowItem.name);
+            holder.chat = (ImageButton) convertView.findViewById(R.id.showChat);
+            holder.chat.setBackgroundResource(R.drawable.add);
+            holder.level.setBackgroundResource(0);
+
+            holder.chat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new FriendOperation("sendReq",myMap).execute();
+                }
+            });
+            return convertView;
+        }
+
         holder.chat = (ImageButton) convertView.findViewById(R.id.showChat);
         holder.chat.setBackgroundResource(0);
         if("friendVanilla".equalsIgnoreCase(showChat)) {

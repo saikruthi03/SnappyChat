@@ -254,13 +254,13 @@ public class IndividualTimeLineActivity extends Activity implements AdapterView.
                 @Override
                 public void onClick(View view) {
 
-                        final AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
-                        if(likesList.size() > 0) {
-                            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.select_dialog_singlechoice);
-                            arrayAdapter.addAll(likesList);
-                            builderSingle.setAdapter(arrayAdapter, null);
-                        }
-                        Button likeButton = new Button(context);
+                    final AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
+                    if(likesList.size() > 0) {
+                        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.select_dialog_singlechoice);
+                        arrayAdapter.addAll(likesList);
+                        builderSingle.setAdapter(arrayAdapter, null);
+                    }
+                    Button likeButton = new Button(context);
 
                     builderSingle.setView(likeButton);
 
@@ -282,8 +282,9 @@ public class IndividualTimeLineActivity extends Activity implements AdapterView.
                             }
                         });
                     }
-                    else
+                    else {
                         likeButton.setText("LIKED");
+                    }
                 }
             });
 

@@ -2,6 +2,7 @@ package com.example.vsaik.snapchat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -15,19 +16,25 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class TimeLineActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener {
 
-    private String name = "";
+    private String myName = "";
     private ListView listTimeLine = null;
     private Context context= null;
+    private List<String> friends = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time_line);
-        name = UserDetails.getEmail();
+        myName = UserDetails.getEmail();
+
         listTimeLine = (ListView) findViewById(R.id.list_time_line);
         context = this;
         View contentView = (View)findViewById(R.id.activity_time_line);
@@ -37,7 +44,7 @@ public class TimeLineActivity extends AppCompatActivity implements AdapterView.O
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(TimeLineActivity.this,IndividualTimeLineActivity.class);
-                i.putExtra("profile",name);
+                i.putExtra("profile",myName);
                 startActivity(i);
             }
         });
@@ -74,12 +81,20 @@ public class TimeLineActivity extends AppCompatActivity implements AdapterView.O
     }
 
     private void initDummyData(){
+    }
 
+    private void populateFriends(){
 
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.select_dialog_singlechoice);
 
+        if(friends != null && friends.size() > 0) {
+            arrayAdapter.addAll(friends);
+            listTimeLine.setAdapter(arrayAdapter);
 
-
-
+        }
+        else{
+            listTimeLine.setAdapter(null);
+        }
     }
 
     @Override
@@ -104,5 +119,61 @@ public class TimeLineActivity extends AppCompatActivity implements AdapterView.O
 
     public void onNothingSelected(AdapterView<?> parent) {
         // Another interface callback
+    }
+
+    class TimeLineFriends extends AsyncTask<Void,Void,Void> {
+
+
+        private JSONArray friendsJSON = null;
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            HashMap<String,String> hashMap = new HashMap<String,String>();
+            hashMap.put("username",myName);
+            hashMap.put("Method","GET");
+            try{
+                hashMap.put("URL",Constants.URL+"/get_timeline");
+
+                GetData post = new GetData(hashMap);
+                friendsJSON = new JSONArray(post.doInBackground());
+                //friendsJSON = new JSONArray("[{username:kalanag,friend_username:jay}]");
+            }
+            catch (Exception e){
+                Log.d("EXCEPTION","Exception in friendsJSON "+e.getCause());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            friends = new ArrayList<String>();
+            if(friendsJSON != null) {
+
+                int size = friendsJSON.length();
+                for (int i = 0; i < size; i++) {
+                    String item = null;
+                    try {
+                        JSONObject object = friendsJSON.getJSONObject(i);
+                        String name = object.getString("username");
+                        if(name != null && name.length() > 0 ){
+                            if(!name.equalsIgnoreCase(myName)){
+                                name =object.getString("username");
+                                item = name;
+                            }
+
+                        }
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if(item != null)
+                        friends.add(item);
+                }
+            }
+            populateFriends();
+        }
     }
 }

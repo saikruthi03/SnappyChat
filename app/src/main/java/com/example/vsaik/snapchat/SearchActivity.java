@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -40,22 +41,29 @@ public class SearchActivity extends AppCompatActivity {
     private void initButtons() {
 
         final EditText text = (EditText) findViewById(R.id.search_text);
-        final RadioButton friend = (RadioButton) findViewById(R.id.search_friend);
-        final RadioButton interest = (RadioButton) findViewById(R.id.search_interest);
-        Button search = (Button) findViewById(R.id.search_init);
-        search.setOnClickListener(new View.OnClickListener() {
+        final TextView friend = (TextView) findViewById(R.id.search_friend);
+        final TextView interest = (TextView) findViewById(R.id.search_interest);
+        friends = new ArrayList<Friend>();
+        friend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String search = text.getText().toString();
+
+                    friend.setBackgroundColor(getResources().getColor(R.color.fillhighlight));
+                    interest.setBackgroundColor(getResources().getColor(R.color.fill));
+                    if(search != null && search.length() > 0)
+                        new SearchFriends("friend",search).execute();
+                }
+        });
+        interest.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                friends = new ArrayList<Friend>();
-                if(friend.isChecked()){
-                    new SearchFriends("friend",text.getText().toString()).execute();
-                }
-                else if(interest.isChecked()){
-                    new SearchFriends("interest",text.getText().toString()).execute();
-                }
-                else{
-                    new SearchFriends("email",text.getText().toString()).execute();
-                }
+            public void onClick(View view) {
+                String search = text.getText().toString();
+
+                interest.setBackgroundColor(getResources().getColor(R.color.fillhighlight));
+                friend.setBackgroundColor(getResources().getColor(R.color.fill));
+                if(search != null && search.length() > 0)
+                    new SearchFriends("interest",search).execute();
 
             }
         });
@@ -71,7 +79,7 @@ public class SearchActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.list_friends);
 
         if(friends != null && friends.size() > 0) {
-            CustomFriendViewAdapter adapter = new CustomFriendViewAdapter(myName,this, R.layout.friend_individual, friends,"add");
+            CustomFriendViewAdapter adapter = new CustomFriendViewAdapter(myName,this, R.layout.friend_individual, friends,"search");
             listView.setAdapter(adapter);
         }else{
             listView.setAdapter(null);
@@ -123,6 +131,7 @@ public class SearchActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            friends = new ArrayList<Friend>();
             if(friendsJSON != null) {
                 int size = friendsJSON.length();
                 for (int i = 0; i < size; i++) {
@@ -130,7 +139,7 @@ public class SearchActivity extends AppCompatActivity {
                     try {
                         JSONObject object = friendsJSON.getJSONObject(i);
 
-                       // item = new Friend(object.getString("username"), "ADD");
+                        item = new Friend(0,object.getString("username"), "ADD",R.drawable.online);
 
                     } catch (Exception e) {
                         e.printStackTrace();
