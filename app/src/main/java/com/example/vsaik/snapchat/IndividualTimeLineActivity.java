@@ -130,10 +130,7 @@ public class IndividualTimeLineActivity extends Activity implements AdapterView.
     }
 
     private void updateTimeLine() {
-        List<String> likes = new ArrayList<String>();
-        likes.add("Jay");
-        likes.add("Vivek");
-        likes.add("Zu Zu");
+
         list_time = new ArrayList<TimeLineObject>();
         if (responseFetch != null) {
             int size = responseFetch.length();
@@ -145,16 +142,34 @@ public class IndividualTimeLineActivity extends Activity implements AdapterView.
                     ts.userInfo.date = object.getString("timestamp");
                     String picture = object.getString("pictures");
                     ts.imageInfo.image = ImageUtils.getBitmapFromBase64WithRotation(picture,-90);
-                    List<JSONObject> comments = new ArrayList<JSONObject>();
+                    List<Comment> comments = new ArrayList<Comment>();
                     JSONArray array = object.getJSONArray("comments");
-                    int index = 0;
+                    List<String> likes = new ArrayList<String>();
+                    JSONArray likeFetch = object.getJSONArray("likes");
+                    int likeIndex = 0;
+                    while(likeFetch != null && likeFetch.length() > 0 && likeIndex < likeFetch.length()){
+                        String name = likeFetch.getString(likeIndex);
+                        Log.d("LIKES",name);
+                        likes.add(name);
+                        likeIndex++;
+                    }
                     ts.userInfo.likes = likes;
+                    int index = 0;
                     ts.id = object.getString("s_id");
 
                     while(array != null && array.length() > 0 && index < array.length()){
-                        comments.add(new JSONObject("{\"name\":\"dummy\",\"comments\":\"my first comment\"}"));
-
+                        String arr = array.getString(index);
                         index ++;
+                        Log.d("JSON COMMENTS",arr);
+                        String[] splitStr = arr.split("!@#");
+                        if(splitStr.length >=2 ) {
+                            Comment comment = new Comment();
+                            comment.name = splitStr[0];
+                            comment.comment = splitStr[1];
+                            comments.add(comment);
+
+                        }
+                        //comments.add(new JSONObject("{"+splitStr[0]+":"+splitStr[1]+"}"));
                     }
                     ts.userInfo.comments = comments;
 
@@ -223,8 +238,8 @@ public class IndividualTimeLineActivity extends Activity implements AdapterView.
             holder.date.setText(rowItem.userInfo.date);
             holder.profileName.setText(rowItem.userInfo.name);
 
-                final List<JSONObject> list = rowItem.userInfo.comments;
-                final List<String> likesList = rowItem.userInfo.likes;
+            final List<Comment> list = rowItem.userInfo.comments;
+            final List<String> likesList = rowItem.userInfo.likes;
 
             int commentsSize = 0;
             if(rowItem.userInfo != null && rowItem.userInfo.comments != null){
@@ -238,13 +253,37 @@ public class IndividualTimeLineActivity extends Activity implements AdapterView.
             holder.likes.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(likesList.size() > 0) {
-                        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
-                        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.select_dialog_singlechoice);
-                        arrayAdapter.addAll(likesList);
-                        builderSingle.setAdapter(arrayAdapter, null);
-                        builderSingle.show();
+
+                        final AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
+                        if(likesList.size() > 0) {
+                            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.select_dialog_singlechoice);
+                            arrayAdapter.addAll(likesList);
+                            builderSingle.setAdapter(arrayAdapter, null);
+                        }
+                        Button likeButton = new Button(context);
+
+                    builderSingle.setView(likeButton);
+
+                    final Dialog dialog = builderSingle.show();
+
+                    if(!likesList.contains(myName)) {
+                        likeButton.setText("LIKE");
+                        likeButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                HashMap<String,String> hashMap = new HashMap<String, String>();
+                                hashMap.put("URL",Constants.URL+"/like_friend_story");
+                                hashMap.put("s_id",id);
+                                hashMap.put("Method","POST");
+                                hashMap.put("username",myName);
+                                PushContent pushContent = new PushContent(hashMap);
+                                pushContent.execute();
+                                dialog.dismiss();
+                            }
+                        });
                     }
+                    else
+                        likeButton.setText("LIKED");
                 }
             });
 
@@ -283,7 +322,7 @@ public class IndividualTimeLineActivity extends Activity implements AdapterView.
                             hashMap.put("URL",Constants.URL+"/add_comments");
                             hashMap.put("s_id",id);
                             hashMap.put("Method","POST");
-                            hashMap.put("comments",text.getText().toString());
+                            hashMap.put("comments",myName+"!@#"+text.getText().toString());
                             hashMap.put("username",myName);
                             PushContent pushContent = new PushContent(hashMap);
                             pushContent.execute();
@@ -301,6 +340,14 @@ public class IndividualTimeLineActivity extends Activity implements AdapterView.
                 }
             });
             return convertView;
+        }
+    }
+    class Comment{
+        String name;
+        String comment;
+
+        public Comment(){
+
         }
     }
 
@@ -342,10 +389,10 @@ public class IndividualTimeLineActivity extends Activity implements AdapterView.
         onStart();
     }
 
-    class CommentsAdapter extends  ArrayAdapter<JSONObject>{
+    class CommentsAdapter extends  ArrayAdapter<Comment>{
 
 
-        public CommentsAdapter(Context context, int resource, List<JSONObject> objects) {
+        public CommentsAdapter(Context context, int resource, List<Comment> objects) {
             super(context, resource, objects);
         }
 
@@ -358,7 +405,7 @@ public class IndividualTimeLineActivity extends Activity implements AdapterView.
 
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder = null;
-            JSONObject comment = getItem(position);
+            Comment comment = getItem(position);
             LayoutInflater mInflater = (LayoutInflater) context
                     .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             if (convertView == null) {
@@ -373,8 +420,9 @@ public class IndividualTimeLineActivity extends Activity implements AdapterView.
 
             if(comment != null){
                 try {
-                    holder.name.setText(comment.getString("name"));
-                    holder.comment.setText(comment.getString("comments"));
+                    Log.d("TIMELINE",comment.name+"::"+comment.comment);
+                    holder.name.setText(comment.name);
+                    holder.comment.setText(comment.comment);
                 }
                 catch (Exception e){
                     Log.d("TAG","Exception in comments, loaded static data");

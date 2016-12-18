@@ -46,10 +46,10 @@ public class TimeLineObject {
 
         public UserInfo(){
             likes = new ArrayList<String>();
-            comments = new ArrayList<JSONObject>();
+            comments = new ArrayList<IndividualTimeLineActivity.Comment>();
         }
         List<String> likes;
-        List<JSONObject> comments;
+        List<IndividualTimeLineActivity.Comment> comments;
         String date;
     }
 
