@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     EditText interests;
     EditText profession;
     EditText aboutMe;
-
+boolean addInterests= false;
     RadioGroup privacy;
     RadioButton selectedButton;
     RadioButton privacyButton;
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String userId= " ";
     private int PICK_IMAGE_REQUEST = 1;
 
-
+boolean signout = false;
     ImageButton signOut ;
 
     @Override
@@ -176,9 +176,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toast.makeText(this,"THIS IS USER PROFILE",Toast.LENGTH_LONG).show();
         imageView = (ImageView) findViewById(R.id.imageView);
         try{ if(!UserDetails.getProfilePicUrl().equals(null) && !UserDetails.getProfilePicUrl().equals(" ") && !UserDetails.getProfilePicUrl().equals("")){
-            imageView.setImageBitmap(ImageUtils.getBitmapFromBase64(UserDetails.getProfilePicUrl()));
-        }}catch(Exception ex){
-
+            imageView.setImageBitmap(ImageUtils.decodeBase64(UserDetails.getProfilePicUrl()));
+        }else{
+            Toast.makeText(this,"In else block",Toast.LENGTH_LONG).show();
+        }
+        }catch(Exception ex){
+            Toast.makeText(this,"In exception block",Toast.LENGTH_LONG).show();
         }
         button = (Button) findViewById(R.id.signUp);
         addListenerOnButton();
@@ -220,7 +223,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     visibilty=Constants.Public;
                 else
                     visibilty=Constants.Private;
-                UserDetails.setInterests(interests.getText().toString());
+                if(!UserDetails.getInterests().equals(interests.getText().toString())){
+                    addInterests = true;
+                    UserDetails.setInterests(interests.getText().toString());
+                }
+
                 UserDetails.setProfession(profession.getText().toString());
                 UserDetails.setAboutMe(aboutMe.getText().toString());
                 try {
@@ -228,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }catch(Exception ex){
 
                 }
+
                 UserDetails.setVisibilty(visibilty);
                 try {
                     userMap = new HashMap<String, String>();
@@ -240,10 +248,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     userMap.put("profession", UserDetails.getProfession());
                     userMap.put("about", UserDetails.getAboutMe());
                     userMap.put("account_type", visibilty);
-                    Toast.makeText(getApplicationContext(),"Visibilyt"+visibilty,Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(),"Visibilyt"+visibilty,Toast.LENGTH_SHORT).show();
                     userMap.put("is_active_timeline", "false");
                    //userMap.put("profile_pic", imgDecodableString);
-                    Toast.makeText(getApplicationContext(),"Username"+UserDetails.getUserName()+" "+UserDetails.getFullName(),Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(),"imgDecodableString"+imgDecodableString,Toast.LENGTH_SHORT).show();
                     userMap.put("isActive", "true");
                     new InsertUser(userMap).execute();
                 }catch(Exception ex){
@@ -266,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         @Override
         protected Void doInBackground(Void... voids) {
+            if(!signout){
             userMap = new HashMap<>();
             userMap.put("Method","GET");
             userMap.put("URL", Constants.URL + "/update_account_type");
@@ -278,17 +287,67 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             catch(Exception e){
                 Log.e("RESPONSE- ERROR",e.toString());
             }
-            userMap = new HashMap<>();
-            userMap.put("Method","GET");
-            userMap.put("URL", Constants.URL + "/add_interests");
-            userMap.put("username",UserDetails.getUserName());
-            userMap.put("interests",UserDetails.getInterests());
-            GetData fetch2 = new GetData(userMap);
-            try {
-                String res = fetch2.doInBackground();
+            if(addInterests) {
+                addInterests = false;
+                userMap = new HashMap<>();
+                userMap.put("Method", "GET");
+                userMap.put("URL", Constants.URL + "/add_interests");
+                userMap.put("username", UserDetails.getUserName());
+                userMap.put("interests", UserDetails.getInterests());
+                GetData fetch2 = new GetData(userMap);
+                try {
+                    String res = fetch2.doInBackground();
 
-            }catch(Exception e){
-                Log.e("RESPONSE- ERROR",e.toString());
+                } catch (Exception e) {
+                    Log.e("RESPONSE- ERROR", e.toString());
+                }
+            }
+                userMap = new HashMap<>();
+            userMap.put("Method", "POST");
+            userMap.put("URL", Constants.URL + "/update_profile_pic");
+            userMap.put("username", UserDetails.getUserName());
+            userMap.put("profile_pic", imgDecodableString);
+            PostData fetch3 = new PostData(userMap);
+            try {
+                String res = fetch3.doInBackground();
+
+            } catch (Exception e) {
+                Log.e("RESPONSE- ERROR", e.toString());
+            }
+            userMap = new HashMap<>();
+            userMap.put("Method", "GET");
+            userMap.put("URL", Constants.URL + "/update_about");
+            userMap.put("username", UserDetails.getUserName());
+            userMap.put("about", UserDetails.getAboutMe());
+            GetData fetch4 = new GetData(userMap);
+            try {
+                String res = fetch4.doInBackground();
+
+            } catch (Exception e) {
+                Log.e("RESPONSE- ERROR", e.toString());
+            }
+            userMap = new HashMap<>();
+            userMap.put("Method", "GET");
+            userMap.put("URL", Constants.URL + "/update_profession");
+            userMap.put("username", UserDetails.getUserName());
+            userMap.put("profession", UserDetails.getProfession());
+            GetData fetch5 = new GetData(userMap);
+            try {
+                String res = fetch5.doInBackground();
+
+            } catch (Exception e) {
+                Log.e("RESPONSE- ERROR", e.toString());
+            }}else{
+                userMap = new HashMap<>();
+                userMap.put("Method", "GET");
+                userMap.put("URL", Constants.URL + "/is_active_false_user");
+                userMap.put("username", UserDetails.getUserName());
+                GetData fetch5 = new GetData(userMap);
+                try {
+                    String res = fetch5.doInBackground();
+                } catch (Exception e) {
+                    Log.e("RESPONSE- ERROR", e.toString());
+                }
             }
             return null;
         }
@@ -354,6 +413,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         UserDetails.setProfilePicUrl("");
         UserDetails.setVisibilty("");
         UserDetails.setProfession("");
+        signout = true;
+        new InsertUser(userMap).execute();
         Intent mainScreen = new Intent(MainActivity.this,LoginActivity.class);
         startActivity(mainScreen);
     }
@@ -376,10 +437,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 final Bitmap selectedImagebm = BitmapFactory.decodeStream(imageStream);
                 imageView.setImageBitmap(selectedImagebm);
 
-                Bitmap bm  =ImageUtils.compress(selectedImagebm);
-                imgDecodableString=  ImageUtils.getStringImage(bm);
-                UserDetails.setImage(bm);
+               // Bitmap bm  =ImageUtils.compress(selectedImagebm);
+                imgDecodableString=  ImageUtils.encodeToBase64(selectedImagebm,Bitmap.CompressFormat.PNG,100);
+
+                UserDetails.setImage(selectedImagebm);
                 UserDetails.setProfilePicUrl(imgDecodableString);
+                /*Toast.makeText(this, "Hello"+UserDetails.getProfilePicUrl().length()+" ",
+                        Toast.LENGTH_LONG).show();*/
             } else {
                 Toast.makeText(this, "You haven't picked Image"+requestCode,
                         Toast.LENGTH_LONG).show();

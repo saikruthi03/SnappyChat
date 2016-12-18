@@ -45,26 +45,26 @@ public class PostData {
         try {
 
             if("POST".equalsIgnoreCase(method)) {
-
+                url += "?"+getGetDataString(hashMap);
+                Log.d("REQUEST",url);
                 URL ur = new URL(url);
                 conn = (HttpURLConnection) ur.openConnection();
                 conn.setRequestMethod("POST");
-
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setRequestProperty("Accept", "application/json");
-
-                OutputStream os = conn.getOutputStream();
+            try{   OutputStream os = conn.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(
                         new OutputStreamWriter(os, "UTF-8"));
-
                 writer.write(getPostDataString(hashMap).toString());
-
-               /* conn.setDoInput(true);
-                conn.setDoOutput(true);*/
-
                 writer.flush();
                 writer.close();
                 os.close();
+            }
+            catch(OutOfMemoryError ex){
+
+            }
+               /* conn.setDoInput(true);
+                conn.setDoOutput(true);*/
 
             }
             else{
