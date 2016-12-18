@@ -45,7 +45,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -325,6 +327,8 @@ public class LoginActivity extends AppCompatActivity implements
                                     }else {
                                         Log.d("inside elseeeeeeee","elseeeeeee");
                                         new RetrieveUsers().execute();
+                                       // progressDialog.dismiss();
+                                       // startCameraActivity(UserDetails.getUserName());
                                     }
                                 }
 
@@ -435,6 +439,7 @@ public class LoginActivity extends AppCompatActivity implements
     class RetrieveUsers extends
             AsyncTask<Void, Void, Void> {
         int size = 0;
+        String userName = "";
         @Override
         protected Void doInBackground(Void... voids) {
             String userName =UserDetails.getEmail().split("\\@")[0];
@@ -460,34 +465,40 @@ public class LoginActivity extends AppCompatActivity implements
 
             try{if(responseFetch != null ) {
                size = responseFetch.length();
+                Log.e("RESPONSE-SIZE", size+"");
                 for (int i = 0; i < size; i++) {
                     try {
                         JSONObject object = responseFetch.getJSONObject(i);
+                        try{
+                            userName=  object.getString("username");
+                        }catch(Exception ex){
+                            Log.e("RESPONSE-SIZE 1", size+"");
+                        }
                         try {
                             UserDetails.setAboutMe(object.getString("about"));
                         }catch(Exception ex){
-
+                            Log.e("RESPONSE-SIZE-2", size+"");
                         }
                         try {
                             String interests = object.getJSONArray("interests").toString();
-                            String first = interests.replaceAll("\\[", "").replaceAll("\\]","").replaceAll("\"","");
+                            String first = interests.replaceAll("\\[", "").replaceAll("\\]","").replaceAll("\"","").replaceAll(","," ");
                             UserDetails.setInterests(first);
                         }catch(Exception ex){
-
+                            Log.e("RESPONSE-SIZE-3", size+"");
                         }
 
                        try {
                            UserDetails.setProfilePicUrl(object.getString("profile_pic"));
                        }catch(Exception ex){
-
+                           Log.e("RESPONSE-SIZE-4", size+"");
                        }
                         try{UserDetails.setVisibilty(object.getString("account_type"));
                     }catch(Exception ex){
-
+                            Log.e("RESPONSE-SIZE-5", size+"");
                     }
                       try{  UserDetails.setProfession("profession");
                       }catch(Exception ex){
-
+                          Log.e("RESPONSE-SIZE-6", size+"");
                       }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -496,7 +507,7 @@ public class LoginActivity extends AppCompatActivity implements
                 }
             }}catch(Exception ex){
                 size = 0;
-                if(size == 0){
+                /*if(size == 0){
                     try {
                         userMap = new HashMap<String, String>();
                         userMap.put("Method","POST");
@@ -515,7 +526,7 @@ public class LoginActivity extends AppCompatActivity implements
                     }catch(Exception e){
 
                     }
-                }
+                }*/
             }
 
 if(size == 0){
@@ -532,6 +543,7 @@ if(size == 0){
         userMap.put("account_type", Constants.Friends);
         userMap.put("is_active_timeline", "false");
         userMap.put("isActive", "true");
+        userMap.put("profile_pic","");
         PostData post = new PostData(userMap);
          String response = post.doInBackground();
     }catch(Exception ex){
