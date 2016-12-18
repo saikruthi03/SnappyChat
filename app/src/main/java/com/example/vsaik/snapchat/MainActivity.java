@@ -47,6 +47,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.w3c.dom.Text;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -54,6 +57,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -78,15 +82,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static HashMap<String,String> userMap= new HashMap<String,String>();
     String path;
     private GoogleApiClient mGoogleApiClient;
-    String imgDecodableString = "NoImage";
+    String imgDecodableString = " ";
     private Context context ;
     DatabaseReference myRef = mDatabase.getReference(Constants.dataBase);
-    EditText nickName;
-    EditText email;
+
+    TextView userName;
     EditText interests;
     EditText profession;
     EditText aboutMe;
-    EditText location;
+
     RadioGroup privacy;
     RadioButton selectedButton;
     RadioButton privacyButton;
@@ -109,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         View contentView = (View)findViewById(R.id.timeLine);
         contentView.setOnTouchListener(new OnSwipeTouchListener(context) {
             @Override
-            public void onSwipeLeft() {
+            public void onSwipeBottom() {
                 Intent main = new Intent(MainActivity.this,MainScreen.class);
                 startActivity(main);
             }
@@ -118,22 +122,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         privacyButton = (RadioButton) findViewById(R.id.radioPrivate);
         friendsButton = (RadioButton) findViewById(R.id.radioFriends);
         publicButton = (RadioButton) findViewById(R.id.radioPublic);
-        nickName = (EditText)findViewById(R.id.nameText);
-        nickName.setText(" ");
-        email=(EditText)findViewById(R.id.emailText);
-        email.setText(" ");
-        interests= (EditText) findViewById(R.id.passwordText);
-        interests.setText(" ");
+        userName = (TextView) findViewById(R.id.username);
+        userName.setText(UserDetails.getUserName());
+        interests= (EditText) findViewById(R.id.interestsText);
+        interests.setText(UserDetails.getInterests());
         profession=(EditText)findViewById(R.id.professionText);
-        profession.setText(" ");
+        profession.setText(UserDetails.getProfession());
         aboutMe=(EditText)findViewById(R.id.aboutMeText);
-        aboutMe.setText(" ");
-        location=(EditText)findViewById(R.id.locationText);
-        location.setText(" ");
+        aboutMe.setText(UserDetails.getAboutMe());
+
+
+        try {
+            if (!UserDetails.getVisibilty().equals("") && UserDetails.getVisibilty().equals(" ")) {
+                friendsButton.setChecked(true);
+                privacyButton.setChecked(false);
+                publicButton.setChecked(false);
+            } else if (!(UserDetails.getVisibilty().equals("")) && UserDetails.getVisibilty().equals(Constants.Friends)) {
+                friendsButton.setChecked(true);
+                privacyButton.setChecked(false);
+                publicButton.setChecked(false);
+            } else if (!(UserDetails.getVisibilty().equals("")) && UserDetails.getVisibilty().equals(Constants.Private)) {
+                friendsButton.setChecked(false);
+                privacyButton.setChecked(true);
+                publicButton.setChecked(false);
+            } else if (!(UserDetails.getVisibilty().equals("")) && UserDetails.getVisibilty().equals(Constants.Public)) {
+                friendsButton.setChecked(false);
+                privacyButton.setChecked(false);
+                publicButton.setChecked(true);
+            }else{
+                friendsButton.setChecked(true);
+                privacyButton.setChecked(false);
+                publicButton.setChecked(false);
+            }
+        }catch(Exception ex){
+            friendsButton.setChecked(true);
+            privacyButton.setChecked(false);
+            publicButton.setChecked(false);
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        fetchData();
+        //fetchData();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -146,12 +175,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Toast.makeText(this,"THIS IS USER PROFILE",Toast.LENGTH_LONG).show();
         imageView = (ImageView) findViewById(R.id.imageView);
+        try{ if(!UserDetails.getProfilePicUrl().equals(null) && !UserDetails.getProfilePicUrl().equals(" ") && !UserDetails.getProfilePicUrl().equals("")){
+            imageView.setImageBitmap(ImageUtils.getBitmapFromBase64(UserDetails.getProfilePicUrl()));
+        }}catch(Exception ex){
+
+        }
         button = (Button) findViewById(R.id.signUp);
         addListenerOnButton();
         selectImage = (Button) findViewById(R.id.selectPic);
         selectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("Inside onclick","Inside onclivk");
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -185,43 +220,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     visibilty=Constants.Public;
                 else
                     visibilty=Constants.Private;
-                DatabaseReference myRef1 = myRef.child(Constants.dataBase).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                UserDetails.setEmail(email.getText().toString());
-                UserDetails.setNickname(nickName.getText().toString());
                 UserDetails.setInterests(interests.getText().toString());
-                UserDetails.setAboutMe(aboutMe.getText().toString());
-                UserDetails.setLocation(location.getText().toString());
-                UserDetails.setProfilePicUrl(imgDecodableString);
                 UserDetails.setProfession(profession.getText().toString());
-                UserDetails.setImage(ImageUtils.getBitmapFromBase64(UserDetails.getProfilePicUrl()));
-                UserDetails.setVisibilty(visibilty);
-                User user = new User();
-                user.setUserId(UserDetails.getUserId());
-                user.setEmail(UserDetails.getEmail());
-                user.setNickname(UserDetails.getNickname());
-                user.setPhoneNumber(" ");
-                user.setInterests(UserDetails.getInterests());
-                user.setAboutMe(UserDetails.getAboutMe());
-                user.setLocation(UserDetails.getLocation());
-                user.setVisibilty(UserDetails.getProfession());
-                user.setProfilePicUrl(imgDecodableString);
-                user.setVisibilty(UserDetails.getVisibilty());
-                myRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(user);
+                UserDetails.setAboutMe(aboutMe.getText().toString());
                 try {
-                    userMap = new HashMap<String, String>();
-                    userMap.put("URL", Constants.URL + "/insert_user");
-                    userMap.put("email", UserDetails.getEmail());
-                    userMap.put("username", UserDetails.getEmail());
-                    userMap.put("fullname", UserDetails.getNickname());
-                    userMap.put("interests", UserDetails.getInterests());
-                    userMap.put("about", UserDetails.getAboutMe());
-                    userMap.put("account_type", visibilty);
-                    userMap.put("is_active_timeline", "false");
-                    userMap.put("thumbnail_profile_pic", imgDecodableString);
-                    userMap.put("isActive", "true");
-                    new Dumb(userMap).execute();
+                    UserDetails.setProfilePicUrl(imgDecodableString);
                 }catch(Exception ex){
 
+                }
+                UserDetails.setVisibilty(visibilty);
+                try {
+                    userMap = new HashMap<String, String>();
+                    userMap.put("Method","POST");
+                    userMap.put("URL", Constants.URL + "/insert_user");
+                    userMap.put("email", UserDetails.getEmail());
+                    userMap.put("username", UserDetails.getUserName());
+                    userMap.put("fullname", UserDetails.getFullName());
+                    userMap.put("interests", UserDetails.getInterests());
+                    userMap.put("profession", UserDetails.getProfession());
+                    userMap.put("about", UserDetails.getAboutMe());
+                    userMap.put("account_type", visibilty);
+                    Toast.makeText(getApplicationContext(),"Visibilyt"+visibilty,Toast.LENGTH_SHORT).show();
+                    userMap.put("is_active_timeline", "false");
+                   //userMap.put("profile_pic", imgDecodableString);
+                    Toast.makeText(getApplicationContext(),"Username"+UserDetails.getUserName()+" "+UserDetails.getFullName(),Toast.LENGTH_SHORT).show();
+                    userMap.put("isActive", "true");
+                    new InsertUser(userMap).execute();
+                }catch(Exception ex){
+                    Toast.makeText(getApplicationContext(),"got execptio",Toast.LENGTH_SHORT).show();
                 }
                 Intent mainScreen = new Intent(MainActivity.this,MainScreen.class);
                 startActivity(mainScreen);
@@ -231,17 +257,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
     }
-    class Dumb extends AsyncTask<Void,Void,Void>{
+
+    class InsertUser extends AsyncTask<Void,Void,Void>{
         HashMap<String,String> hashMap2 = null;
 
-        public Dumb(HashMap<String,String> hashMap){
+        public InsertUser(HashMap<String,String> hashMap){
             this.hashMap2 = hashMap;
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            PushUser push = new PushUser();
-            push.insertData(hashMap2);
+            userMap = new HashMap<>();
+            userMap.put("Method","GET");
+            userMap.put("URL", Constants.URL + "/update_account_type");
+            userMap.put("username",UserDetails.getUserName());
+            userMap.put("account_type",UserDetails.getVisibilty());
+            GetData fetch = new GetData(userMap);
+            try {
+                String res = fetch.doInBackground();
+            }
+            catch(Exception e){
+                Log.e("RESPONSE- ERROR",e.toString());
+            }
+            userMap = new HashMap<>();
+            userMap.put("Method","GET");
+            userMap.put("URL", Constants.URL + "/add_interests");
+            userMap.put("username",UserDetails.getUserName());
+            userMap.put("interests",UserDetails.getInterests());
+            GetData fetch2 = new GetData(userMap);
+            try {
+                String res = fetch2.doInBackground();
+
+            }catch(Exception e){
+                Log.e("RESPONSE- ERROR",e.toString());
+            }
             return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+           // Toast.makeText(getApplicationContext(),"Inside on post exec",Toast.LENGTH_SHORT).show();
+
         }
 
     }
@@ -264,128 +318,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGoogleApiClient.connect();
         super.onStart();
         context = this;
-        fetchData();
+        //fetchData();
     }
 
 
-    public void fetchData(){
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                userList.clear();
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    User user = postSnapshot.getValue(User.class);
-                    try {
-                        if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(postSnapshot.getKey())) {
-                            if(!user.getNickname().equals("")){
-                                nickName.setText(user.getNickname());
-                            }
-                            if(!user.getEmail().equals("")){
-                                email.setText(user.getEmail());
-                            }
-                            if(!user.getProfilePicUrl().equals("")){
-                                imgDecodableString = user.getProfilePicUrl();
-                               try{ if(!imgDecodableString.isEmpty()){
-                                    if(imgDecodableString.length() > 6)
-                                        imageView.setImageBitmap(ImageUtils.getBitmapFromBase64(imgDecodableString));
-                                }}catch(Exception ex){
 
-                               }
-
-                            }
-                            if(!user.getInterests().equals("")){
-                                interests.setText(user.getInterests());
-                            }
-                            if(!user.getLocation().equals("")){
-                                location.setText(user.getLocation());
-                            }
-                            if(!user.getProfession().equals("")){
-                                profession.setText(user.getProfession());
-                            }
-                            if(!user.getAboutMe().equals("")){
-                                aboutMe.setText(user.getAboutMe());
-                            }
-                            if(!user.getVisibilty().equals("") && user.getVisibilty().equals(" ")){
-                                friendsButton.setChecked(false);
-                                privacyButton.setChecked(false);
-                                publicButton.setChecked(false);
-                            }else if(!(user.getVisibilty().equals("")) && user.getVisibilty().equals(Constants.Friends)){
-                                friendsButton.setChecked(true);
-                                privacyButton.setChecked(false);
-                                publicButton.setChecked(false);
-                            }else if(!(user.getVisibilty().equals("")) && user.getVisibilty().equals(Constants.Private)){
-                                friendsButton.setChecked(false);
-                                privacyButton.setChecked(true);
-                                publicButton.setChecked(false);
-                            }else if(!(user.getVisibilty().equals("")) && user.getVisibilty().equals(Constants.Public)){
-                                friendsButton.setChecked(false);
-                                privacyButton.setChecked(false);
-                                publicButton.setChecked(true);
-                            }
-
-
-                        }
-
-                    }catch(NullPointerException ex){
-                        ex.printStackTrace();
-                    }
-
-                    userList.add(user);
-                    usenames.put(postSnapshot.getKey(),user);
-                }
-
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-
-        });
-    }
 
     public void signOut(){
 
-       try {
-           Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                   new ResultCallback<Status>() {
-                       @Override
-                       public void onResult(Status status) {
-                           // ...
-                           Toast.makeText(getApplicationContext(), "Logged Out", Toast.LENGTH_SHORT).show();
-                           //Intent i=new Intent(getApplicationContext(),MainActivity.class);
-                           //startActivity(i);
-                       }
-                   });
-       }catch (Exception ex){
+        try {
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status status) {
+                            Toast.makeText(getApplicationContext(), "Logged Out", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }catch (Exception ex){
 
-       }
+        }
         try {
             if(UserDetails.getProvider().equals("F"))
-            LoginManager.getInstance().logOut();
+                LoginManager.getInstance().logOut();
         }catch(Exception ex){
 
         }
         LoginActivity.curUser= "NA";
-       try {
-           userMap = new HashMap<>();
-           userMap.put("URL", Constants.URL + "'/is_active_false_user?");
-           userMap.put("email", UserDetails.getEmail());
-           userMap.put("username", UserDetails.getEmail());
-           userMap.put("fullname", UserDetails.getNickname());
-           userMap.put("interests", UserDetails.getInterests());
-           userMap.put("about", UserDetails.getAboutMe());
-           userMap.put("account_type", visibilty);
-           userMap.put("is_active_timeline", "false");
-           userMap.put("thumbnail_profile_pic", imgDecodableString);
-           userMap.put("isActive", "false");
-           PushUser pushUser = new PushUser();
-           pushUser.insertData(userMap);
-       }catch(Exception ex){
-
-       }
         mAuth.signOut();
         UserDetails.setUserId("");
         UserDetails.setEmail("");
-        UserDetails.setNickname("");
+        UserDetails.setUserName("");
         UserDetails.setInterests("");
         UserDetails.setAboutMe("");
         UserDetails.setLocation("");
@@ -410,19 +372,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     && null != data) {
 
                 Uri selectedImage = data.getData();
-                imageView.setImageURI(selectedImage);
-                Bitmap bm = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
-                bm =ImageUtils.compress(bm);
+                final InputStream imageStream = getContentResolver().openInputStream(selectedImage);
+                final Bitmap selectedImagebm = BitmapFactory.decodeStream(imageStream);
+                imageView.setImageBitmap(selectedImagebm);
+
+                Bitmap bm  =ImageUtils.compress(selectedImagebm);
                 imgDecodableString=  ImageUtils.getStringImage(bm);
                 UserDetails.setImage(bm);
-                FirebaseDatabase.getInstance()
-                        .getReference(Constants.dataBase)
-                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .child("profilePicUrl").setValue(imgDecodableString);
-
-
+                UserDetails.setProfilePicUrl(imgDecodableString);
             } else {
-                Toast.makeText(this, "You haven't picked Image",
+                Toast.makeText(this, "You haven't picked Image"+requestCode,
                         Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {

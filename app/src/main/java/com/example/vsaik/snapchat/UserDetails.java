@@ -7,17 +7,27 @@ import android.graphics.Bitmap;
  */
 public class UserDetails {
 
-    public static String nickname;
+    public static String userName;
     public static String email;
     public static String profilePicUrl;
-    public static String location;
-    public static String profession;
-    public static String aboutMe;
-    public static String interests;
+    public static String location=" ";
+    public static String profession=" ";
+    public static String aboutMe=" ";
+    public static String interests =" ";
     public static String userId;
-    public static String visibilty;
+    public static String visibilty=" ";
     public static Bitmap image;
+
+    public static String getFullName() {
+        return fullName;
+    }
+
+    public static void setFullName(String fullName) {
+        UserDetails.fullName = fullName;
+    }
+
     public static String provider;
+    public static String fullName;
 
     public static String getProvider() {
         return provider;
@@ -45,16 +55,17 @@ public class UserDetails {
         UserDetails.location = location;
     }
 
-    public static String getNickname() {
-        return nickname;
+    public static String getUserName() {
+        return userName;
     }
 
-    public static void setNickname(String nickname) {
-        UserDetails.nickname = nickname;
+    public static void setUserName(String userName) {
+
+        UserDetails.userName = userName;
     }
 
     public static String getEmail() {
-        return "kjayashankar@yahoo.com";
+        return email;
     }
 
     public static void setEmail(String email) {
@@ -115,7 +126,7 @@ public class UserDetails {
     }
 
     public UserDetails(String nickname, String email, String profilePicUrl, String location, String profession, String aboutMe, String interests,String userId,String visibilty) {
-        this.nickname = nickname;
+        this.userName = nickname;
         this.email = email;
         this.profilePicUrl = profilePicUrl;
         this.location = location;

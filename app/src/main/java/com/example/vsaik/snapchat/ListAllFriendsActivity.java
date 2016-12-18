@@ -69,7 +69,7 @@ public class ListAllFriendsActivity extends AppCompatActivity implements
     private void showUsers() {
 
         if(allUsers != null && allUsers.size() > 0) {
-            CustomAllUsersAdapter adapter = new CustomAllUsersAdapter(UserDetails.getNickname(),this, R.layout.all_users_list, allUsers);
+            CustomAllUsersAdapter adapter = new CustomAllUsersAdapter(UserDetails.getUserName(),this, R.layout.all_users_list, allUsers);
             listAllUsers.setAdapter(adapter);
             listAllUsers.setOnItemClickListener(this);
         }
