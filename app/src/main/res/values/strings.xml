@@ -39,5 +39,6 @@
         <item>ALL</item>
     </string-array>
     <string name="title_activity_list_all_friends">ListAllFriendsActivity</string>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>
 

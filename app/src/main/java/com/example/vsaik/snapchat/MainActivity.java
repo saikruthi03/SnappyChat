@@ -113,7 +113,7 @@ boolean signout = false;
         View contentView = (View)findViewById(R.id.timeLine);
         contentView.setOnTouchListener(new OnSwipeTouchListener(context) {
             @Override
-            public void onSwipeBottom() {
+            public void onSwipeTop() {
                 Intent main = new Intent(MainActivity.this,MainScreen.class);
                 startActivity(main);
             }
@@ -173,15 +173,15 @@ boolean signout = false;
             }
         });
 
-        Toast.makeText(this,"THIS IS USER PROFILE",Toast.LENGTH_LONG).show();
+       // Toast.makeText(this,"THIS IS USER PROFILE",Toast.LENGTH_LONG).show();
         imageView = (ImageView) findViewById(R.id.imageView);
         try{ if(!UserDetails.getProfilePicUrl().equals(null) && !UserDetails.getProfilePicUrl().equals(" ") && !UserDetails.getProfilePicUrl().equals("")){
             imageView.setImageBitmap(ImageUtils.decodeBase64(UserDetails.getProfilePicUrl()));
         }else{
-            Toast.makeText(this,"In else block",Toast.LENGTH_LONG).show();
+            //Toast.makeText(this,"In else block",Toast.LENGTH_LONG).show();
         }
         }catch(Exception ex){
-            Toast.makeText(this,"In exception block",Toast.LENGTH_LONG).show();
+           // Toast.makeText(this,"In exception block",Toast.LENGTH_LONG).show();
         }
         button = (Button) findViewById(R.id.signUp);
         addListenerOnButton();
@@ -255,7 +255,7 @@ boolean signout = false;
                     userMap.put("isActive", "true");
                     new InsertUser(userMap).execute();
                 }catch(Exception ex){
-                    Toast.makeText(getApplicationContext(),"got execptio",Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getApplicationContext(),"got execptio",Toast.LENGTH_SHORT).show();
                 }
                 Intent mainScreen = new Intent(MainActivity.this,MainScreen.class);
                 startActivity(mainScreen);
@@ -354,7 +354,20 @@ boolean signout = false;
         @Override
         protected void onPostExecute(Void aVoid) {
            // Toast.makeText(getApplicationContext(),"Inside on post exec",Toast.LENGTH_SHORT).show();
-
+if(signout){
+    signout = false;
+    UserDetails.setUserId("");
+    UserDetails.setEmail("");
+    UserDetails.setUserName("");
+    UserDetails.setInterests("");
+    UserDetails.setAboutMe("");
+    UserDetails.setLocation("");
+    UserDetails.setProfilePicUrl("");
+    UserDetails.setVisibilty("");
+    UserDetails.setProfession("");
+    Intent mainScreen = new Intent(MainActivity.this,LoginActivity.class);
+    startActivity(mainScreen);
+}
         }
 
     }
@@ -404,19 +417,10 @@ boolean signout = false;
         }
         LoginActivity.curUser= "NA";
         mAuth.signOut();
-        UserDetails.setUserId("");
-        UserDetails.setEmail("");
-        UserDetails.setUserName("");
-        UserDetails.setInterests("");
-        UserDetails.setAboutMe("");
-        UserDetails.setLocation("");
-        UserDetails.setProfilePicUrl("");
-        UserDetails.setVisibilty("");
-        UserDetails.setProfession("");
-        signout = true;
         new InsertUser(userMap).execute();
-        Intent mainScreen = new Intent(MainActivity.this,LoginActivity.class);
-        startActivity(mainScreen);
+        signout = true;
+
+
     }
 
 

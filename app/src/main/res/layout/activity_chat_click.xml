@@ -8,25 +8,29 @@
     tools:context="com.example.vsaik.snapchat.ChatActivity">
     <RelativeLayout
         android:layout_width="400dp"
-        android:layout_height="50dp"
-        android:background="@color/colorAccent"
+        android:layout_height="40dp"
+        android:background="@color/colorPrimary"
         android:id="@+id/chatWindow">
         <ImageButton
-            android:layout_width="20dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="@drawable/back"
-            android:id="@+id/backButton"/>
+            android:id="@+id/backButton"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/Friend"/>
-        <Button android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <Button android:layout_width="30dp"
+            android:layout_height="35dp"
             android:id="@+id/terminateChat"
             android:text="DEL"
-            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/delete1"
+            android:paddingTop="150dp"
             android:layout_alignParentTop="true"
-            android:paddingTop="150dp"/>
+            android:layout_alignParentEnd="true" />
         </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
