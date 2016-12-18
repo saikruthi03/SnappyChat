@@ -434,11 +434,10 @@ public class LoginActivity extends AppCompatActivity implements
 
     class RetrieveUsers extends
             AsyncTask<Void, Void, Void> {
-
+        int size = 0;
         @Override
         protected Void doInBackground(Void... voids) {
             String userName =UserDetails.getEmail().split("\\@")[0];
-            int size = 0;
             HashMap<String, String> hashMap = new HashMap<String, String>();
             hashMap.put("username",userName);
             UserDetails.setUserName(userName);
@@ -459,7 +458,7 @@ public class LoginActivity extends AppCompatActivity implements
                 Log.e("RESPONSE- ERROR", e.toString());
             }
 
-            if(responseFetch != null ) {
+            try{if(responseFetch != null ) {
                size = responseFetch.length();
                 for (int i = 0; i < size; i++) {
                     try {
@@ -495,6 +494,28 @@ public class LoginActivity extends AppCompatActivity implements
                     }
 
                 }
+            }}catch(Exception ex){
+                size = 0;
+                if(size == 0){
+                    try {
+                        userMap = new HashMap<String, String>();
+                        userMap.put("Method","POST");
+                        userMap.put("URL", Constants.URL + "/insert_user");
+                        userMap.put("email", UserDetails.getEmail());
+                        userMap.put("username", UserDetails.getUserName());
+                        userMap.put("fullname", UserDetails.getFullName());
+                        userMap.put("interests", " ");
+                        userMap.put("profession", " ");
+                        userMap.put("about", " ");
+                        userMap.put("account_type", Constants.Friends);
+                        userMap.put("is_active_timeline", "false");
+                        userMap.put("isActive", "true");
+                        PostData post = new PostData(userMap);
+                        String response = post.doInBackground();
+                    }catch(Exception e){
+
+                    }
+                }
             }
 
 if(size == 0){
@@ -522,7 +543,7 @@ if(size == 0){
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(responseFetch != null){
+            if(size >0 ){
                 progressDialog.dismiss();
                 startCameraActivity(UserDetails.getUserName());
             }else{
