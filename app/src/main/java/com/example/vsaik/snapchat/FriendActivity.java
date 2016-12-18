@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -47,14 +48,18 @@ public class FriendActivity extends AppCompatActivity {
     private void initButtons() {
 
         friends = new ArrayList<Friend>();
-        final RadioButton friendVanilla = (RadioButton) findViewById(R.id.friendVanilla);
-        final RadioButton friendRequests = (RadioButton) findViewById(R.id.friendRequests);
-        final RadioButton friendWaiting = (RadioButton) findViewById(R.id.friendWaiting);
+        final TextView friendVanilla = (TextView) findViewById(R.id.friendVanilla);
+        final TextView friendRequests = (TextView) findViewById(R.id.friendRequests);
+        final TextView friendWaiting = (TextView) findViewById(R.id.friendWaiting);
 
         friendVanilla.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 method = "friendVanilla";
+                friendVanilla.setBackgroundColor(getResources().getColor(R.color.fillhighlight));
+                friendRequests.setBackgroundColor(getResources().getColor(R.color.fill));
+                friendWaiting.setBackgroundColor(getResources().getColor(R.color.fill));
+
                 new SearchFriends("friend").execute();
             }
         });
@@ -62,6 +67,9 @@ public class FriendActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 method = "friendRequests";
+                friendVanilla.setBackgroundColor(getResources().getColor(R.color.fill));
+                friendRequests.setBackgroundColor(getResources().getColor(R.color.fillhighlight));
+                friendWaiting.setBackgroundColor(getResources().getColor(R.color.fill));
                 new SearchFriends("requests").execute();
             }
         });
@@ -69,6 +77,9 @@ public class FriendActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 method = "friendWaiting";
+                friendVanilla.setBackgroundColor(getResources().getColor(R.color.fill));
+                friendRequests.setBackgroundColor(getResources().getColor(R.color.fill));
+                friendWaiting.setBackgroundColor(getResources().getColor(R.color.fillhighlight));
                 new SearchFriends("waiting").execute();
             }
         });
@@ -119,8 +130,8 @@ public class FriendActivity extends AppCompatActivity {
                     hashMap.put("URL", Constants.URL + "/get_friend_requests");
                 }
                 GetData post = new GetData(hashMap);
-                //friendsJSON = new JSONArray(post.doInBackground());
-                friendsJSON = new JSONArray("[{username:kalanag,friend_username:jay}]");
+                friendsJSON = new JSONArray(post.doInBackground());
+                //friendsJSON = new JSONArray("[{username:kalanag,friend_username:jay}]");
             }
             catch (Exception e){
                 Log.d("EXCEPTION","Exception in friendsJSON "+e.getCause());
