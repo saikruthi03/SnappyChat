@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class TimeLineActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener {
+public class TimeLineActivity extends AppCompatActivity implements AdapterView.OnItemClickListener , AdapterView.OnItemSelectedListener  {
 
     private String myName = "";
     private ListView listTimeLine = null;
@@ -68,6 +68,9 @@ public class TimeLineActivity extends AppCompatActivity implements AdapterView.O
 
     }
 
+
+
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -81,6 +84,7 @@ public class TimeLineActivity extends AppCompatActivity implements AdapterView.O
     }
 
     private void initDummyData(){
+        new TimeLineFriends().execute();
     }
 
     private void populateFriends(){
@@ -95,11 +99,16 @@ public class TimeLineActivity extends AppCompatActivity implements AdapterView.O
         else{
             listTimeLine.setAdapter(null);
         }
+        listTimeLine.setOnItemClickListener(this);
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Log.d("PAUSE","Pausing");
+        String timeLine = friends.get(i);
+        Log.d("TAG",timeLine);
+        Intent intent = new Intent(this, IndividualTimeLineActivity.class);
+        intent.putExtra("profile", timeLine);
+        startActivity(intent);
     }
 
 
@@ -120,6 +129,7 @@ public class TimeLineActivity extends AppCompatActivity implements AdapterView.O
     public void onNothingSelected(AdapterView<?> parent) {
         // Another interface callback
     }
+
 
     class TimeLineFriends extends AsyncTask<Void,Void,Void> {
 

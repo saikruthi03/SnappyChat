@@ -42,6 +42,7 @@
     tools:context="com.example.vsaik.snapchat.IndividualTimeLineActivity">
 
     <ImageView
+        android:layout_marginTop="190dp"
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

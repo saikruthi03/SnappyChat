@@ -73,6 +73,7 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
         holder.name.setText(rowItem.name);
         final String name = rowItem.name;
 
+        final String fullname = rowItem.fullname;
         //final String level = rowItem.level;
 
         final HashMap<String,String> myMap = new HashMap<String,String>();
@@ -81,7 +82,7 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
 
         if("search".equalsIgnoreCase(showChat)){
             holder.image.setBackgroundResource(rowItem.status);
-            holder.name.setText(rowItem.name);
+            holder.name.setText(rowItem.fullname);
             holder.chat = (ImageButton) convertView.findViewById(R.id.showChat);
             holder.chat.setBackgroundResource(R.drawable.add);
             holder.level.setBackgroundResource(0);
@@ -107,6 +108,7 @@ public class CustomFriendViewAdapter extends ArrayAdapter<Friend> {
                     Log.d("CHAT","Clicked chat");
                     Intent i = new Intent(context,StartChatActivity.class);
                     i.putExtra("friend",name);
+                    i.putExtra("fullname",fullname);
                     context.startActivity(i);
                 }
             });

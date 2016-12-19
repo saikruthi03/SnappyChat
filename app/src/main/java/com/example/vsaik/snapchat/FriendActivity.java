@@ -157,7 +157,7 @@ public class FriendActivity extends AppCompatActivity {
                         if(name != null && name.length() > 0 ){
                             if(name.equalsIgnoreCase(myName)) {
                                 name = object.getString("username");
-
+                            }
                                 item = new Friend(R.drawable.epl, name, "ADD", R.drawable.online);
                                 HashMap<String, String> hashMap1 = new HashMap<String, String>();
                                 hashMap1.put("username", name);
@@ -174,7 +174,7 @@ public class FriendActivity extends AppCompatActivity {
                                 }
                             }
 
-                        }
+
 
 
                     } catch (Exception e) {

@@ -310,6 +310,7 @@ public class IndividualTimeLineActivity extends Activity implements AdapterView.
                     LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
                     Button addComment = new Button(context);
                     addComment.setText("Comment");
+                    addComment.setWidth(60);
                     addComment.setLayoutParams(params2);
                     layout.addView(text);
                     layout.addView(addComment);
