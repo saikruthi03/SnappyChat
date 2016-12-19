@@ -136,10 +136,26 @@ public class SearchActivity extends AppCompatActivity {
                 int size = friendsJSON.length();
                 for (int i = 0; i < size; i++) {
                     Friend item = null;
+                    String friendName;
                     try {
                         JSONObject object = friendsJSON.getJSONObject(i);
+                        friendName = object.getString("username");
+                        HashMap<String,String> hashMap1 = new HashMap<String, String>();
+                        hashMap1.put("username", friendName);
+                        hashMap1.put("URL", Constants.URL + "/check_user");
+                        hashMap1.put("Method", "GET");
+                        GetData activeData = new GetData(hashMap1);
+                        JSONArray result = new JSONArray(activeData.doInBackground());
+                        if(result != null && result.length() > 0) {
+                            JSONObject obj = result.getJSONObject(0);
+                            Log.d("ACTIVE", obj.toString());
+                            boolean level = Boolean.parseBoolean(obj.getString("isActive"));
+                            item = new Friend(0,friendName, "ADD",ImageUtils.getStatus(level));
+                        }
+                        else{
+                            item = new Friend(0,friendName, "ADD",ImageUtils.getStatus(false));
+                        }
 
-                        item = new Friend(0,object.getString("username"), "ADD",R.drawable.online);
 
                     } catch (Exception e) {
                         e.printStackTrace();

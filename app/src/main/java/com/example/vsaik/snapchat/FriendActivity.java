@@ -152,17 +152,34 @@ public class FriendActivity extends AppCompatActivity {
                         JSONObject object = friendsJSON.getJSONObject(i);
                         String name = object.getString("friend_username");
                         if(name != null && name.length() > 0 ){
-                            if(name.equalsIgnoreCase(myName)){
-                                name =object.getString("username");
+                            if(name.equalsIgnoreCase(myName)) {
+                                name = object.getString("username");
+
+                                item = new Friend(R.drawable.epl, name, "ADD", R.drawable.online);
+                                HashMap<String, String> hashMap1 = new HashMap<String, String>();
+                                hashMap1.put("username", name);
+                                hashMap1.put("URL", Constants.URL + "/check_user");
+                                hashMap1.put("Method", "GET");
+                                GetData activeData = new GetData(hashMap1);
+                                JSONArray result = new JSONArray(activeData.doInBackground());
+                                if (result != null && result.length() > 0) {
+                                    JSONObject obj = result.getJSONObject(0);
+                                    Log.d("ACTIVE", obj.toString());
+                                    boolean level = Boolean.parseBoolean(obj.getString("isActive"));
+                                    item = new Friend(R.drawable.epl, name, "ADD", ImageUtils.getStatus(level));
+                                } else {
+                                    item = new Friend(R.drawable.epl, name, "ADD", ImageUtils.getStatus(false));
+                                }
                             }
-                            item = new Friend(R.drawable.epl,name, "ADD",R.drawable.online);
+
                         }
 
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    friends.add(item);
+                    if(item != null)
+                        friends.add(item);
                 }
             }
             populateFriends();
