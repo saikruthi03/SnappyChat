@@ -56,7 +56,7 @@ public class UserDetails {
     }
 
     public static String getUserName() {
-        return userName;
+        return email;
     }
 
     public static void setUserName(String userName) {
