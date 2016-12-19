@@ -45,8 +45,7 @@ public class PostData {
         try {
 
             if("POST".equalsIgnoreCase(method)) {
-                url += "?"+getGetDataString(hashMap);
-                Log.d("REQUEST",url);
+
                 URL ur = new URL(url);
                 conn = (HttpURLConnection) ur.openConnection();
                 conn.setRequestMethod("POST");

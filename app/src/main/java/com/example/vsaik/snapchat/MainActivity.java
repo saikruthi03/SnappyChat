@@ -114,8 +114,8 @@ boolean signout = false;
         contentView.setOnTouchListener(new OnSwipeTouchListener(context) {
             @Override
             public void onSwipeTop() {
-                Intent main = new Intent(MainActivity.this,MainScreen.class);
-                startActivity(main);
+                //Intent main = new Intent(MainActivity.this,MainScreen.class);
+                //startActivity(main);
             }
 
         });

@@ -125,46 +125,16 @@ public class ListAllFriendsActivity extends AppCompatActivity implements
             }
 
 
-            if(responseFetch != null ) {
-                int size = responseFetch.length();
-                if(size > 0) {
-                    List<String> friends = getFriends("/get_added_friends");
-                    List<String> friendReqs = getFriends("/get_unadded_friends");
-
-                    for (int i = 0; i < size; i++) {
-                        FriendList item = new FriendList();
-                        try {
-                            JSONObject object = responseFetch.getJSONObject(i);
-                            if(!myName.equalsIgnoreCase(object.getString("email"))) {
-                                Log.d("FRIEND OOBJ", object.toString());
-                                String friendName = "";
-                                boolean online = Boolean.parseBoolean(object.getString("isActive"));
-                                item.status = ImageUtils.getStatus(online);
-                                item.name = object.getString("fullname");
-                                item.email = object.getString("email");
-                                item.privacy = ImageUtils.getPrivacyImage(object.getString("account_type"));
-                                item.isFriend = friends.contains(object.getString("email"));
-
-
-                                allUsers.add(item);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-
-
             return null;
         }
 
-        private List<String> getFriends(String url){
+
+        private List<String> getFriends(String url) {
             List<String> temp = new ArrayList<String>();
             JSONArray resDummy = null;
             HashMap hashMap = new HashMap<String, String>();
             hashMap.put("URL", Constants.URL + "/get_added_friends");
-            hashMap.put("username",myName);
+            hashMap.put("username", myName);
             hashMap.put("Method", "GET");
             GetData fecthFrnds = new GetData(hashMap);
             try {
@@ -175,14 +145,14 @@ public class ListAllFriendsActivity extends AppCompatActivity implements
                 Log.e("RESPONSE- ERROR", e.toString());
             }
 
-            if(resDummy != null ) {
-                Log.d("Response",resDummy.length()+"");
+            if (resDummy != null) {
+                Log.d("Response", resDummy.length() + "");
                 int size = resDummy.length();
                 for (int i = 0; i < size; i++) {
                     Friend item = new Friend();
                     try {
                         JSONObject object = resDummy.getJSONObject(i);
-                        Log.d("FRIEND OOBJ",object.toString());
+                        Log.d("FRIEND OOBJ", object.toString());
                         String friendName = "";
                         if (myName.equalsIgnoreCase(object.getString("friend_username"))) {
                             friendName = object.getString("username");
@@ -202,8 +172,40 @@ public class ListAllFriendsActivity extends AppCompatActivity implements
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            allUsers = new ArrayList<FriendList>();
+            if (responseFetch != null) {
+                int size = responseFetch.length();
+                if (size > 0) {
+                    List<String> friends = getFriends("/get_added_friends");
+                    List<String> friendReqs = getFriends("/get_unadded_friends");
+
+                    for (int i = 0; i < size; i++) {
+                        FriendList item = new FriendList();
+                        try {
+                            JSONObject object = responseFetch.getJSONObject(i);
+                            if (!myName.equalsIgnoreCase(object.getString("email"))) {
+                                Log.d("FRIEND OOBJ", object.toString());
+                                String friendName = "";
+                                boolean online = Boolean.parseBoolean(object.getString("isActive"));
+                                item.status = ImageUtils.getStatus(online);
+                                item.name = object.getString("fullname");
+                                item.email = object.getString("email");
+                                item.privacy = ImageUtils.getPrivacyImage(object.getString("account_type"));
+                                item.isFriend = friends.contains(object.getString("email"));
+
+
+                                allUsers.add(item);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }
             showUsers();
         }
     }
+
 
 }

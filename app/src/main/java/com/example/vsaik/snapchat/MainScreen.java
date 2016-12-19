@@ -99,7 +99,7 @@ public class MainScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        init();
+       // init();
         Intent i = getIntent();
         if(i != null)
             userId= getIntent().getStringExtra("UserId");;
@@ -149,7 +149,7 @@ public class MainScreen extends AppCompatActivity {
         try {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 50);
-                //onStart();
+                onStart();
             }
             else {
                 mCamera = Camera.open(1);

@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,7 +47,7 @@ public class CustomAllUsersAdapter extends ArrayAdapter<FriendList> {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
-        FriendList rowItem = getItem(position);
+        final FriendList rowItem = getItem(position);
 
         LayoutInflater mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -62,13 +64,36 @@ public class CustomAllUsersAdapter extends ArrayAdapter<FriendList> {
             Log.d("name",rowItem.getName());
 
         } else {
-            Log.d("inside else",rowItem.getName()+"");
            //String name = rowItem.name;
             holder = (ViewHolder) convertView.getTag();
-            holder.user.setText(rowItem.getName());
-            Log.d("name",rowItem.getName());
-        }
 
+        }
+        final HashMap<String,String> myMap = new HashMap<String,String>();
+        myMap.put("friend_username",rowItem.email);
+        myMap.put("username",myName);
+        holder.userdp.setImageResource(rowItem.status);
+        holder.user.setText(rowItem.getName());
+        if(rowItem.isFriend){
+            holder.friend.setImageResource(R.drawable.tick);
+        }
+        else {
+            holder.friend.setImageResource(R.drawable.add);
+            holder.friend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new FriendOperation("send",myMap).execute();
+                }
+            });
+        }
+        holder.user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(context,IndividualTimeLineActivity.class);
+                i.putExtra("profile",rowItem.email);
+                context.startActivity(i);
+            }
+        });
+        Log.d("name",rowItem.getName());
         return convertView;
     }
     @Override
@@ -84,4 +109,43 @@ public class CustomAllUsersAdapter extends ArrayAdapter<FriendList> {
     }
 
 
+    class FriendOperation extends AsyncTask<Void,Void,Void> {
+
+        private HashMap<String,String> hashMap;
+        private String operation = "";
+        boolean errFlag = false;
+        String response = "";
+
+        public FriendOperation(String operation,HashMap<String,String> hashMap){
+            this.operation = operation;
+            this.hashMap = hashMap;
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+
+            try {
+                if ("send".equalsIgnoreCase(operation)) {
+                    hashMap.put("Method", "GET");
+                    hashMap.put("URL", Constants.URL + "/request_friend");
+                    GetData post = new GetData(hashMap);
+                    response = post.doInBackground();
+                }
+            }
+            catch(Exception e){
+                errFlag = true;
+                Log.e("ERROR","In performing friend operations"+e.getCause());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if(errFlag)
+                Toast.makeText(context,"Error in operation",Toast.LENGTH_SHORT);
+            else
+                Toast.makeText(context,"Success",Toast.LENGTH_SHORT);
+        }
+    }
 }
