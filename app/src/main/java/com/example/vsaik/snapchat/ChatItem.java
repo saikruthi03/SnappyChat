@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
  */
 
 public class ChatItem {
+    String name;
     private Bitmap image;
     private String title;
     private int status;

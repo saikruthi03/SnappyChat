@@ -58,9 +58,13 @@ public class AllFriendsChatActivity extends AppCompatActivity implements Adapter
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+
         String chatSession = activeFriends.get(position).getTitle();
-        Intent i = new Intent(this,StartChatActivity.class);
-        i.putExtra("friend",chatSession);
+        String name = activeFriends.get(position).name;
+        Intent i = new Intent(this, StartChatActivity.class);
+        i.putExtra("friend", chatSession);
+        i.putExtra("fullname",name);
+
         startActivity(i);
     }
 
@@ -70,6 +74,9 @@ public class AllFriendsChatActivity extends AppCompatActivity implements Adapter
             CustomChatVewAdapter adapter = new CustomChatVewAdapter(this, R.layout.chat_list_item, activeFriends);
             listAllFriends.setAdapter(adapter);
             listAllFriends.setOnItemClickListener(this);
+        }
+        else{
+            listAllFriends.setAdapter(null);
         }
     }
 
@@ -121,9 +128,7 @@ public class AllFriendsChatActivity extends AppCompatActivity implements Adapter
                             Log.d("ACTIVE", obj.toString());
                             boolean level = Boolean.parseBoolean(obj.getString("isActive"));
                             item = new ChatItem(null, friendName, ImageUtils.getStatus(level));
-                        }
-                        else{
-                            item = new ChatItem(null, friendName, ImageUtils.getStatus(false));
+                            item.name = obj.getString("fullname");
                         }
 
                     } catch (Exception e) {

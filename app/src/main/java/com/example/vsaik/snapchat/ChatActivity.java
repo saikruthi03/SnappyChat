@@ -79,8 +79,11 @@ public class ChatActivity extends AppCompatActivity implements
         if(activeFriends != null && activeFriends.size() > 0) {
             CustomChatVewAdapter adapter = new CustomChatVewAdapter(this, R.layout.chat_list_item, activeFriends);
             listActiveFriends.setAdapter(adapter);
-            listActiveFriends.setOnItemClickListener(this);
         }
+        else
+            listActiveFriends.setAdapter(null);
+        listActiveFriends.setOnItemClickListener(this);
+
     }
 
     @Override
@@ -94,8 +97,10 @@ public class ChatActivity extends AppCompatActivity implements
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         chatSession = activeFriends.get(position).getTitle();
+        String name = activeFriends.get(position).name;
         Intent i = new Intent(this, StartChatActivity.class);
         i.putExtra("friend", chatSession);
+        i.putExtra("fullname",name);
         startActivity(i);
     }
 
@@ -159,14 +164,13 @@ public class ChatActivity extends AppCompatActivity implements
                     JSONArray result = new JSONArray(activeData.doInBackground());
                     if(result != null && result.length() > 0) {
                         JSONObject obj = result.getJSONObject(0);
-                        Log.d("ACTIVE",obj.toString());
+                        Log.d("ACTIVE", obj.toString());
                         boolean level = Boolean.parseBoolean(obj.getString("isActive"));
                         item = new ChatItem(null, friendName, ImageUtils.getStatus(level));
+                        item.name = obj.getString("fullname");
+
+                        activeFriends.add(item);
                     }
-                    else {
-                        item = new ChatItem(null, friendName, ImageUtils.getStatus(false));
-                    }
-                    activeFriends.add(item);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -1,6 +1,7 @@
 package com.example.vsaik.snapchat;
 
 import android.os.AsyncTask;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,7 +41,9 @@ public class FriendActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
+        StrictMode.setThreadPolicy(policy);
         initButtons();
 
 
@@ -166,9 +169,8 @@ public class FriendActivity extends AppCompatActivity {
                                     JSONObject obj = result.getJSONObject(0);
                                     Log.d("ACTIVE", obj.toString());
                                     boolean level = Boolean.parseBoolean(obj.getString("isActive"));
-                                    item = new Friend(R.drawable.epl, name, "ADD", ImageUtils.getStatus(level));
-                                } else {
-                                    item = new Friend(R.drawable.epl, name, "ADD", ImageUtils.getStatus(false));
+                                    item = new Friend(0, name, "ADD", ImageUtils.getStatus(level));
+                                    item.name = obj.getString("fullname");
                                 }
                             }
 

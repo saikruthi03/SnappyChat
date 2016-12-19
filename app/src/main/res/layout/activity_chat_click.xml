@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:id="@+id/chat_click"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context="com.example.vsaik.snapchat.ChatActivity">
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorAccent"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
     <RelativeLayout
         android:layout_width="400dp"
-        android:layout_height="40dp"
-        android:background="@color/colorPrimary"
+        android:layout_height="50dp"
+        android:background="@color/colorAccent"
         android:id="@+id/chatWindow">
         <ImageButton
             android:layout_width="40dp"
@@ -19,9 +26,13 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentTop="true" />
         <TextView
+            android:layout_marginLeft="150dp"
+            android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/Friend"/>
+            android:id="@+id/Friend"
+            android:gravity="center_horizontal"
+            android:textSize="23dp"/>
         <Button android:layout_width="30dp"
             android:layout_height="35dp"
             android:id="@+id/terminateChat"
@@ -31,50 +42,50 @@
             android:paddingTop="150dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true" />
-        </RelativeLayout>
+    </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/chatWindow"
         >
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="480dp"
-        android:id="@+id/chat_listView"
-        android:layout_above="@+id/sendChat"/>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="480dp"
+            android:id="@+id/chat_listView"
+            android:layout_above="@+id/sendChat"/>
 
-    <EditText
-        android:gravity="left"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/chatText"
-        android:paddingLeft="5dp"
-        android:layout_alignParentBottom="true"/>
-    <Button
-        android:layout_width="30dp"
-        android:layout_height="40dp"
-        android:id="@+id/clickPicture"
-        android:paddingBottom="5dp"
-        android:gravity="center_vertical"
-        android:background="@drawable/click"
-        android:layout_toRightOf="@+id/chatText"
-        android:layout_alignParentBottom="true"
-        />
-    <Button
-        android:gravity="right"
-        android:layout_width="30dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/sendChat"
-        android:layout_toRightOf="@+id/clickPicture"
-        android:layout_alignParentBottom="true"
-        />
-    <ImageView
-        android:id="@+id/expanded_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="invisible"
-        android:contentDescription="description_zoom_touch_close" />
+        <EditText
+            android:gravity="left"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/chatText"
+            android:paddingLeft="5dp"
+            android:layout_alignParentBottom="true"/>
+        <Button
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:id="@+id/clickPicture"
+            android:paddingBottom="5dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/click"
+            android:layout_toRightOf="@+id/chatText"
+            android:layout_alignParentBottom="true"
+            />
+        <Button
+            android:gravity="right"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/sendChat"
+            android:layout_toRightOf="@+id/clickPicture"
+            android:layout_alignParentBottom="true"
+            />
+        <ImageView
+            android:id="@+id/expanded_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            android:contentDescription="description_zoom_touch_close" />
 
     </RelativeLayout>
 </RelativeLayout>

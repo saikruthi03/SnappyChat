@@ -9,6 +9,7 @@ public class Friend {
     String level;
     int status;
     String userName;
+    String fullname;
 
     public String getUserName() {
         return userName;

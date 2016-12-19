@@ -19,9 +19,11 @@ public class CustomChatVewAdapter extends ArrayAdapter<ChatItem> {
 
     Context context;
 
+    List<ChatItem> chats ;
     public CustomChatVewAdapter(Context context, int resourceId,
                                 List<ChatItem> items) {
         super(context, resourceId, items);
+        chats = items;
         this.context = context;
     }
 
@@ -43,21 +45,27 @@ public class CustomChatVewAdapter extends ArrayAdapter<ChatItem> {
             holder = new ViewHolder();
             holder.status = (ImageView) convertView.findViewById(R.id.status);
             holder.txtTitle = (TextView) convertView.findViewById(R.id.name);
-            holder.imageView = (ImageView) convertView.findViewById(R.id.icon);
+           // holder.imageView = (ImageView) convertView.findViewById(R.id.icon);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.status.setImageResource(rowItem.getStatus());
-        holder.txtTitle.setText(rowItem.getTitle());
-        holder.imageView.setImageBitmap(rowItem.getImage());
+        holder.txtTitle.setText(rowItem.name);
+        //holder.imageView.setImageBitmap();
 
         return convertView;
     }
     @Override
     public int getViewTypeCount() {
 
-        return getCount();
+        int count;
+        if (chats.size() > 0) {
+            count = getCount();
+        } else {
+            count = 1;
+        }
+        return count;
     }
 
     @Override

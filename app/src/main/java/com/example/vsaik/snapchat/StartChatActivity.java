@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,6 +43,7 @@ public class StartChatActivity extends AppCompatActivity {
     Bitmap friendDP = null;
     Bitmap myDP = null;
     String myName = "";
+    String friendName = "";
     private Context context= null;
     private EditText chatText = null;
     String friend = "";
@@ -63,6 +65,7 @@ public class StartChatActivity extends AppCompatActivity {
 
         if(getIntent() != null){
             friend = getIntent().getStringExtra("friend");
+            friendName = getIntent().getStringExtra("fullname");
             Log.d("TAG",friend);
             //getInfo(friend);
             //update the name on toolbar
@@ -71,7 +74,7 @@ public class StartChatActivity extends AppCompatActivity {
         //friend = "friend";
         friendText = (TextView)findViewById(R.id.Friend);
 
-        friendText.setText(friend);
+        friendText.setText(friendName);
 
         context = this;
         onStart();
@@ -254,7 +257,7 @@ public class StartChatActivity extends AppCompatActivity {
         }
         if(chatMessages != null &&  chatMessages.size() > 0) {
 
-            final RelativeLayout chatClick = (RelativeLayout) findViewById(R.id.chat_click);
+            final RelativeLayout chatClick = (RelativeLayout) findViewById(R.id.chatWindow);
             final ImageView expandedImageView = (ImageView) findViewById(
                     R.id.expanded_image);
 

@@ -2,6 +2,7 @@ package com.example.vsaik.snapchat;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +36,9 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
         initButtons();
     }
 
@@ -146,21 +150,28 @@ public class SearchActivity extends AppCompatActivity {
                         hashMap1.put("Method", "GET");
                         GetData activeData = new GetData(hashMap1);
                         JSONArray result = new JSONArray(activeData.doInBackground());
+                        JSONObject obj ;
                         if(result != null && result.length() > 0) {
-                            JSONObject obj = result.getJSONObject(0);
+                            obj = result.getJSONObject(0);
                             Log.d("ACTIVE", obj.toString());
+                            String fullname = obj.getString("fullname");
                             boolean level = Boolean.parseBoolean(obj.getString("isActive"));
                             item = new Friend(0,friendName, "ADD",ImageUtils.getStatus(level));
+                            item.fullname = obj.getString("fullname");
+                            friends.add(item);
                         }
-                        else{
+                       /* else{
                             item = new Friend(0,friendName, "ADD",ImageUtils.getStatus(false));
+                            item.fullname = friendName;
+                            friends.add(item);
                         }
+*/
 
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    friends.add(item);
+
                 }
             }
             populateFriends();
