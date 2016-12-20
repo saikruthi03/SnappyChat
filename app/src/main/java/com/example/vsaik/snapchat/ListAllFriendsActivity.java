@@ -45,8 +45,8 @@ public class ListAllFriendsActivity extends AppCompatActivity implements
         contentView.setOnTouchListener(new OnSwipeTouchListener(context) {
             @Override
             public void onSwipeRight() {
-               // Intent main = new Intent(ChatActivity.this, MainScreen.class);
-              //  startActivity(main);
+                Intent main = new Intent(ListAllFriendsActivity.this, MainScreen.class);
+                startActivity(main);
             }
         });
 
@@ -86,8 +86,9 @@ public class ListAllFriendsActivity extends AppCompatActivity implements
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         timeLine = allUsers.get(position).getName();
-        Intent i = new Intent(this, TimeLineObject.class);
-        i.putExtra("friend", timeLine);
+        Intent i = new Intent(this, IndividualTimeLineActivity.class);
+        i.putExtra("profile", allUsers.get(position).email);
+        i.putExtra("fullname",allUsers.get(position).getName());
         startActivity(i);
     }
 

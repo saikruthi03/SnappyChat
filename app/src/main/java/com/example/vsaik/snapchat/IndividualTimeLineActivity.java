@@ -37,6 +37,7 @@ import java.util.List;
 public class IndividualTimeLineActivity extends Activity implements AdapterView.OnItemClickListener {
 
     private String myName;
+    String fullname;
     private ListView listTimeLine = null;
     private Context context= null;
     private String name = UserDetails.getEmail();
@@ -53,6 +54,7 @@ public class IndividualTimeLineActivity extends Activity implements AdapterView.
 
         if(current != null){
             name = current.getStringExtra("profile");
+            fullname = current.getStringExtra("fullname");
         }
 
         listTimeLine = (ListView) findViewById(R.id.listMyTimeLine);
@@ -303,14 +305,15 @@ public class IndividualTimeLineActivity extends Activity implements AdapterView.
                             }
                         });
                     }
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 3);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 5);
                     final EditText text = new EditText(context);
                     text.setLayoutParams(params);
 
-                    LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1);
+                    LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 2);
                     Button addComment = new Button(context);
                     addComment.setText("Comment");
-                    addComment.setWidth(60);
+                    addComment.setTextSize(10);
+                    addComment.setWidth(70);
                     addComment.setLayoutParams(params2);
                     layout.addView(text);
                     layout.addView(addComment);
