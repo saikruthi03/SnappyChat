@@ -172,6 +172,9 @@ public class FriendActivity extends AppCompatActivity {
                                     item = new Friend(0, name, "ADD", ImageUtils.getStatus(level));
                                     item.name = obj.getString("fullname");
                                 }
+                            else{
+                                    item = new Friend(0, name, "ADD", ImageUtils.getStatus(false));
+                                }
                             }
 
 

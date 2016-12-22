@@ -50,7 +50,21 @@ public class TimeLineObject {
         }
         List<String> likes;
         List<IndividualTimeLineActivity.Comment> comments;
-        String date;
+        private String date ;
+
+        public void setDate(String date2){
+            date = "";
+            int index = date2.indexOf("T");
+            String monthyear = date2.substring(0,index);
+            String[] m = monthyear.split("-");
+            date = date +m[1]+"/"+m[2]+"   ";
+            String[] time = date2.substring(index+1).split(":");
+            date = date + time[0]+":"+time[1];
+        }
+
+        public String getDate(){
+            return date;
+        }
     }
 
 }

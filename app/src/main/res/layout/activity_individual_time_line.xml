@@ -34,22 +34,11 @@
 
 
     <ListView
+        android:layout_marginTop="70dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/listMyTimeLine"></ListView>
 
-    <ListView
-        android:id="@+id/comments_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="invisible"
-        android:contentDescription="comments description" />
 
-    <ListView
-        android:id="@+id/likes_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="invisible"
-        android:contentDescription="likes" />
 </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

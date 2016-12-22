@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,6 +56,11 @@ public class IndividualTimeLineActivity extends Activity implements AdapterView.
         if(current != null){
             name = current.getStringExtra("profile");
             fullname = current.getStringExtra("fullname");
+            TextView myTimeLine = (TextView) findViewById(R.id.myTimeLine);
+            if(fullname != null && fullname.length() > 0)
+                myTimeLine.setText(fullname);
+            else
+                myTimeLine.setText(name);
         }
 
         listTimeLine = (ListView) findViewById(R.id.listMyTimeLine);
@@ -141,7 +147,7 @@ public class IndividualTimeLineActivity extends Activity implements AdapterView.
                 try {
                     JSONObject object = responseFetch.getJSONObject(i);
                     ts.userInfo.name = name;
-                    ts.userInfo.date = object.getString("timestamp");
+                    ts.userInfo.setDate(object.getString("timestamp"));
                     String picture = object.getString("pictures");
                     ts.imageInfo.image = ImageUtils.getBitmapFromBase64WithRotation(picture,-90);
                     List<Comment> comments = new ArrayList<Comment>();
@@ -237,7 +243,7 @@ public class IndividualTimeLineActivity extends Activity implements AdapterView.
             final String id = rowItem.id;
             String name = rowItem.userInfo.name;
             holder.time_line_image.setImageBitmap(rowItem.imageInfo.image);
-            holder.date.setText(rowItem.userInfo.date);
+            holder.date.setText(rowItem.userInfo.getDate());
             holder.profileName.setText(rowItem.userInfo.name);
 
             final List<Comment> list = rowItem.userInfo.comments;
