@@ -71,7 +71,7 @@ public class AddFriendsActivity extends AppCompatActivity {
                 post.doInBackground();
             }
             catch (Exception e){
-                Log.d("EXCEPTION","Exception in friendsJSON "+e.getCause());
+                //Log.d("EXCEPTION","Exception in friendsJSON "+e.getCause());
                 errFlag = true;
             }
 
@@ -89,7 +89,7 @@ public class AddFriendsActivity extends AppCompatActivity {
     }
 
     private void reportError(){
-        Toast.makeText(getApplicationContext(),"Failed to add",Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getApplicationContext(),"Failed to add",Toast.LENGTH_SHORT).show();
     }
 
     private void showSuccess(){
