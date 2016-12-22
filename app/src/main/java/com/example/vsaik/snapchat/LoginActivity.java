@@ -168,6 +168,8 @@ public class LoginActivity extends AppCompatActivity implements
         }catch(Exception ex){
 
         }
+         Intent intent = new Intent(this, GetMessagesService.class);
+        startService(intent);
 /*
         try{ if(UserDetails.getUserName() != null){
             Log.d("Exc","Exc"+UserDetails.getUserName());
