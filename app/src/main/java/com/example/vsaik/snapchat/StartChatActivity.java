@@ -142,7 +142,7 @@ public class StartChatActivity extends AppCompatActivity {
         capturePicture.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(capturedImage != null ) {
+                    if(capturedImage == null ) {
 
                         final AlertDialog.Builder alert = new AlertDialog.Builder(context);
                         final LinearLayout layout = new LinearLayout(context);
@@ -215,8 +215,9 @@ public class StartChatActivity extends AppCompatActivity {
                 Log.d("GALLERY","Exception in gallery result intent");
             }
         }
-        if(capturedImage != null)
+        if(capturedImage != null) {
             capturePicture.setBackgroundResource(R.drawable.click3);
+        }
     }
 
     private void getInfo(String friend) {

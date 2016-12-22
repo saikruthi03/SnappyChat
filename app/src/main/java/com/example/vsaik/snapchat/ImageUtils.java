@@ -58,7 +58,7 @@ public class ImageUtils {
 
     public static Bitmap decodeBase64(String input)
     {
-        byte[] decodedBytes = Base64.decode(input, 0);
+        byte[] decodedBytes = Base64.decode(input, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
     public static Bitmap getBitmapFromBase64WithRotation(String base64Encoded,int angle){
@@ -110,15 +110,10 @@ public class ImageUtils {
     public static String getStringImage(Bitmap bitmap) {
      try{
          if (bitmap != null) {
-             ByteArrayOutputStream out = new ByteArrayOutputStream();
-             bitmap.compress(Bitmap.CompressFormat.PNG, 30, out);
-             bitmap = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
-            final int lnth=bitmap.getByteCount();
-            ByteBuffer dst= ByteBuffer.allocate(lnth);
-            bitmap.copyPixelsToBuffer( dst);
-            byte[] barray=dst.array();
-            String temp = Base64.encodeToString(barray, Base64.DEFAULT);
-
+             ByteArrayOutputStream baos = new ByteArrayOutputStream();
+             bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+             byte[] b = baos.toByteArray();
+             String temp = Base64.encodeToString(b, Base64.DEFAULT);
              return temp;
 
         }
