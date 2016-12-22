@@ -1,3 +1,38 @@
+package com.example.vsaik.snapchat;
+
+import android.app.IntentService;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.app.TaskStackBuilder;
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.IBinder;
+import android.os.Looper;
+import android.os.Process;
+import android.os.Message;
+import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+
+/**
+ * Created by vsaik on 12/6/2016.
+ */
+public class GetMessagesService extends Service {
 
     public int uniqueNumber = 0;
     public HashMap<String,String> liveData = new HashMap<>();
@@ -130,3 +165,5 @@ if(data.size() > 0 && type.size() > 0){
     }
 
 }
+
+
